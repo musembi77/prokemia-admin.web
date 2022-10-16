@@ -49,7 +49,7 @@ export default Index;
 const Product=({router})=>{
 	return(
 		<Flex direction='column' m='1' w='180px' gap='1' bg='#eee' borderRadius='5'>
-			<Image h='50px' src='' bg='grey'/>
+			<Image h='50px' src='' bg='grey' alt=''/>
 			<Flex p='2' direction='column'>
 				<Text>Name</Text>
 				<Text>Industry</Text>
@@ -63,7 +63,7 @@ const Product=({router})=>{
 const Distributor=({router})=>{
 	return(
 		<Flex direction='column' m='1' w='180px' gap='1' bg='#eee' borderRadius='5'>
-			<Image h='50px' src='' bg='grey'/>
+			<Image h='50px' src='' bg='grey' alt=''/>
 			<Flex p='2' direction='column'>
 				<Text>Name</Text>
 				<Text>Industry</Text>
@@ -76,7 +76,7 @@ const Distributor=({router})=>{
 const Manufacturer=({router})=>{
 	return(
 		<Flex direction='column' m='1' w='180px' gap='1' bg='#eee' borderRadius='5'>
-			<Image h='50px' src='' bg='grey'/>
+			<Image h='50px' src='' bg='grey' alt=''/>
 			<Flex p='2' direction='column'>
 				<Text>Name</Text>
 				<Text>Industry</Text>

@@ -14,7 +14,7 @@ function Settings(){
 				<Flex direction='column' gap='2'>
 					{users.map((user)=>{
 						return(
-							<Flex borderRadius='5' justify='space-between' p='3' bg='#eee'>
+							<Flex key={user.id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
 								<Text>{user.name}</Text>
 								<Text color={user.status? 'green' : 'orange'} >{user.status? 'Active' : 'Not Logged'}</Text>
 							</Flex>
@@ -26,7 +26,7 @@ function Settings(){
 				<Flex direction='column' gap='2'>
 					{users.map((user)=>{
 						return(
-							<Flex borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
+							<Flex key={user.id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
 								<Text>{user.name}</Text>
 								<Input bg='#fff' type='password' value={user.password}/>
 								<Text color='#009393'>Edit</Text>

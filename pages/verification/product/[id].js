@@ -27,7 +27,7 @@ function Product(){
 				<Flex direction='column'>
 					<Text color='#000' fontWeight='bold'>Description</Text>
 					<Text >Luna-cure PACM is a cycloaliphatic diamine. Luna-cure PACM is mainly used as a hardener for epoxies. The curing of epoxy resins at high temperatures leads to excellent mechanical properties and good resistance against alkalis, acids, hydrocarbon solvents and water. This product is available in Europe, Asia and North America.</Text>
-					<Text mt='4'>Chemical Name: 4,4'-Diaminodicyclohexyl methane
+					<Text mt='4'>Chemical Name: 4,4-Diaminodicyclohexyl methane
 							Function: Curing & Hardening Agent, Monomer
 							CAS Number: 1761-71-3
 							Chemical Family: Diamines</Text>

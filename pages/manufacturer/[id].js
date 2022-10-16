@@ -26,7 +26,7 @@ function Manufacturer(){
 					<Flex wrap='Wrap'> 
 						{industries.map((item)=>{
 							return(
-								<Industry item={item}/>
+								<Industry key={item.id} item={item}/>
 							)
 						})}
 					</Flex>
@@ -81,7 +81,7 @@ const Distributor=()=>{
 	const router = useRouter()
 	return(
 		<Flex direction='column' m='1' w='180px' gap='1' bg='#eee' borderRadius='5'>
-			<Image h='50px' src='' bg='grey'/>
+			<Image h='50px' src='' bg='grey' alt=''/>
 			<Flex p='2' direction='column'>
 				<Text>Name</Text>
 				<Text>Industry</Text>

@@ -83,7 +83,7 @@ const MenuBar=()=>{
 		<Flex direction='column' gap='3' p='4' w='60vw' h='90vh' bg='#009393' position='absolute' top='70px' right='0px' zIndex='2' >
 			{navigation.map((item)=>{
 				return(
-					<Flex align='center' justify='space-between' borderBottom='1px solid #000'>
+					<Flex key={item.id} align='center' justify='space-between' borderBottom='1px solid #000'>
 						<Text color='#fff' p='2' fontSize='20px'  mb='0' onClick={(()=>{router.push(`/${item.link}`)})} >{item.title}</Text>
 						{item.logo}
 					</Flex>

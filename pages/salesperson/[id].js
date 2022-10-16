@@ -28,7 +28,7 @@ function Salesperson(){
 					<Flex wrap='Wrap'> 
 						{industries.map((item)=>{
 							return(
-								<Industry item={item}/>
+								<Industry key={item.id} item={item}/>
 							)
 						})}
 					</Flex>

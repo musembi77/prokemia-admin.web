@@ -17,7 +17,7 @@ function Dashboard(){
 					<Text>SalesPersons</Text>
 					<Text bg='#fff' p='2'>30</Text>
 				</Flex>
-				<Flex gap='2' direction='column' gap='2' w='40%'>
+				<Flex gap='2' direction='column' w='40%'>
 					<Text fontWeight='bold' fontSize='20px'>Manufacturers</Text>
 					<Flex direction='column' gap='2'>
 						<Text bg='#eee' p='2' borderRadius='2'>Dupoint </Text>
