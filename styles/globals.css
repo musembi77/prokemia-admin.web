@@ -1,0 +1,26 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: ClearSans-regular;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+@font-face {
+  font-family: "ClearSans-bold";
+  src: local("ClearSans-Bold"), url(../utils/ClearSans-Bold.ttf) format(
+    "opentype");
+}
+@font-face {
+  font-family: "ClearSans-regular";
+  src: local("ClearSans-Regular"), url(../utils/ClearSans-Regular.ttf) format(
+"opentype");
+}
+
