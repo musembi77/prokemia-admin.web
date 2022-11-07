@@ -19,7 +19,7 @@ import {
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
 
-function suspendProductModal({issuspendproductModalvisible,setissuspendproductModalvisible}){
+function SuspendProductModal({issuspendproductModalvisible,setissuspendproductModalvisible}){
     const { isOpen, onOpen, onClose } = useDisclosure();
     
     //console.log(isaddingreviewgModalvisible);
@@ -65,4 +65,4 @@ function suspendProductModal({issuspendproductModalvisible,setissuspendproductMo
       )
 }   
 
-export default suspendProductModal;
+export default SuspendProductModal;

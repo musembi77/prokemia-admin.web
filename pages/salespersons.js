@@ -42,7 +42,7 @@ const SalesPerson=()=>{
 			<Text fontWeight='bold'>Name</Text>
 			<Text>Email</Text>
 			<Text>Company</Text>
-			<Button onClick={(()=>{router.push('/salesperson/1')})} cursor='pointer' cursor='pointer' bg='#009393'><OpenInNewIcon/><Text>View</Text></Button>
+			<Button onClick={(()=>{router.push('/salesperson/1')})} cursor='pointer' bg='#009393'><OpenInNewIcon/><Text>View</Text></Button>
 		</Flex>
 	)
 }
