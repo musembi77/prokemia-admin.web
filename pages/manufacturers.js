@@ -1,20 +1,30 @@
-import React from 'react'
-import {Flex,Text,Button,Input,Image} from '@chakra-ui/react'
+import React,{useState}from 'react';
+import {Flex,Text,Button,Input,Image,Select} from '@chakra-ui/react'
 import Header from '../components/Header.js'
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {useRouter} from 'next/router'
+import TuneIcon from '@mui/icons-material/Tune';
+import FilterManufacturerModal from '../components/modals/filterManufacturers.js';
 
 function Manufacturers(){
-	const router = useRouter()
+	const router = useRouter();
+	const [isfiltermanufacturerModalvisible,setisfiltermanufacturerModalvisible]=useState(false);
 	return(
 		<Flex direction='column'>
+			<FilterManufacturerModal isfiltermanufacturerModalvisible={isfiltermanufacturerModalvisible} setisfiltermanufacturerModalvisible={setisfiltermanufacturerModalvisible}/>
 			<Header />
-			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Manufacturers</Text>
+			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px'>Manufacturers</Text>
 			<Flex gap='2' p='2' align='center'>
-				<Button bg='#eee'>Sort<ArrowDropDownIcon/></Button>
-				<Input placeholder='search Distributors' bg='#fff' Flex='1'/>
-				<SearchIcon />
+				<Button bg='#eee' p='4' onClick={(()=>{setisfiltermanufacturerModalvisible(true)})}>Filter<TuneIcon/></Button>
+				<Select placeholder='sort' w='100px'> 
+					<option>A - Z</option>
+					<option>Z - A</option>
+				</Select>
+			</Flex>
+			<Flex gap='2' p='2'>
+				<Input placeholder='search Manufacturers' bg='#fff' flex='1'/>
+				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 			</Flex>
 			<Flex wrap='flex'>
 				<Manufacturer/>

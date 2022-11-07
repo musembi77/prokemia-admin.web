@@ -1,11 +1,14 @@
-import React from 'react';
+import React,{useState}from 'react';
 import {Flex,Text,Button,Image} from '@chakra-ui/react';
 import Header from '../../components/Header.js'
+import SuspendAccountModal from '../../components/modals/suspendAccount.js';
 
 function Distributor(){
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	return(
 		<Flex direction='column' gap='2'>
 			<Header />
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible}/>
 			<Text fontWeight='bold' fontSize='24px'>Distributor Name</Text>
 			<Flex p='1' direction='column' gap='2'>
 				<Flex direction='column' bg='#eee' p='2'>
@@ -14,7 +17,6 @@ function Distributor(){
 						<Text>Mobile</Text>
 						<Text>Address</Text>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
 				<Flex direction='column'>
 					<Text fontWeight='bold'>Description</Text>
 					<Text>Develop innovative new formulations to meet application needs, optimize performance and improve the overall environmental profile of final formulations with Croda’s specialty chemical ingredients and performance additives. From consumer products to industrial scale challenges, we can help you formulate cost-effective, powerful and efficient new products for the newest cleaning technologies, while helping you meet the most demanding industry standards and regulations</Text>
@@ -40,7 +42,8 @@ function Distributor(){
 						<Text>Mobile</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#fff' color='red' border='1px solid red' m='2'>Suspend</Button>
+				<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
+				<Button bg='#fff' color='red' border='1px solid red' m='2' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend</Button>
 			</Flex>
 		</Flex>
 	)

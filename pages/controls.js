@@ -1,10 +1,19 @@
-import React from 'react';
+import React,{useState}from 'react';
 import {Flex,Text,Button} from '@chakra-ui/react';
 import Header from '../components/Header.js';
+import AddNewIndustryModal from '../components/modals/addNewIndustryModal.js';
+import AddnewTechnology from '../components/modals/addNewTechnologyModal.js';
+import AddnewCareer from '../components/modals/addNewCareerModal.js';
 
 function Control(){
+	const [isaddindustryModalvisible,setisaddindustryModalvisible]=useState(false);
+	const [isaddtechnologyModalvisible,setisaddtechnologyModalvisible]=useState(false);
+	const [isaddcareerModalvisible,setisaddcareerModalvisible]=useState(false);
 	return(
 		<Flex direction='column'>
+			<AddNewIndustryModal isaddindustryModalvisible={isaddindustryModalvisible} setisaddindustryModalvisible={setisaddindustryModalvisible}/>
+			<AddnewTechnology isaddtechnologyModalvisible={isaddtechnologyModalvisible} setisaddtechnologyModalvisible={setisaddtechnologyModalvisible}/>
+			<AddnewCareer isaddcareerModalvisible={isaddcareerModalvisible} setisaddcareerModalvisible={setisaddcareerModalvisible}/>
 			<Header />
 			<Flex direction='column' gap='2' p='2'>
 				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Careers</Text>
@@ -26,7 +35,7 @@ function Control(){
 						<Text color='red'>Delete</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Add new Career</Button>
+				<Button bg='#009393' color='#fff' onClick={(()=>{setisaddcareerModalvisible(true)})}>Add new Career</Button>
 			</Flex>
 			<Flex direction='column' gap='2' p='2'>
 				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Industry</Text>
@@ -44,7 +53,7 @@ function Control(){
 						<Text color='red'>Delete</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Add new Industry</Button>
+				<Button bg='#009393' color='#fff' onClick={(()=>{setisaddindustryModalvisible(true)})}>Add new Industry</Button>
 			</Flex>
 			<Flex direction='column' gap='2' p='2'>
 				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Technology</Text>
@@ -62,7 +71,7 @@ function Control(){
 						<Text color='red'>Delete</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Add new Technology</Button>
+				<Button bg='#009393' color='#fff' onClick={(()=>{setisaddtechnologyModalvisible(true)})}>Add new Technology</Button>
 			</Flex>
 		</Flex>
 	)

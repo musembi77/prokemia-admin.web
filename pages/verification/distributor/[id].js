@@ -1,10 +1,13 @@
-import React from 'react';
+import React,{useState}from 'react';
 import {Flex,Text,Button,Image} from '@chakra-ui/react';
 import Header from '../../../components/Header.js'
+import SuspendAccountModal from '../../../components/modals/suspendAccount.js';
 
 function Distributor(){
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	return(
 		<Flex direction='column' gap='2'>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible}/>
 			<Header />
 			<Text fontWeight='bold' fontSize='24px'>Distributor Name</Text>
 			<Flex p='1' direction='column' gap='2'>
@@ -14,7 +17,7 @@ function Distributor(){
 						<Text>Mobile</Text>
 						<Text>Address</Text>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
+				
 				<Flex direction='column'>
 					<Text fontWeight='bold'>Description</Text>
 					<Text>Develop innovative new formulations to meet application needs, optimize performance and improve the overall environmental profile of final formulations with Croda’s specialty chemical ingredients and performance additives. From consumer products to industrial scale challenges, we can help you formulate cost-effective, powerful and efficient new products for the newest cleaning technologies, while helping you meet the most demanding industry standards and regulations</Text>
@@ -24,7 +27,9 @@ function Distributor(){
 					<Flex wrap='Wrap'> 
 						{industries.map((item)=>{
 							return(
-								<Industry key={item.id} item={item}/>
+								<Flex key={item.id}>
+									<Industry item={item}/>
+								</Flex>
 							)
 						})}
 					</Flex>
@@ -40,9 +45,10 @@ function Distributor(){
 						<Text>Mobile</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff' m='2'>Approve Distributor Account</Button>
-				<Button bg='#fff' border='1px solid #000' m='2'>Send Note to Distributor</Button>
-				<Button bg='#fff' color='red' border='1px solid red' m='2'>Decline Distributor Account</Button>
+				<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
+				<Button bg='#009393' color='#fff'>Approve Distributor Account</Button>
+				<Button bg='#fff' border='1px solid #000'>Send Note to Distributor</Button>
+				<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Distributor Account</Button>
 			</Flex>
 		</Flex>
 	)

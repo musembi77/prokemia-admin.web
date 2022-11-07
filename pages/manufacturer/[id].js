@@ -1,21 +1,24 @@
-import React from 'react';
+import React,{useState}from 'react';
 import {Flex,Text,Button,Image} from '@chakra-ui/react';
 import Header from '../../components/Header.js';
 import Product from '../../components/Product.js';
 import {useRouter} from 'next/router';
+import SuspendAccountModal from '../../components/modals/suspendAccount.js';
 
 function Manufacturer(){
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	return(
 		<Flex direction='column' gap='2'>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible}/>
 			<Header />
-			<Text fontWeight='bold' fontSize='24px'>Manufacturer Name</Text>
-			<Flex p='1' direction='column' gap='2'>
+			<Flex p='2' direction='column' gap='2'>
+				<Text fontWeight='bold' fontSize='28px'>Manufacturer Name</Text>
 				<Flex direction='column' bg='#eee' p='2'>
 						<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
 						<Text>Email</Text>
 						<Text>Mobile</Text>
 						<Text>Address</Text>
-						<Button bg='#009393' color='#fff'>Contact by Email</Button>
+						
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold'>Description</Text>
@@ -58,7 +61,8 @@ function Manufacturer(){
 						<Distributor />
 					</Flex>
 				</Flex>
-				<Button m='2' bg='#fff' color='red' border='1px solid red' >Suspend</Button>
+				<Button bg='#009393' color='#fff'>Contact by Email</Button>
+				<Button m='2' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend</Button>
 			</Flex>
 		</Flex>
 	)

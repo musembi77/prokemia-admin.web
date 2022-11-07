@@ -1,29 +1,34 @@
-import React from 'react';
+import React,{useState}from 'react';
 import {Flex,Text,Button,Image} from '@chakra-ui/react';
 import Header from '../../../components/Header.js'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import {useRouter} from 'next/router';
+import SuspendAccountModal from '../../../components/modals/suspendAccount.js';
 
 function Salesperson(){
-	const router = useRouter()
+	const router = useRouter();
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
+
 	return(
 		<Flex direction='column' gap='2'>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible}/>
 			<Header />
 			<Flex p='1' direction='column' gap='2'>
 				<Flex justify='space-between' gap='4'>
 					<Flex direction='column' align='center'>
-						<AccountBoxIcon style={{fontSize:'100px'}}/>
+						<AccountBoxIcon style={{fontSize:'150px'}}/>
 						<Text fontWeight='bold' fontSize='20px'>Sean Alexis</Text>
 					</Flex>
-					<Flex flex='1' direction='column' bg='#eee' p='2'>
+					<Flex flex='1' direction='column' bg='#eee' p='2' gap='1' borderRadius='5px'>
 							<Text fontWeight='bold' fontSize='20px'>Personal info</Text>
-							<Text>Email: sean@company.com</Text>
-							<Text>Mobile: 0759233322</Text>
-							<Text>Address:Nairobi KEnya</Text>
-							<Text>Company: Sahol</Text>
+							<Text><span style={{fontWeight:'bold'}}>Name:</span> sean alex</Text>
+							<Text><span style={{fontWeight:'bold'}}>Email:</span> sean@company.com</Text>
+							<Text><span style={{fontWeight:'bold'}}>Mobile:</span> 0759233322</Text>
+							<Text><span style={{fontWeight:'bold'}}>Status:</span> annonymous</Text>
+							<Text><span style={{fontWeight:'bold'}}>Address:</span> Nairobi Kenya</Text>
+							<Text><span style={{fontWeight:'bold'}}>Company:</span> Sahol</Text>
 					</Flex>
  				</Flex>
-				<Button bg='#009393' color='#fff'>Contact</Button>
 				<Flex direction='column' gap='2'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Specializes in Industry</Text>
 					<Flex wrap='Wrap'> 
@@ -34,9 +39,10 @@ function Salesperson(){
 						})}
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff' m='2'>Approve Salesperson Account</Button>
-				<Button bg='#fff' border='1px solid #000' m='2'>Send Note to Salesperson</Button>
-				<Button bg='#fff' color='red' border='1px solid red' m='2'>Decline Salesperson Account</Button>
+				<Button bg='#009393' color='#fff'>Contact</Button>
+				<Button bg='#009393' color='#fff' >Approve Salesperson Account</Button>
+				<Button bg='#fff' border='1px solid #000'>Send Note to Salesperson</Button>
+				<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Salesperson Account</Button>
 			</Flex>
 		</Flex>
 	)

@@ -1,81 +1,68 @@
 import React,{useState} from 'react'
-import {InputGroup,Input,InputRightElement,Stack,Flex,Text,Center,Image,Tabs,TabList,TabPanels,Tab,TabPanel,useToast,Button} from '@chakra-ui/react';
-import {Visibility,VisibilityOff} from '@mui/icons-material';
-import styles from '../styles/Home.module.css';
+import {Flex,Center,Text,Button,Input,InputGroup,InputRightElement} from '@chakra-ui/react'
+import styles from '../styles/Home.module.css'
+import {Room,Visibility,VisibilityOff} from '@mui/icons-material'
 import {useRouter} from 'next/router'
-function Auth(){
+
+export default function ClientSignUp(){
+	const [show, setShow] = useState(false);
+  	const handleClick = () => setShow(!show);
+  	const router = useRouter();
+
+  	const [password,setpassword]=useState('');
+  	const [username,setUsername]=useState('');
+  	let route = '';
+
+  	const handleSignIn=()=>{
+  		if(password === 'admin' && username === 'admin')
+  			route = 'dashboard';
+  		if(password === 'sales' && username === 'sales')
+  			route = 'salesperson/1';
+  		if(password === 'distributor' && username === 'distributor')
+  			route =  'distributor/1';
+  		if(password === 'manufacturer' && username === 'manufacturer')
+  			route = 'manufacturer/1';
+
+  		router.push(`/${route}`)
+  	}
 	return(
-		<Flex className={styles.authbody}>
-			<Flex bg='#000' className={styles.authsection1}>
-				<Center m='auto'>
-					<Text fontWeight='ClearSans-Bold' fontSize='32px' color='#009393'>Prok<span style={{color:'#fff'}}>emia</span></Text>
-				</Center>
+		<Flex h='100vh' className={styles.SigninBody}>
+			<Flex className={styles.authSection} gap='2' p='8'>
+				<Text w='40vw'  fontSize='4rem' color='#fff' fontFamily='ClearSans-bold'>Welcome Back!</Text>
 			</Flex>
-			
-			<Center p='1' bg='#eee' m='auto' className={styles.authsection2} >
-			<SignIn />
-			</Center>
-		</Flex>
-	)
-}
-
-export default Auth;
-
-const Register=()=>{
-	const [show,setShow] = useState(false);
-	const handleClick = ()=> setShow(!show);
-	return(
-		<Flex direction='column' gap='2'>
-			<InputGroup>
-				<Input bg='#fff' p='1' type='text' placeholder='First-Name' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input bg='#fff' p='1' type='text' placeholder='Last Name' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input bg='#fff' p='1' type='email' placeholder='Email' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input type='number' bg='#fff' p='1' placeholder='Mobile' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input bg='#fff' p='1' type='text' placeholder='Company' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input bg='#fff' p='1' type={show ? 'text' : 'password'} placeholder='Enter Password' variant='flushed'/>
-				<InputRightElement>
-					<Button onClick={handleClick}>
+			<Flex className={styles.authForm} gap='2' direction='column'>
+				<Text fontSize='2.5rem' fontFamily='ClearSans-bold'><span style={{borderBottom:"4px solid #009393",borderRadius:"3px"}}>Sign</span> In</Text>
+				<Text color='grey'>Welcome back, Please sign in to your account.</Text>
+				<Flex direction='column' gap='2'>
+					<Text fontWeight='bold'>Username</Text>
+					<Input type='text' placeholder='Username' variant='filled' onChange={((e)=>{setUsername(e.target.value)})}/>
+				</Flex>
+				<Text fontWeight='bold'>Password</Text>
+				<InputGroup size='md'>
+					<Input
+					pr='4.5rem'
+					type={show ? 'text' : 'password'}
+					placeholder='Enter password'
+					variant='filled'
+					onChange={((e)=>{setpassword(e.target.value)})}
+					required
+					/>
+						<InputRightElement width='4.5rem'>
+						<Button h='1.75rem' size='sm' onClick={handleClick} bg='#fff'>
 						{show ? <VisibilityOff/> : <Visibility/>}
-					</Button>
-				</InputRightElement>
-
-			</InputGroup>
-			<Button bg='#009393' color='#fff'> Register </Button>
+						</Button>
+					</InputRightElement>
+				</InputGroup>
+				<Text cursor='pointer' fontSize='14px' color='red'> Forgot Password?</Text>
+				<Button bg='#009393' color='#fff' onClick={handleSignIn}>Sign In</Button>
+			</Flex>
 		</Flex>
 	)
 }
 
-const SignIn=()=>{
-
-	const [show,setShow]=useState(false);
-	const handleClick =()=> setShow(!show);
-	const router = useRouter()
-	return(
-		<Flex direction='column' gap='2' p='2'>
-			<InputGroup>
-				<Input bg='#fff' type='text' placeholder='Email' variant='flushed'/>
-			</InputGroup>
-			<InputGroup>
-				<Input bg='#fff' type={show ? 'text' : 'password'} placeholder='Enter Password' variant='flushed'/>
-				<InputRightElement>
-					<Button onClick={handleClick}>
-						{show ? <VisibilityOff/> : <Visibility/>}
-					</Button>
-				</InputRightElement>
-
-			</InputGroup>
-			<Button bg='#009393' color='#fff' onClick={(()=>{router.push(`/dashboard`)})}>Sign In</Button>
-			<Text cursor='pointer' fontSize='14px' color='red'> Forgot Password? click here to reset.</Text>
-		</Flex>
-	)
-}
+const passwords=[
+	{
+		acc:'admin',
+		password:'admin'
+	},
+]

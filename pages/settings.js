@@ -1,15 +1,19 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {Flex,Text,Button,Input} from '@chakra-ui/react';
 import Header from '../components/Header.js';
+import AddNewAdmin from '../components/modals/AddNewAdmin.js';
+import RemoveAdmin from '../components/modals/RemoveAdmin.js';
 
 function Settings(){
+	const [isaddnewadminModalvisible,setisaddnewadminModalvisible]=useState(false);
+	const [isremoveModalvisible,setisremoveModalvisible]=useState(false);
 	return(
 		<Flex direction='column'>
 			<Header />
 			<Flex direction='column' p='2' gap='2'>
-				<Text fontSize='24px' fontWeight='bold'>Settings</Text>
-
-				<Button bg='#009393' color="#fff">Add new Admin user</Button>	
+				<Text fontSize='28px' fontWeight='bold'>Settings</Text>
+				<AddNewAdmin isaddnewadminModalvisible={isaddnewadminModalvisible} setisaddnewadminModalvisible={setisaddnewadminModalvisible}/>
+				<RemoveAdmin isremoveModalvisible={isremoveModalvisible} setisremoveModalvisible={setisremoveModalvisible}/>
 				<Text fontSize='14'>assign different roles to administrators </Text>
 				<Flex direction='column' gap='2'>
 					{users.map((user)=>{
@@ -21,15 +25,18 @@ function Settings(){
 						)
 					})}
 				</Flex>
-				<Button bg='#fff' border='1px solid red'>Remove User</Button>
+				<Button bg='#009393' color="#fff" onClick={(()=>{setisaddnewadminModalvisible(true)})}>Add new Admin user</Button>
 				<Text fontWeight='bold' fontSize='20px' borderBottom='1px solid #000'>Password Management</Text>
 				<Flex direction='column' gap='2'>
 					{users.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
-								<Text>{user.name}</Text>
-								<Input bg='#fff' type='password' value={user.password}/>
-								<Text color='#009393'>Edit</Text>
+								<Text fontWeight='bold' fontSize='20px'>{user.name}</Text>
+								<Input bg='#fff' type='password' />
+								<Flex gap='2' mt='2'>
+									<Text color='#000'>Edit</Text>
+									<Text color='red' cursor='pointer' onClick={(()=>{setisremoveModalvisible(true)})}>Remove Admin User</Text>
+								</Flex>
 							</Flex>
 						)
 					})}
@@ -43,26 +50,31 @@ export default Settings;
 
 const users=[
 	{
+		id:1,
 		name:'Admin-1',
 		status:true,
 		password:'admin-1'
 	},
 	{
+		id:2,
 		name:'Admin-2',
 		status:false,
 		password:'admin-2'
 	},
 	{
+		id:3,
 		name:'tech',
 		status:true,
 		password:'tech'
 	},
 	{
+		id:4,
 		name:'Sales',
 		status:true,
 		password:'sales'
 	},
 	{
+		id:5,
 		name:'Support',
 		status:true,
 		password:'Support'

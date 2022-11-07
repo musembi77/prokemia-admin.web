@@ -17,10 +17,11 @@ function Product(){
 	const [issampleModalvisible,setissampleModalvisible]=useState(false);
 	
 	return(
-		<Flex className={styles.productbody}>
+		<Flex direction='column'>
 			<Header />
 			<QuotationModal isquotationModalvisible={isquotationModalvisible} setisquotationModalvisible={setisquotationModalvisible}/>
-		<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible}/>
+			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible}/>
+			<Flex className={styles.productbody}>
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1}>
 				<Text fontFamily='ClearSans-Bold' fontSize='32px'>{id.id}</Text>
 				<Flex>
@@ -68,6 +69,7 @@ function Product(){
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1'>Edit Product</Button>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1'>List as short Expiry</Button>
 				<Button bg='#eee' color='red' borderRadius='0' border='1px solid red' p='1'>Delete Product</Button>
+			</Flex>
 			</Flex>
 		</Flex>
 	)

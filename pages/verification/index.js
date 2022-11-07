@@ -67,6 +67,7 @@ const Distributor=({router})=>{
 			<Flex p='2' direction='column'>
 				<Text>Name</Text>
 				<Text>Industry</Text>
+				<Text>Technology</Text>
 				<Button onClick={(()=>{router.push('/verification/distributor/1')})} bg='#009393' color='#fff'>View</Button>
 			</Flex>
 		</Flex>

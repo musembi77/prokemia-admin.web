@@ -34,7 +34,7 @@
   flex-direction: row;
 }
 .productsection2{
-  width: 60vw
+  width: 65vw
 }
 .contactbody{
   flex-direction: row
@@ -54,7 +54,46 @@
 .Hub{
   width: 60vw;
   height: 100vh;
-  background-color: #009393;
+  background-color: #090F14;
+}
+.SigninBody{
+background: #2193b0;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #6dd5ed, #2193b0);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+.authSection{
+  display: flex;
+  padding: auto;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.authForm{
+  background-color: #fff;
+  position: absolute;
+  top: 25vh;
+  right: 10%;
+  height: ;
+  width: 500px;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow:
+    0px 0px 1.2px rgba(0, 0, 0, 0.051),
+    0px 0px 2.7px rgba(0, 0, 0, 0.074),
+    0px 0px 4.6px rgba(0, 0, 0, 0.092),
+    0px 0px 6.9px rgba(0, 0, 0, 0.106),
+    0px 0px 10px rgba(0, 0, 0, 0.12),
+    0px 0px 14.2px rgba(0, 0, 0, 0.134),
+    0px 0px 20.1px rgba(0, 0, 0, 0.148),
+    0px 0px 29.2px rgba(0, 0, 0, 0.166),
+    0px 0px 45px rgba(0, 0, 0, 0.189),
+    0px 0px 80px rgba(0, 0, 0, 0.24)
+  ;
+}
+.HeaderNav::-webkit-scrollbar{
+      display: none; 
 }
 @media screen and (max-width: 48em) {
     .authbody{
@@ -101,4 +140,12 @@
   left: 0px;
   z-index: 1
 }
+.authSection{
+  display: none;
+}
+.authForm{
+  right: 20px;
+  width: 90vw;
+}
+
   }

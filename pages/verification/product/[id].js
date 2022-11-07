@@ -7,13 +7,18 @@ import styles from '../../../styles/Home.module.css';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DescriptionIcon from '@mui/icons-material/Description';
 import Header from '../../../components/Header';
+import SuspendProductModal from '../../../components/modals/suspendProduct.js';
+
 function Product(){
 	const router = useRouter();
 	const id = router.query;
-	
+	const [issuspendproductModalvisible,setissuspendproductModalvisible]=useState(false);
+
 	return(
-		<Flex className={styles.productbody}>
-			<Header />
+		<Flex direction='column'>
+		<SuspendProductModal issuspendproductModalvisible={issuspendproductModalvisible} setissuspendproductModalvisible={setissuspendproductModalvisible}/>
+		<Header />
+		<Flex className={styles.productbody} >
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1}>
 				<Text fontFamily='ClearSans-Bold' fontSize='32px'>{id.id}</Text>
 				<Flex>
@@ -57,7 +62,8 @@ function Product(){
 			<Flex p='2' gap='2' className={styles.productsection2} direction='column'>
 				<Button color='#fff' borderRadius='0' bg='#009393'>Approve Product</Button>
 				<Button bg='#fff' borderRadius='0' border='1px solid #000' p='1'>Send Note to Lister</Button>
-				<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1'>Decine Product</Button>
+				<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Product</Button>
+			</Flex>
 			</Flex>
 		</Flex>
 	)
