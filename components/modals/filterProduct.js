@@ -72,12 +72,11 @@ function FilterProduct({isfilterproductModalvisible,setisfilterproductModalvisib
 					<Input type='text' placeholder='Brand' variant='filled'/>
 				</Flex>
 				<Flex direction='column'>
-					<Text>expiry date</Text>
+					<Text>Select best before date for products</Text>
 					<Input type='date' placeholder='expiry date' variant='filled'/>
 				</Flex>
 				<Flex direction='column'>
-					<Text>Short on Expiry</Text>
-					<Checkbox defaultChecked bg='#eee' p='2'>Short on Expiry</Checkbox>
+					<Checkbox defaultChecked bg='#eee' p='2'>View Short on Expiry Products </Checkbox>
 				</Flex>
                 <Button bg='#009393' borderRadius='0' color='#fff'>Filter Results</Button>
 			</Stack>

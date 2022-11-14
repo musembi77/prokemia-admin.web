@@ -26,7 +26,10 @@ function Dashboard(){
 					<Text bg='#fff' p='2'>30</Text>
 				</Flex>
 				<Flex gap='2' direction='column' w='40%'>
+					<Flex justify='space-between'>
 					<Text fontWeight='bold' fontSize='20px'>Manufacturers</Text>
+					<Text bg='#fff' >30</Text>
+					</Flex>
 					<Flex direction='column' gap='2'>
 						<Text bg='#eee' p='2' borderRadius='2'>Dupoint </Text>
 						<Text bg='#eee' p='2' borderRadius='2'>Sahol Inc.co</Text>

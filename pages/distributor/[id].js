@@ -13,9 +13,14 @@ function Distributor(){
 			<Flex p='1' direction='column' gap='2'>
 				<Flex direction='column' bg='#eee' p='2'>
 						<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
-						<Text>Email</Text>
-						<Text>Mobile</Text>
-						<Text>Address</Text>
+						<Text>Email:</Text>
+						<Text>Mobile:</Text>
+						<Text>Address:</Text>
+				</Flex>
+				<Flex direction='column' gap='2' bg='#eee' p='2'>
+						<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+						<Text>Key contact: alex@distributor.com</Text>
+						<Text>Position: Manager</Text>
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold'>Description</Text>
@@ -53,11 +58,32 @@ export default Distributor;
 
 const Industry=({item})=>{
 	return(
-		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' bg='#000'>
-			<Image borderRadius='10px' objectFit='cover' src='' alt='next'/>
-			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item}</Text>
+		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' >
+			<Image borderRadius='10px' objectFit='cover' src={item.img} alt='next'/>
+			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item.name}</Text>
 		</Flex>
 	)
 }
 
-const industries=['Personal Care','H&I','Industrial','Cleaning ingredients']
+const industries=[
+	{
+				id:'1',
+				name:"Adhesives",
+				img:"../images.jpeg",
+			},
+			{
+				id:'2',
+				name:"Agriculture",
+				img:"../download.jpeg",
+			},
+			{
+				id:'3',
+				name:"Food and Nutrition",
+				img:"../download (1).jpeg",
+			},
+			{
+				id:'4',
+				name:"Pharmaceuticals",
+				img:"../images (1).jpeg",
+			},
+]

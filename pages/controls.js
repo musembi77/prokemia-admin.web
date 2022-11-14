@@ -16,7 +16,7 @@ function Control(){
 			<AddnewCareer isaddcareerModalvisible={isaddcareerModalvisible} setisaddcareerModalvisible={setisaddcareerModalvisible}/>
 			<Header />
 			<Flex direction='column' gap='2' p='2'>
-				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Careers</Text>
+				<Text borderBottom='1px solid #009393' fontSize='32px' fontWeight='bold'>Vacancies</Text>
 				<Flex borderRadius='5' bg='#eee' p='2' gap='1' direction='column'>
 					<Text fontSize='18px' fontWeight='bold'>SalesMan Needed at Haco Ltd</Text>
 					<Text>3yrs experience</Text>

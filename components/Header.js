@@ -1,6 +1,6 @@
 import React,{useState} from 'react'
 import {Flex, Text,Button,Stack,Divider} from '@chakra-ui/react'
-import {Menu,Close,Add,HorizontalRule,ArrowForward,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
+import {Menu,Receipt,Close,Add,HorizontalRule,ArrowForward,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
 import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 
@@ -47,6 +47,12 @@ const navigation=[
 		title:'Inventory',
 		link:'inventory',
 		logo:<Inventory/>
+	},
+	{
+		id:3,
+		title:'Orders',
+		link:'orders',
+		logo:<Receipt/>
 	},
 	{
 		id:4,
@@ -96,10 +102,10 @@ const MenuBar=()=>{
 	const [currentValue,setcurrentValue]=useState('');
 	const router = useRouter()
 	return(
-		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='60vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
+		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='70vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
 			{navigation.map((item)=>{
 				return(
-					<Flex color='#fff' key={item.id} align='center' borderBottom='1px solid #fff'>
+					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5'>
 						{item.logo}
 						<Text  p='2' fontSize='20px'  mb='0' onClick={(()=>{router.push(`/${item.link}`)})} >{item.title}</Text>
 					</Flex>
