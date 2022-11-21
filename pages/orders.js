@@ -7,6 +7,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TuneIcon from '@mui/icons-material/Tune';
 import FilterProductModal from '../components/modals/filterProduct.js';
 import OrderItemModal from '../components/modals/OrderItemModal.js';
+import {useRouter} from 'next/router';
 
 function Orders(){
 	const [isfilterproductModalvisible,setisfilterproductModalvisible]=useState(false);
@@ -22,14 +23,21 @@ function Orders(){
 					<option>A - Z</option>
 					<option>Z - A</option>
 					<option>by Date</option>
+					<option>Pending</option>
+					<option>Disursed</option>
+					<option>Completed</option>
 				</Select>
 				<Flex gap='2' p='2' flex='1'>
-					<Input placeholder='search Orders' bg='#fff' />
+					<Input placeholder='search Orders by status, Id' bg='#fff' />
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
 			</Flex>
 			
-			<Flex wrap='Wrap' direction='column'>
+			<Flex wrap='flex' direction='column' p='2' gap='2' mb='2' overflowY='scroll' h='80vh'>
+				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
+				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
+				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
+				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
 				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
 				<OrderItem setisvieworderModalvisible={setisvieworderModalvisible}/>
 			</Flex>
@@ -40,25 +48,17 @@ function Orders(){
 export default Orders;
 
 const OrderItem=({setisvieworderModalvisible})=>{
+	const router = useRouter();
 	return(
-		<Flex bg='#eee' borderRadius='5px' direction='column' m='2' p='2' gap='1'>		
-			<Flex gap='2'>
-				<Text>Issuer: </Text>
-				<Text>Sammy</Text>
-			</Flex>
-			<Flex gap='2'>
-				<Text>Client: </Text>
-				<Text>Unilever</Text>
-			</Flex>
-			<Flex gap='2'>
-				<Text>Volume: </Text>
-				<Text>2000</Text>
-			</Flex>
-			<Flex gap='2'>
-				<Text>Price/Item: </Text>
-				<Text>100</Text>
-			</Flex>
-			<Button bg='#000' color='#fff' onClick={(()=>{setisvieworderModalvisible(true)})}>View</Button>
+		<Flex _hover={{transform:"scale(1.01)",transition:'ease-out 1s all',bg:'#009393',color:'#fff'}} boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push('/order/1')})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
+			<Text fontSize='20px' fontWeight='bold'>Order Id: 28739842</Text>
+			<Text>Product Name: Cereal</Text>
+			<Text>Unit Price: 200</Text>
+			<Text>Volume: 1000</Text>
+			<Text>Total: 200,000</Text>	
+			<Text>Email of Client: joan@jussup.com</Text>	
+			<Text>date: 21-11-2022</Text>	
+			<Text>Order Status: <span style={{color:'orange'}}>Pending</span></Text>	
 		</Flex>
 	)
 }

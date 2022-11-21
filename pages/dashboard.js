@@ -48,6 +48,10 @@ function Dashboard(){
 						<NotificationsIcon />
 					</Flex>
 					<Flex align='center' bg='#fff' p='2' justify='space-between'>
+						<Text>Orders</Text>
+						<NotificationsIcon />
+					</Flex>
+					<Flex align='center' bg='#fff' p='2' justify='space-between'>
 						<Text>Distributors</Text>
 						<NotificationsIcon />
 					</Flex>
@@ -57,6 +61,10 @@ function Dashboard(){
 					</Flex>
 					<Flex align='center' bg='#fff' p='2' justify='space-between'>
 						<Text>Manufacturers</Text>
+						<NotificationsIcon />
+					</Flex>
+					<Flex align='center' bg='#fff' p='2' justify='space-between'>
+						<Text>Industry/Technology</Text>
 						<NotificationsIcon />
 					</Flex>
 				</Flex>

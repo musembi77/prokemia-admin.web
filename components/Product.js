@@ -1,12 +1,17 @@
 import React from 'react'
 import {Flex,Text,Button,Image} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
+import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
 
-function Product(){
+function Product({sponsored}){
 	const router = useRouter()
 	return(
-		<Flex bg='#eee' borderRadius='5px' direction='column' m='2' w='170px'>
-			<Image bg='#fff' w='100%' h='50px' borderRadius='5px 5px 0px 0px' src='./Pro.png' objectFit='cover' border='1px solid #eee' alpt='photo'/>
+		<Flex boxShadow='lg' bg='#fff' borderRadius='5px' direction='column' m='1' w='250px' position='relative'>
+			{sponsored?
+			<Flex position='absolute' top='1' right='1' p='1' bg='#009393' borderRadius='5' color='#fff'>
+				<DoneAllOutlinedIcon />
+			</Flex>
+			: null}
 			<Flex p='2' direction='column' w='200px' gap='2'>
 				<Text color='#009393' fontWeight='bold' fontSize="24px">Cereal</Text>
 				<Flex>

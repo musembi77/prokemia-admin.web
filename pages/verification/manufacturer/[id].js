@@ -61,9 +61,8 @@ function Manufacturer(){
 					</Flex>
 				</Flex>
 				<Flex p='2' direction='column' gap='2'>
-					<Button bg='#009393' color='#fff'>Contact</Button>
 					<Button bg='#009393' color='#fff'>Approve Manufacturer Account</Button>
-					<Button bg='#fff' border='1px solid #000'>Send Note to Manufacturer</Button>
+					<Button bg='#fff' border='1px solid #000'>Contact Manufacturer by email</Button>
 					<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Account</Button>
 				</Flex>
 				

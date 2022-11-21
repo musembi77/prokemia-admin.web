@@ -9,6 +9,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import Header from '../../components/Header';
 import QuotationModal from '../../components/modals/Quotation.js';
 import SampleModal from '../../components/modals/Sample.js';
+import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
 
 function Product(){
 	const router = useRouter();
@@ -22,7 +23,11 @@ function Product(){
 			<QuotationModal isquotationModalvisible={isquotationModalvisible} setisquotationModalvisible={setisquotationModalvisible}/>
 			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible}/>
 			<Flex className={styles.productbody}>
-			<Flex p='2' direction='column' gap='2' className={styles.productsection1}>
+			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
+				<Flex position='absolute' top='1' right='1' p='1' bg='#009393' borderRadius='5' color='#fff'>
+					<DoneAllOutlinedIcon />
+					<Text>sponsored</Text>
+				</Flex>
 				<Text fontFamily='ClearSans-Bold' fontSize='32px'>{id.id}</Text>
 				<Flex>
 					<Text>Manufactured by:</Text>

@@ -20,6 +20,7 @@ function Manufacturers(){
 				<Select placeholder='sort' w='100px'> 
 					<option>A - Z</option>
 					<option>Z - A</option>
+					<option>Sponsored</option>
 				</Select>
 			</Flex>
 			<Flex gap='2' p='2'>

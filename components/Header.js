@@ -9,7 +9,7 @@ function Header(){
 	const router = useRouter();
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center'>
-			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#00e0c6' fontWeight='bold' >Pro<span style={{color:"#000"}}>Kemia.admin</span></Text>
+			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#000' fontWeight='bold' >Admin</Text>
 			<Flex align='center' gap='2'>
 				<Button onClick={(()=>{router.push('/')})} bg='#009393' color='#fff' >Logout</Button>
 				{showmenubar ? 
@@ -105,9 +105,9 @@ const MenuBar=()=>{
 		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='70vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
 			{navigation.map((item)=>{
 				return(
-					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5'>
+					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/${item.link}`)})}>
 						{item.logo}
-						<Text  p='2' fontSize='20px'  mb='0' onClick={(()=>{router.push(`/${item.link}`)})} >{item.title}</Text>
+						<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
 					</Flex>
 				)
 			})}

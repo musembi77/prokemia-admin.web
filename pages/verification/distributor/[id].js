@@ -45,9 +45,9 @@ function Distributor(){
 						<Text>Mobile</Text>
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
+				
 				<Button bg='#009393' color='#fff'>Approve Distributor Account</Button>
-				<Button bg='#fff' border='1px solid #000'>Send Note to Distributor</Button>
+				<Button bg='#fff' border='1px solid #000'>Contact Distributor by email</Button>
 				<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Distributor Account</Button>
 			</Flex>
 		</Flex>

@@ -13,21 +13,34 @@ function Inventory(){
 		<Flex direction='column'>
 			<FilterProductModal isfilterproductModalvisible={isfilterproductModalvisible} setisfilterproductModalvisible={setisfilterproductModalvisible}/>
 			<Header/>
-			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Inventory</Text>
-			<Flex gap='2' p='2' align='center'>
-				<Button bg='#eee' p='4' onClick={(()=>{setisfilterproductModalvisible(true)})}>Filter<TuneIcon/></Button>
-				<Select placeholder='sort' w='100px'> 
-					<option>A - Z</option>
-					<option>Z - A</option>
-				</Select>
-			</Flex>
-			<Flex gap='2' p='2'>
-				<Input placeholder='search products' bg='#fff' flex='1'/>
-				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
-			</Flex>
-			<Flex wrap='flex'>
-				<Product/>
-				<Product/>
+			<Flex p='2' direction='column'>
+				<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Inventory</Text>
+				<Flex gap='2' p='2' align='center'>
+					<Button bg='#eee' p='4' onClick={(()=>{setisfilterproductModalvisible(true)})}>Filter<TuneIcon/></Button>
+					<Select placeholder='sort' w='100px'> 
+						<option>A - Z</option>
+						<option>Z - A</option>
+						<option>Featured Products</option>
+					</Select>
+				</Flex>
+				<Flex gap='2' p='2'>
+					<Input placeholder='search products' bg='#fff' flex='1'/>
+					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
+				</Flex>
+				<Flex wrap='wrap' h='90vh' overflowY='scroll'>
+					<Product sponsored={true}/>
+					<Product sponsored={false}/>
+					<Product sponsored={true}/>
+					<Product sponsored={false}/>
+					<Product sponsored={true}/>
+					<Product sponsored={false}/>
+					<Product sponsored={true}/>
+					<Product sponsored={true}/>
+					<Product sponsored={false}/>
+					<Product sponsored={false}/>
+					<Product sponsored={true}/>
+					<Product sponsored={false}/>
+				</Flex>
 			</Flex>
 		</Flex>
 	)

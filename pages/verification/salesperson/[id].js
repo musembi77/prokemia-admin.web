@@ -39,9 +39,7 @@ function Salesperson(){
 						})}
 					</Flex>
 				</Flex>
-				<Button bg='#009393' color='#fff'>Contact</Button>
 				<Button bg='#009393' color='#fff' >Approve Salesperson Account</Button>
-				<Button bg='#fff' border='1px solid #000'>Send Note to Salesperson</Button>
 				<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Salesperson Account</Button>
 			</Flex>
 		</Flex>

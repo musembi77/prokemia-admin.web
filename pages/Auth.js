@@ -15,15 +15,10 @@ export default function ClientSignUp(){
 
   	const handleSignIn=()=>{
   		if(password === 'admin' && username === 'admin')
-  			route = 'dashboard';
-  		if(password === 'sales' && username === 'sales')
-  			route = 'salesperson/1';
-  		if(password === 'distributor' && username === 'distributor')
-  			route =  'distributor/1';
-  		if(password === 'manufacturer' && username === 'manufacturer')
-  			route = 'manufacturer/1';
-
-  		router.push(`/${route}`)
+  			router.push(`/dashboard`)
+  		else{
+  			alert('wrong credentials,contact administrator')
+  		}
   	}
 	return(
 		<Flex h='100vh' className={styles.SigninBody}>
