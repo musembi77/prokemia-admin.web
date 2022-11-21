@@ -32,4 +32,4 @@ function Product({sponsored}){
 	)
 }
 
-export default Product
+export default Product;
