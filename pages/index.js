@@ -11,7 +11,6 @@ export default function Home() {
         <link rel="icon" href="/Pro.png" />
       </Head>
       <Auth />
-
     </div>
   )
 }

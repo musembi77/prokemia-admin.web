@@ -1,12 +1,21 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import {Flex,Text,Button,Input} from '@chakra-ui/react';
 import Header from '../components/Header.js';
 import AddNewAdmin from '../components/modals/AddNewAdmin.js';
 import RemoveAdmin from '../components/modals/RemoveAdmin.js';
+import Get_Admin_Users from './api/auth/get_admin_users.js';
 
 function Settings(){
 	const [isaddnewadminModalvisible,setisaddnewadminModalvisible]=useState(false);
 	const [isremoveModalvisible,setisremoveModalvisible]=useState(false);
+	const [users,set_users]=useState([])
+	useEffect(()=>{
+		Get_Admin_Users().then((response)=>{
+			set_users(response.data)
+		}).catch((err)=>{
+			alert("error")
+		})
+	},[])
 	return(
 		<Flex direction='column'>
 			<Header />
@@ -19,8 +28,8 @@ function Settings(){
 					{users.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
-								<Text>{user.name}</Text>
-								<Text color={user.status? 'green' : 'orange'} >{user.status? 'Active' : 'Not Logged'}</Text>
+								<Text>{user.user_name}</Text>
+								<Text color={user.login_status? 'green' : 'orange'} >{user.login_status? 'Active' : 'Not Logged'}</Text>
 							</Flex>
 						)
 					})}

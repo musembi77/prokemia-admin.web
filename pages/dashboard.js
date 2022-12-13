@@ -1,21 +1,36 @@
-import React,{useState}from 'react'
+import React,{useState,useEffect}from 'react'
 import {Flex,Text,Button} from '@chakra-ui/react'
 import Header from '../components/Header.js';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AddNewProduct from '../components/modals/addNewProduct.js';
 import AddNewManufacturer from '../components/modals/addNewManufacturer.js';
 import {useRouter} from 'next/router';
+import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 
 function Dashboard(){
 	const [isaddnewproductModalvisible,setisaddnewProductModalvisible]=useState(false);
 	const [isaddnewmanufacturerModalvisible,setisaddnewmanufacturerModalvisible]=useState(false);
+
+	const [user_name,set_user_name] = useState("admin")
 	const router = useRouter();
+	const cookies = new Cookies();
+  	let token = cookies.get('admin_token');
+
+  	useEffect(()=>{
+	    if(token){
+	      let decoded = jwt_decode(token);
+	      //console.log(decoded);
+	      set_user_name(decoded.user_name)
+	    }
+	  },[token])
 	return(
 		<Flex direction='column'>
 			<AddNewProduct isaddnewproductModalvisible={isaddnewproductModalvisible} setisaddnewProductModalvisible={setisaddnewProductModalvisible}/>
 			<AddNewManufacturer isaddnewmanufacturerModalvisible={isaddnewmanufacturerModalvisible} setisaddnewmanufacturerModalvisible={setisaddnewmanufacturerModalvisible}/>
 			<Header/>
-			<Text m='2' fontWeight='bold' fontSize='24px'>Welcome,<br/>Admin</Text>
+			<Text ml='2' fontWeight='bold' fontSize='20px'>Welcome</Text>
+			<Text ml='2' fontWeight='bold' fontSize='28px' color='#009393' textTransform={"capitalize"}>{user_name}</Text>
 			<Flex direction='' p='2' gap='2' borderBottom='1px solid #000'>
 				<Flex flex='1' direction='column' bg='#eee' borderRadius='5' p='2' gap='2'>
 					<Text fontWeight='bold' fontSize='20px'>TOTAL REVENUE</Text>

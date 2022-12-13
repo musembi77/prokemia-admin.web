@@ -72,7 +72,7 @@ background: linear-gradient(to left, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Fi
   position: absolute;
   top: 25vh;
   right: 10%;
-  height: ;
+  /*height: ;*/
   width: 500px;
   border-radius: 10px;
   padding: 15px;
@@ -91,6 +91,11 @@ background: linear-gradient(to left, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Fi
 }
 .HeaderNav::-webkit-scrollbar{
       display: none; 
+}
+@media screen and (max-width: 60em) {
+  .authSection{
+    display: none;
+  }
 }
 @media screen and (max-width: 48em) {
     .authbody{
