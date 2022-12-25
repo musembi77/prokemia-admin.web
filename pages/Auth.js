@@ -32,7 +32,7 @@ export default function ClientSignUp(){
 			});
   			//router.push(`/dashboard`)
 		SignIn(payload).then((response)=>{
-			//console.log(response)
+			console.log(response)
 			if (response.status === 200){
 				router.push("/dashboard")
 				return toast({

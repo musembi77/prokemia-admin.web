@@ -18,8 +18,21 @@ import {
     useToast
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
+import Suspend_Client from '../../pages/api/clients/suspend_client_account';
+import Suspend_Distributor from '../../pages/api/distributors/suspend_distributor_account';
+import Suspend_Manufacturer from '../../pages/api/manufacturers/suspend_manufacturer_account';
+import Suspend_Salesperson from '../../pages/api/salespeople/suspend_salesperson_account';
 
-function SuspendAccountModal({issuspendModalvisible,setissuspendModalvisible}){
+function SuspendAccountModal({
+    issuspendModalvisible,
+    setissuspendModalvisible,
+    distributor_data,
+    manufacturer_data,
+    client_data,
+    salesperson_data,
+    acc_type,
+    payload
+  }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     
     //console.log(isaddingreviewgModalvisible);
@@ -34,12 +47,47 @@ function SuspendAccountModal({issuspendModalvisible,setissuspendModalvisible}){
       }
     }
 
+    const [confirm_name,set_confirm_name]=useState('')
+    const [name,set_name]=useState('');
+
     useEffect(()=>{
       HandleModalOpen();
+      if (acc_type === 'client')
+        set_name(client_data?.first_name)
+      if (acc_type === 'distributors')
+        set_name(distributor_data?.first_name)
+      if (acc_type === 'manufacturers')
+        set_name(manufacturer_data?.first_name)
+      if (acc_type === 'salespersons')
+        set_name(salesperson_data?.first_name)
     },[issuspendModalvisible])
 
-    const [body,setBody]=useState('')
+    
 
+    const handle_suspension=async()=>{
+      if (confirm_name === name){  
+        if (acc_type === 'client'){
+          await Suspend_Client(payload).then(()=>{
+            alert("account suspended")
+          })
+        }else if (acc_type === 'distributors'){
+          await Suspend_Distributor(payload).then(()=>{
+            alert("distributor account suspended")
+          })
+        }else if (acc_type === 'manufacturers'){
+          await Suspend_Manufacturer(payload).then(()=>{
+            alert("manufacturer account suspended")
+          })
+        }else if (acc_type === 'salespersons')
+          await Suspend_Salesperson(payload).then(()=>{
+            alert("manufacturer account suspended")
+          })
+      }else{
+        alert("Wrong input")
+        onClose()
+      }
+      onClose()
+    }
     return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
@@ -52,11 +100,11 @@ function SuspendAccountModal({issuspendModalvisible,setissuspendModalvisible}){
 					<ModalBody>
 						<Stack spacing={4}>
 							<Text>By suspending this account, the user will not have access to use the service and the platform.</Text>
-							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>User</span> below, to complete suspension.</Text>
+							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>{name}</span> below, to complete suspension.</Text>
 							<InputGroup>
-								<Input type='text' placeholder='name of account Holder' variant='filled'/>
+								<Input type='text' placeholder='name of account Holder' variant='filled' onChange={((e)=>{set_confirm_name(e.target.value)})}/>
 							</InputGroup>
-							<Button bg='red' borderRadius='0' color='#fff'>Suspend</Button>
+							<Button bg='red' borderRadius='0' color='#fff' onClick={handle_suspension}>Suspend</Button>
 						</Stack>
 					</ModalBody>
 				</ModalContent>

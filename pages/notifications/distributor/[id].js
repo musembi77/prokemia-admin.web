@@ -1,0 +1,187 @@
+import React,{useState,useEffect}from 'react';
+//module imports
+import {Flex,Text,Button,Image} from '@chakra-ui/react';
+import {useRouter} from 'next/router'
+import Person2Icon from '@mui/icons-material/Person2';
+//components imports
+import Header from '../../../components/Header.js'
+import SuspendAccountModal from '../../../components/modals/suspendAccount.js';
+import Product from '../../../components/Product.js';
+//api calls
+import Get_Distributor from '../../api/distributors/get_distributor.js'
+import Approve_Distributor from '../../api/distributors/approve_distributor.js'
+import Get_Products from '../../api/Products/get_products.js'
+
+function Distributor(){
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
+
+	const router = useRouter()
+	const query = router.query
+	const id = query.id
+
+	const [distributor_data,set_distributor_data] = useState('')
+	const [recents,set_recents]=useState(distributor_data?.recents)
+	const [products,set_products]=useState([])
+
+	const payload = {
+		_id : id
+	}
+	const get_data=async(payload)=>{
+		await Get_Distributor(payload).then((response)=>{
+			console.log(response)
+			return set_distributor_data(response.data)
+		})
+	}
+	const get_Data=async()=>{
+		await Get_Products().then((response)=>{
+			const data = response.data
+			console.log(data)
+			const result = data?.filter(item => item.email_of_lister.includes(distributor_data?.email_of_company))
+			set_products(result)
+			console.log(result)
+		})
+	}
+		
+	useEffect(()=>{
+		if (!payload || payload._id === 'undefined'){
+			alert("missing info could not fetch data")
+			router.back()
+		}else{
+			get_data(payload)
+			get_Data()
+		}
+	},[id])
+
+	const handle_approve_distributor=async()=>{
+		await Approve_Distributor(payload).then(()=>{
+			alert('success')
+			router.back()
+		})
+	}
+	return(
+		<Flex direction='column' gap='2'>
+			<Header />
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
+			<Flex direction='column' p='2'>
+				<Flex gap='1'>
+					<Text fontWeight='bold' fontSize='24px' textTransform='capitalize' >{distributor_data?.first_name} {distributor_data?.last_name}</Text>
+					{distributor_data?.suspension_status? 
+						<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
+						: 
+						null
+					}
+				</Flex>
+				<Flex p='1' direction='column' gap='2'>
+				<Flex direction='column' bg='#eee' p='2'>
+						<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
+						<Text>Name of company: {distributor_data?.company_name}</Text>
+						<Text>Email: {distributor_data?.email_of_company}</Text>
+						<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
+						<Text>Address: {distributor_data?.address_of_company}</Text>
+				</Flex>
+					<Flex direction='column' gap='2' bg='#eee' p='2'>
+							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+							<Text>Key contact: {distributor_data?.key_contact}</Text>
+							<Text>Position: Manager</Text>
+					</Flex>
+					<Flex direction='column'>
+						<Text fontWeight='bold'>Description</Text>
+						<Text>{distributor_data?.description}</Text>
+					</Flex>
+					<Flex direction='column' gap='2'>
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Distributor</Text>
+						{distributor_data?.industries?.length === 0 ?
+							<Flex justify='center' align='center' h='15vh'>
+								<Text>The User has not seletected an industry to specialize in yet</Text>
+							</Flex>
+							:
+							<Flex wrap='Wrap'> 
+							{distributor_data?.industries?.map((item)=>{
+								return(
+									<Industry key={item._id} item={item}/>
+								)
+							})}
+						</Flex>
+						}
+					</Flex>
+					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products</Text>
+					
+					{products?.length === 0?
+						<Flex align='center' justify='center' bg='#eee' h='10vh' p='3'>
+							<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
+						</Flex>
+						:
+						<Flex wrap='Wrap' gap='2'>
+							{products?.map((item)=>{
+								return(
+									<Product item={item}/>
+								)
+							})}
+						</Flex>
+					}
+					<Flex direction='column' gap='2' p='2'>
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
+						{distributor_data?.experts?.length === 0 ?
+							<Flex justify='center' align='center' h='15vh'>
+								<Text>The User has not added experts to this profile.</Text>
+							</Flex>
+							:
+							<Flex wrap='Wrap' gap='2'> 
+							{distributor_data?.experts?.map((item)=>{
+								return(
+									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+										<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
+										<Flex direction='column'>
+											<Text fontWeight='bold'>Email: {item.email}</Text>
+											<Text>Mobile: {item.mobile}</Text>
+											<Text>Role: {item.role}</Text>
+										</Flex>
+									</Flex>
+								)
+							})}
+						</Flex>
+						}
+					</Flex>
+					<Flex p='2' gap='2' direction='column'>
+						<Button color='#fff' borderRadius='0' bg='#009393' onClick={handle_approve_distributor}>Approve Distributor</Button>
+						<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Distributor</Button>
+					</Flex>
+				</Flex>
+			</Flex>
+		</Flex>
+	)
+}
+
+export default Distributor;
+
+const Industry=({item})=>{
+	return(
+		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' >
+			<Image borderRadius='10px' objectFit='cover' src={item.img} alt='next'/>
+			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item.name}</Text>
+		</Flex>
+	)
+}
+
+const industries=[
+	{
+				id:'1',
+				name:"Adhesives",
+				img:"../images.jpeg",
+			},
+			{
+				id:'2',
+				name:"Agriculture",
+				img:"../download.jpeg",
+			},
+			{
+				id:'3',
+				name:"Food and Nutrition",
+				img:"../download (1).jpeg",
+			},
+			{
+				id:'4',
+				name:"Pharmaceuticals",
+				img:"../images (1).jpeg",
+			},
+]

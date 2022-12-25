@@ -31,7 +31,7 @@
       width: 50%;
     }
 .productbody{
-  flex-direction: row;
+  flex-direction: column;
 }
 .contactbody{
   flex-direction: row

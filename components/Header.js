@@ -15,12 +15,16 @@ function Header(){
 	    if (!token)
 	    	router.push("/")
 	},[token])
-
+	const handle_LogOut=()=>{
+		cookies.remove('admin_token', { path: '/' });
+		// router.reload()
+		router.push('/')
+	}
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center'>
 			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#000' fontWeight='bold' >Admin</Text>
 			<Flex align='center' gap='2'>
-				<Button onClick={(()=>{router.push('/')})} bg='#009393' color='#fff' >Logout</Button>
+				<Button w='100%' bg='#000' color='#fff' onClick={handle_LogOut}>Log-out</Button>
 				{showmenubar ? 
 					<Close onClick={(()=>{setshowmenubar(!showmenubar)})}/>
 						:
@@ -47,8 +51,8 @@ const navigation=[
 	},
 	{
 		id:2,
-		title:'Verification',
-		link:'verification',
+		title:'Notifications',
+		link:'notifications',
 		logo:<FactCheck/>
 	},
 	{
@@ -58,49 +62,49 @@ const navigation=[
 		logo:<Inventory/>
 	},
 	{
-		id:3,
+		id:4,
 		title:'Orders',
 		link:'orders',
 		logo:<Receipt/>
 	},
 	{
-		id:4,
+		id:5,
 		title:'The Hub',
 		link:'hub',
 		logo:<Chat/>
 	},
 	{
-		id:5,
+		id:6,
 		title:'Distributors',
 		link:'distributors',
 		logo:<Groups/>
 	},
 	{
-		id:6,
+		id:7,
 		title:'Salespersons',
 		link:'salespersons',
 		logo:<Groups/>
 	},
 	{
-		id:7,
+		id:8,
 		title:'Manufacturers',
 		link:'manufacturers',
 		logo:<Groups/>
 	},
 	{
-		id:8,
+		id:9,
 		title:'Customers',
 		link:'customers',
 		logo:<Groups/>
 	},
 	{
-		id:9,
+		id:10,
 		title:'Control',
 		link:'controls',
 		logo:<Tune/>
 	},
 	{
-		id:10,
+		id:11,
 		title:'Settings',
 		link:'settings',
 		logo:<Settings/>
