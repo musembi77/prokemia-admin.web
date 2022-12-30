@@ -45,7 +45,7 @@ function Customer(){
 		}else{
 			get_data(payload)
 		}
-	},[])
+	},[payload])
 	return(
 		<Flex direction='column' gap='2'>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} client_data={client_data} acc_type={"client"} payload={payload}/>
@@ -72,7 +72,7 @@ function Customer(){
 					<Flex>
 						{recents?.map((recent)=>{
 							return(
-								<Flex bg='#eee' p='2' borderRadius='5' direction='column'>
+								<Flex key={recent.id} bg='#eee' p='2' borderRadius='5' direction='column'>
 									<Text>{recent.Name}</Text>
 									<Text>{recent.Item}</Text>
 								</Flex>

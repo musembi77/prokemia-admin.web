@@ -55,7 +55,7 @@ function Orders(){
 			<Flex wrap='flex' direction='column' p='2' gap='2' mb='2' overflowY='scroll' h='80vh'>
 				{orders_data.map((order)=>{
 					return(
-						<OrderItem setisvieworderModalvisible={setisvieworderModalvisible} order={order}/>
+						<OrderItem key={order._id} setisvieworderModalvisible={setisvieworderModalvisible} order={order}/>
 					)
 				})}
 			</Flex>

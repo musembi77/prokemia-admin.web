@@ -76,7 +76,7 @@ export default SalesPersons;
 const SalesPerson=({salesperson_data})=>{
 	const router = useRouter()
 	return(
-		<Flex cursor='pointer' onClick={(()=>{router.push(`/salesperson/${salesperson_data._id}`)})} bg='#fff' p='2' borderRadius='5' boxShadow='lg' w='	' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}}>
+		<Flex cursor='pointer' onClick={(()=>{router.push(`/salesperson/${salesperson_data._id}`)})} bg='#fff' p='2' borderRadius='5' boxShadow='lg' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}}>
 			<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 			<Flex direction='column'>
 				<Text fontWeight='bold'>Name: {salesperson_data.first_name} {salesperson_data.last_name}</Text>

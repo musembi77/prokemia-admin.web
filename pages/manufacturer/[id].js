@@ -136,7 +136,7 @@ function Manufacturer(){
 					<Flex direction='column' p='1'>
 						{products?.map((item)=>{
 							return(
-								<Product item={item}/>
+								<Product key={item._id} item={item}/>
 							)
 						})}
 					</Flex>

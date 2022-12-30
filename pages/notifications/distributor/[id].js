@@ -114,7 +114,7 @@ function Distributor(){
 						<Flex wrap='Wrap' gap='2'>
 							{products?.map((item)=>{
 								return(
-									<Product item={item}/>
+									<Product key={item._id} item={item}/>
 								)
 							})}
 						</Flex>
