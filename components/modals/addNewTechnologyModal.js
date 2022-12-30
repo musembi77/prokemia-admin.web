@@ -46,17 +46,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
     }
 
     const handle_add_new_technology=()=>{
-    
-    console.log(payload)
-      if (!title || !image )
-        toast({
-          title: '',
-          description: 'All inputs are required',
-          status: 'info',
-          isClosable: true,
-        });
-      else{
-        Add_Technology(payload).then((response)=>{
+    Add_Technology(payload).then((response)=>{
             if (response.status === 200){
             return toast({
               title: '',
@@ -74,7 +64,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
             })
           }
         })
-      }
+      onClose()
     }
 
     return (

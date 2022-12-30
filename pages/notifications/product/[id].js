@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Text,Button} from '@chakra-ui/react'
+import {Flex,Text,Button,Link} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -44,6 +44,7 @@ function Product(){
 			router.back()
 		})
 	}
+	let manufactured_date = new Date(product_data.manufactured_date).toLocaleDateString()
 	return(
 		<Flex direction='column'>
 		<SuspendProductModal issuspendproductModalvisible={issuspendproductModalvisible} setissuspendproductModalvisible={setissuspendproductModalvisible}/>
@@ -60,22 +61,41 @@ function Product(){
 					<Text color='grey'>{product_data?.manufactured_date}</Text>
 				</Flex>
 				<Flex>
-					<Text>Expiry by:</Text>
-					<Text color='grey'>{product_data?.manufactured_date}</Text>
+					<Text>Expired by:</Text>
+					<Text color='grey'>{manufactured_date}</Text>
 				</Flex>
 				<Flex>
 					<Text>Distributed by:</Text>
 					<Text color='grey'>{product_data?.distributed_by}</Text>
 				</Flex>
-				<Flex direction='column'>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
 					<Text color='#000' fontWeight='bold'>Description</Text>
-					<Text>{product_data?.description}</Text>
-					<Text mt='4'>{product_data?.chemical_name}</Text>
+					<Text>{product_data?.description_of_product}</Text>
 				</Flex>
-				<Flex direction='column' gap='2' mt='2'>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Product Data Sheet</Button>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Safety Data Sheet</Button>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Formulation Document</Button>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
+					<Text fontWeight='bold'>Brand</Text>
+					<Text>{product_data?.brand}</Text>
+				</Flex>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
+					<Text fontWeight='bold'>Chemical_name</Text>
+					<Text>{product_data?.chemical_name}</Text>
+				</Flex>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
+					<Text fontWeight='bold'>Function</Text>
+					<Text>{product_data?.function}</Text>
+				</Flex>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
+					<Text fontWeight='bold'>Industry</Text>
+					<Text>{product_data?.industry}</Text>
+				</Flex>
+				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
+					<Text fontWeight='bold'>Technology</Text>
+					<Text>{product_data?.technology}</Text>
+				</Flex>
+								<Flex direction='column' gap='2' mt='2'>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Product Data Sheet</Link>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Safety Data Sheet</Link>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Formulation Document</Link>
 				</Flex>
 				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
 					<Text fontWeight='bold'>Features & Benefits</Text>
@@ -93,10 +113,11 @@ function Product(){
 					<Text fontWeight='bold'>Storage & Handling</Text>
 					<Text>{product_data?.storage_of_product}</Text>
 				</Flex>
+				<Link href={product_data?.website_link_to_Seller} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Website link</Link>
 			</Flex>
 			<Flex p='2' gap='2' className={styles.productsection2} direction='column'>
 				<Button color='#fff' borderRadius='0' bg='#009393' onClick={handle_approve_product}>Approve Product</Button>
-				<Button bg='#fff' borderRadius='0' border='1px solid #000' p='1'>Send Note to Lister</Button>
+				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1' onClick={(()=>{router.push(`/product/edit_config/${payload._id}`)})}>Edit Product</Button>
 				<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Product</Button>
 			</Flex>
 			</Flex>

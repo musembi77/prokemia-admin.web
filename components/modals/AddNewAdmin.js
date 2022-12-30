@@ -65,6 +65,7 @@ function AddNewAdmin({isaddnewadminModalvisible,setisaddnewadminModalvisible}){
 
       Add_Admin(payload).then((response)=>{
         if (response.status === 200){
+          onClose()
           return toast({
                     title: '',
                     description: 'Successfully created a new admin user',
@@ -73,6 +74,7 @@ function AddNewAdmin({isaddnewadminModalvisible,setisaddnewadminModalvisible}){
                   });
         }
         else{
+          onClose()
           return toast({
                           title: 'Error while creating admin account',
                           description: response.data,

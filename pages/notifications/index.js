@@ -11,6 +11,7 @@ import Get_Industries from '../api/controls/get_industries'
 import Approve_Industry from '../api/controls/approve_industry'
 import Get_Technologies from '../api/controls/get_technologies'
 import Approve_Technology from '../api/controls/approve_technology'
+import Get_Requests from '../api/manufacturers/get_requests'
 
 function Index(){
 	const router=useRouter();
@@ -22,6 +23,7 @@ function Index(){
 	const [salespeople_data, set_salespeople_data]=useState([]);
 	const [industries_data, set_industries_data]=useState([]);
 	const [technologies_data, set_technologies_data]=useState([]);
+	const [requests_data, set_requests_data]=useState([]);
 
 	const get_Products_Data=async()=>{
 		await Get_Products().then((response)=>{
@@ -36,8 +38,8 @@ function Index(){
 		await Get_Orders().then((response)=>{
 			let data = response.data
 			console.log(data)
-			// const result = data.filter((item)=> item.order_status?.includes(sort_value))
-			set_orders(data)
+			const result = data.filter((item)=> !item.order_notification_status)
+			set_orders(result)
 		})
 	}
 	const get_Distributors_Data=async()=>{
@@ -85,6 +87,15 @@ function Index(){
 			set_technologies_data(result)
 		})
 	}
+	const get_Request_Data=async()=>{
+		await Get_Requests().then((response)=>{
+			console.log(response.data)
+			const data = response.data
+			// const result = data.filter(v => !v.verification_status)
+			// console.log(data.filter(v => !v.verification_status))
+			set_requests_data(data)
+		})
+	}
 	useEffect(()=>{
 		get_Products_Data()
 		get_Orders_Data()
@@ -93,6 +104,7 @@ function Index(){
 		get_SalesPeople_Data()
 		get_Industries_Data()
 		get_Technology_Data()
+		get_Request_Data()
 	},[])
 
 	return(
@@ -121,7 +133,7 @@ function Index(){
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Orders</Text>
 					{orders_data.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
-							<Text>You dont have any orders made to view.</Text>
+							<Text>You dont have any orders to view.</Text>
 						</Flex>
 					:
 						<Flex wrap='Wrap' h='50vh' overflowY='scroll'>
@@ -183,8 +195,19 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Requests</Text>
-					<Requests/>
-					<Requests/>
+					{requests_data.length === 0?
+						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
+							<Text>You dont have new requests to verify.</Text>
+						</Flex>
+					:
+						<Flex wrap='Wrap' h='50vh' overflowY='scroll' direction='column'>
+							{requests_data?.map((item)=>{
+								return(
+									<Requests item={item} key={item._id}/>
+								)
+							})}
+						</Flex>
+					}
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Suggestions</Text>
@@ -226,9 +249,9 @@ const Product=({item})=>{
 	const router = useRouter()
 	return(
 		<Flex direction='column' m='2' w='250px' gap='2' bg='#eee' borderRadius='5' boxShadow='lg' h='150px' p='2'>
-			<Text fontWeight='bold'>{item?.name_of_product}</Text>
+			<Text fontWeight='bold' fontSize='24px'>{item?.name_of_product}</Text>
 			<Text>{item?.industry}</Text>
-			<Text>{item?.function}</Text>
+			<Text>{item?.technology}</Text>
 			<Button onClick={(()=>{router.push(`/notifications/product/${item._id}`)})} bg='#009393' color='#fff'>View Product</Button>
 		</Flex>
 	)
@@ -290,14 +313,18 @@ const Orders=({item})=>{
 	)
 }
 
-const Requests=()=>{
+const Requests=({item})=>{
 	return(
 		<Flex direction='column' bg='#eee' boxShadow='lg' borderRadius='5' m='2' p='2'>
-			<Text>Requested by: </Text>
-			<Text>Industry: </Text>
-			<Text>Technology: </Text>
-			<Text>Region: East Africa</Text>
-			<Button bg='#000' color='#fff'>contact</Button> 
+			<Text>Requested by: {item.name_of_requester}</Text>
+			<Text>Industry: {item.industry}</Text>
+			<Text>Technology: {item.technology}</Text>
+			<Text>Region: {item.region}</Text>
+			<Text>description: {item.description}</Text>
+			<Flex gap='2'>
+				<Button bg='#000' color='#fff' flex='1'>contact</Button>
+				<Button bg='#009393' color='#fff' flex='1'>Complete</Button>
+			</Flex>
 		</Flex>
 	)
 }

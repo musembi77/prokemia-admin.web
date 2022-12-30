@@ -16,18 +16,23 @@ function Orders(){
 	
 	const [orders_data,set_orders]=useState([]);
 	const [sort_value,set_sort_value]=useState('')
+	const [search_query,set_search_query] = useState('');
 
 	useEffect(()=>{
-		get_Data()
-	},[sort_value])
-
-	const get_Data=async()=>{
-		await Get_Orders().then((response)=>{
-			let data = response.data
-			const result = data.filter((item)=> item.order_status?.includes(sort_value))
-			set_orders(result)
+		console.log(search_query)
+		Get_Orders().then((response)=>{
+			console.log(response.data)
+			const data = response.data
+			const result_data = data?.filter((item) => 	item?.order_status.includes(search_query) ||
+														item?.name_of_client.toLowerCase().includes(search_query) ||
+														item?.name_of_product.toLowerCase().includes(search_query) ||
+														item?.name_of_client.toLowerCase().includes(search_query) || 
+														item?._id.includes(search_query))
+			console.log(result_data)
+			set_orders(result_data)
 		})
-	}
+	},[search_query,sort_value])
+
 	return(
 		<Flex direction='column'>
 			<FilterProductModal isfilterproductModalvisible={isfilterproductModalvisible} setisfilterproductModalvisible={setisfilterproductModalvisible}/>
@@ -35,7 +40,7 @@ function Orders(){
 			<Header/>
 			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Orders</Text>
 			<Flex gap='2' p='2' align='center'>
-				<Select w='150px' placeholder='sort' onChange={((e)=>{set_sort_value(e.target.value)})}>
+				<Select w='150px' placeholder='sort' onChange={((e)=>{set_search_query(e.target.value)})}>
 					<option value=''>All </option>
 					<option value='pending'>Pending </option>
 					<option value='disbursed'>Disbursed</option>
@@ -43,7 +48,7 @@ function Orders(){
 					<option value='rejected'>Rejected</option>
 				</Select>
 				<Flex gap='2' p='2' flex='1'>
-					<Input placeholder='search Orders by status, Id' bg='#fff' />
+					<Input placeholder='search Orders' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
 			</Flex>
@@ -71,7 +76,10 @@ const OrderItem=({setisvieworderModalvisible,order})=>{
 			<Text>Total: {order.total}</Text>	
 			<Text>Email of Client: {order.email_of_client}</Text>	
 			<Text>date: {order.createdAt}</Text>	
-			<Text>Order Status: <span style={{color:'orange'}} >{order.order_status}</span></Text>	
+			<Flex gap='1'>
+				<Text>Order Status:</Text>
+				<Text color={order.order_status === 'completed'? 'green' : 'orange'}>{order.order_status}</Text>
+			</Flex>
 		</Flex>
 	)
 }

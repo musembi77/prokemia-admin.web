@@ -16,6 +16,7 @@ function Settings(){
 			alert("error")
 		})
 	},[])
+	console.log(users)
 	return(
 		<Flex direction='column'>
 			<Header />
@@ -28,7 +29,10 @@ function Settings(){
 					{users.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
-								<Text>{user.user_name}</Text>
+								<Flex direction='column'>
+									<Text>{user.user_name}</Text>
+									<Text>Role:{user.role}</Text>
+								</Flex>
 								<Text color={user.login_status? 'green' : 'orange'} >{user.login_status? 'Active' : 'Not Logged'}</Text>
 							</Flex>
 						)
@@ -40,8 +44,8 @@ function Settings(){
 					{users.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
-								<Text fontWeight='bold' fontSize='20px'>{user.name}</Text>
-								<Input bg='#fff' type='password' />
+								<Text fontWeight='bold' fontSize='20px'>{user.user_name}</Text>
+								<Input bg='#fff' type='password' placeholder={user.user_password}/>
 								<Flex gap='2' mt='2'>
 									<Text color='#000'>Edit</Text>
 									<Text color='red' cursor='pointer' onClick={(()=>{setisremoveModalvisible(true)})}>Remove Admin User</Text>

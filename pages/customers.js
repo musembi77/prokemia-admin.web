@@ -7,39 +7,40 @@ import {useRouter} from 'next/router'
 import TuneIcon from '@mui/icons-material/Tune';
 import FilterCustomerModal from '../components/modals/filterCustomer.js';
 import Get_Clients from './api/clients/get_clients.js';
-
+ 
 function Customers(){
 	const router = useRouter();
 	const [isfiltercustomerModalvisible,setisfiltercustomerModalvisible]=useState(false);
 	const [clients_data, set_clients_data] = useState([]);
 	const [filter_active, set_filter_active] = useState(false);
-	const [status,set_status] = useState(false)
+	const [status,set_status] = useState('false')
+	const [search_query,set_search_query] = useState('')
 	const [region,set_region] = useState('')
 	const [date,set_date] = useState('')
 
 	const filter_obj = {
 		suspension_status : status
 	}
+	//|| {status? item?.suspension_status() : !item?.suspension_status}
+	console.log(status)
 	useEffect(()=>{
+		console.log(status)
 		Get_Clients().then((response)=>{
 			console.log(response.data)
-			set_clients_data(response.data);
+			const data = response.data
+			const result_data = data?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query) || item?.last_name.toLowerCase().includes(search_query)).sort((a, b) => a.first_name.localeCompare(b.first_name))
+			if(status === 'true'){
+				const result = result_data?.filter((item) => !item.suspension_status)
+				console.log(result)
+				set_clients_data(result);
+			}else{
+				// const result = result_data?.filter((item) => item.suspension_status)
+				// console.log(result)
+				set_clients_data(result_data);
+			}
+			
 		})
-	},[])
-
-	function bouncer(arr) {
-	// Don't show a false ID to this bouncer.
-	function a(b) {
-	  if(b.suspension_status !== true) {
-	    return b.suspension_status;
-	  }
-	}
-
-	arr = arr.filter(a);
-	return arr;
-	}
-	//let client_data_result = arr?.filter(item => !item.suspension_status )
-	console.log(bouncer(clients_data))
+	},[status,search_query])
 	return(
 		<Flex direction='column'>
 			<Header />
@@ -58,7 +59,7 @@ function Customers(){
 					</Select>
 				</Flex>
 				<Flex gap='2' p='2'>
-					<Input placeholder='search customers' bg='#fff' flex='1'/>
+					<Input placeholder='search customers' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
 				
@@ -82,9 +83,13 @@ const Customer=({client_data})=>{
 	const router = useRouter()
 	return(
 		<Flex direction='column' m='1' w='100%' gap='1' bg='#fff' borderRadius='5' p='2' boxShadow='lg' cursor='pointer'>
-			<Text fontWeight='bold' fontSize='24px'>{client_data.first_name},{client_data.last_name}</Text>
+			<Flex justify='space-between'>
+				<Text fontWeight='bold' fontSize='24px'>{client_data.first_name},{client_data.last_name}</Text>
+				<Text border={client_data.suspension_status === true ? '1px solid red' : null} p='1'>{client_data.suspension_status === true? 'Suspended' : null}</Text>
+			</Flex>
 			<Text>{client_data.email_of_company}</Text>
 			<Text>{client_data.company_name}</Text>
+
 			<Text onClick={(()=>{router.push(`/customer/${client_data._id}`)})} cursor='pointer' color='#009393'>View</Text>
 		</Flex>
 	)

@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {Flex,Text,Spacer,Input} from '@chakra-ui/react'
+import {Flex,Text,Spacer,Input,Image,Button} from '@chakra-ui/react'
 import styles from '../styles/Home.module.css';
 import CloseIcon from '@mui/icons-material/Close';
 import MessageIcon from '@mui/icons-material/Message';
@@ -13,29 +13,40 @@ function Hub(){
 	const router = useRouter();
 	return(
 		<Flex direction='row'>
-			{active? 
-				<Menu setActive={setActive}/>
+			
+			{!active?
+				<Flex align='center' justify='center' w='100%' h='80vh' direction='column'>
+					<Image src='../community.jpg' alt='photo' w='300px' h='300px'/>
+					<Text fontWeight='bold' fontSize='28px' mt='-20px'>We will be launching this feature soon</Text>
+					<Button bg='#009393' color='#fff' onClick={(()=>{router.back()})}>Go back</Button>
+				</Flex>
 				:
-				null
-			}
-			<Flex direction='column' bg='#eee' w='100vw' mt=''>
-				<Flex align='center' gap='5' w='100%' bg='#009393' color='#fff' p='2'>
-					<ArrowBackIcon onClick={(()=>{router.back()})}/>
-					<MessageIcon onClick={(()=>{setActive(true)})}/>
-					<Flex direction='column'>
-						<Text className={styles.Console} fontSize='20px'>Prokemia</Text>
-						<Text fontSize='13px'>200members</Text>
+				<>
+			{active? 
+						<Menu setActive={setActive}/>
+						:
+						null
+					}
+					<Flex direction='column' bg='#eee' w='100vw' mt=''>
+						<Flex align='center' gap='5' w='100%' bg='#009393' color='#fff' p='2'>
+							<ArrowBackIcon onClick={(()=>{router.back()})}/>
+							<MessageIcon onClick={(()=>{setActive(true)})}/>
+							<Flex direction='column'>
+								<Text className={styles.Console} fontSize='20px'>Prokemia</Text>
+								<Text fontSize='13px'>200members</Text>
+							</Flex>
+						</Flex>
+						<Flex h='75vh'  direction='column' gap='2' mt='2' p='2' overflowY='scroll'>
+							{texts.map((content)=>{
+								return(
+									<TextItem content={content} key={content.id}/>
+								)
+							})}
+						</Flex>
+						<TextBox />
 					</Flex>
-				</Flex>
-				<Flex h='75vh'  direction='column' gap='2' mt='2' p='2' overflowY='scroll'>
-					{texts.map((content)=>{
-						return(
-							<TextItem content={content} key={content.id}/>
-						)
-					})}
-				</Flex>
-				<TextBox />
-			</Flex>
+					</>
+					}
 		</Flex>
 	)
 }

@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Text,Button} from '@chakra-ui/react'
+import {Flex,Text,Button,Link} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -32,9 +32,9 @@ function Product(){
 		})
 	}
 	useEffect(()=>{
-		if (!payload || payload._id === 'undefined'){
+		if (!id || id === undefined){
 			alert("missing info could not fetch data")
-			router.push("/customers")
+			router.back()
 		}else{
 			console.log(payload)
 			get_Data(payload)
@@ -46,6 +46,7 @@ function Product(){
 			alert("successfuly deleted")
 		})
 	}
+	let manufactured_date = new Date(product_data.manufactured_date).toLocaleDateString()
 	return(
 		<Flex direction='column'>
 			<Header />
@@ -53,10 +54,12 @@ function Product(){
 			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible}/>
 			<Flex className={styles.productbody}>
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
-				<Flex position='absolute' top='1' right='1' p='1' bg='#009393' borderRadius='5' color='#fff'>
-					<DoneAllOutlinedIcon />
-					<Text>{product_data?.sponsored}</Text>
-				</Flex>
+				{product_data?.sponsored?
+					<Flex position='absolute' top='1' right='1' p='1' bg='#009393' borderRadius='5' color='#fff'>
+						<DoneAllOutlinedIcon />
+						<Text>{product_data?.sponsored}</Text>
+					</Flex>
+					:null}
 				<Text fontFamily='ClearSans-Bold' fontSize='32px'>{product_data?.name_of_product}</Text>
 				<Flex>
 					<Text>Manufactured by:</Text>
@@ -64,10 +67,10 @@ function Product(){
 				</Flex>
 				<Flex>
 					<Text>Manufactured date:</Text>
-					<Text color='grey'>{product_data?.manufactured_date}</Text>
+					<Text color='grey'>{manufactured_date}</Text>
 				</Flex>
 				<Flex>
-					<Text>Expiry by:</Text>
+					<Text>Expired by:</Text>
 					<Text color='grey'>{product_data?.manufactured_date}</Text>
 				</Flex>
 				<Flex>
@@ -80,9 +83,9 @@ function Product(){
 					<Text mt='4'>{product_data?.chemical_name}</Text>
 				</Flex>
 				<Flex direction='column' gap='2' mt='2'>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Product Data Sheet</Button>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Safety Data Sheet</Button>
-					<Button bg='grey' borderRadius='0' color='#fff'><FileDownloadIcon />Formulation Document</Button>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Product Data Sheet</Link>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Safety Data Sheet</Link>
+					<Link href={product_data?.data_sheet} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Formulation Document</Link>
 				</Flex>
 				<Flex direction='column' bg='#e5e5e5' borderRadius='1' p='1'>
 					<Text fontWeight='bold'>Features & Benefits</Text>
@@ -104,6 +107,7 @@ function Product(){
 			<Flex p='2' gap='2' className={styles.productsection2} direction='column'>
 				<Button color='#fff' borderRadius='0' bg='#009393' onClick={(()=>{setisquotationModalvisible(true)})}><DescriptionIcon />Request Quotation</Button>
 				<Button color='#fff' borderRadius='0' bg='#000' onClick={(()=>{setissampleModalvisible(true)})}><DescriptionIcon />Request Sample</Button>
+				<Link href={product_data?.website_link_to_Seller} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Website link</Link>
 				<Text textAlign='center'>or</Text>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1' onClick={(()=>{router.push(`/product/edit_config/${payload._id}`)})}>Edit Product</Button>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1'>List as short Expiry</Button>

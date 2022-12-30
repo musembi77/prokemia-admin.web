@@ -47,17 +47,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
     }
 
     const handle_add_new_Industry=()=>{
-    
-    console.log(payload)
-      if (!title || !image )
-        toast({
-          title: '',
-          description: 'All inputs are required',
-          status: 'info',
-          isClosable: true,
-        });
-      else{
-        Add_Industry(payload).then((response)=>{
+      Add_Industry(payload).then((response)=>{
             if (response.status === 200){
             return toast({
               title: '',
@@ -75,7 +65,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
             })
           }
         })
-      }
+      onClose()
     }
 
   return (

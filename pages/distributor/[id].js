@@ -67,19 +67,19 @@ function Distributor(){
 					}
 				</Flex>
 				<Flex p='1' direction='column' gap='2'>
-				<Flex direction='column' bg='#eee' p='2'>
-						<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
-						<Text>Name of company: {distributor_data?.company_name}</Text>
-						<Text>Email: {distributor_data?.email_of_company}</Text>
-						<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
-						<Text>Address: {distributor_data?.address_of_company}</Text>
-				</Flex>
-					<Flex direction='column' gap='2' bg='#eee' p='2'>
+					<Flex direction='column' bg='#eee' p='2' boxShadow='lg' borderRadius='5'>
+							<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
+							<Text>Name of company: {distributor_data?.company_name}</Text>
+							<Text>Email: {distributor_data?.email_of_company}</Text>
+							<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
+							<Text>Address: {distributor_data?.address_of_company}</Text>
+					</Flex>
+					<Flex direction='column' gap='2' bg='#eee' p='2' boxShadow='lg' borderRadius='5'>
 							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
 							<Text>Key contact: {distributor_data?.key_contact}</Text>
 							<Text>Position: Manager</Text>
 					</Flex>
-					<Flex direction='column'>
+					<Flex direction='column' boxShadow='lg' borderRadius='5' bg='#eee' p='2'>
 						<Text fontWeight='bold'>Description</Text>
 						<Text>{distributor_data?.description}</Text>
 					</Flex>

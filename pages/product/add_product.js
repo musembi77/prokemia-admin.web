@@ -1,11 +1,42 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {Flex,Text,Button,Input,Textarea,Select,Checkbox} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import styles from '../../styles/Home.module.css';
 import Header from '../../components/Header';
 import Add_New_Product from '../api/Products/add_new_product.js'
+import Get_Industries from '../api/controls/get_industries';
+import Get_Technologies from '../api/controls/get_technologies'
+import axios from 'axios'
+
+import {storage} from '../firebase';
+import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+import { v4 } from "uuid";
 
 function Product(){
+	const [industries_data, set_industries_data]=useState([]);
+	const [technologies_data, set_technologies_data]=useState([]);
+	useEffect(()=>{
+		get_Industries_Data()
+		get_Technology_Data()
+	},[])
+	const get_Industries_Data=async()=>{
+		await Get_Industries().then((response)=>{
+			console.log(response.data)
+			const data = response.data
+			const result = data.filter(v => v.verification_status)
+			console.log(data.filter(v => v.verification_status))
+			set_industries_data(result)
+		})
+	}
+	const get_Technology_Data=async()=>{
+		await Get_Technologies().then((response)=>{
+			console.log(response.data)
+			const data = response.data
+			const result = data.filter(v => v.verification_status)
+			console.log(data.filter(v => v.verification_status))
+			set_technologies_data(result)
+		})
+	}
 	const router = useRouter();
 
 	const [name_of_product,set_name_of_product]=useState("");
@@ -30,47 +61,111 @@ function Product(){
 	const [storage_of_product,set_storage_of_product]=useState("");
 	//documents
 	const [data_sheet,set_data_sheet]=useState("");
+	const [data_sheet_url,set_data_sheet_url]=useState("");
+
 	const [safety_data_sheet,set_safety_data_sheet]=useState("");
+	const [safety_data_sheet_url,set_safety_data_sheet_url]=useState("");
+
 	const [formulation_document,set_formulation_document]=useState("");
+	const [formulation_document_url,set_formulation_document_url]=useState("");
 	//category_of_product
 	const [industry,set_industry]=useState("");
 	const [technology,set_technology]=useState("");
-	//featured status
-	const [sponsored,set_sponsored]=useState("");
-	//verification_status
-	const [verification_status,set_verification_status]=useState("");
 
 	const payload = {
-		name_of_product,
-		email_of_lister,
-		listed_by_id,
-		short_on_expiry :false,
-		manufactured_by,
-		manufactured_date,
-		expiry_date,
-		distributed_by,
-		website_link_to_Seller,
-		description_of_product,
-		chemical_name,
-		function : product_function,
-		brand,
-		features_of_product,
-		application_of_product,
-		packaging_of_product,
-		storage_of_product,
-		data_sheet,
-		safety_data_sheet,
-		formulation_document,
-		industry,
-		technology,
-		sponsored,
-		verification_status,
-	}
-	const handle_add_new_product=async()=>{
-		await Add_New_Product(payload).then(()=>{
-			alert("successfully created a new product")
-			router.push("/inventory")
+			name_of_product,
+			email_of_lister,
+			listed_by_id,
+			short_on_expiry :false,
+			manufactured_by,
+			manufactured_date,
+			expiry_date,
+			distributed_by,
+			website_link_to_Seller,
+			description_of_product,
+			chemical_name,
+			function : product_function,
+			brand,
+			features_of_product,
+			application_of_product,
+			packaging_of_product,
+			storage_of_product,
+			data_sheet_url,
+			safety_data_sheet_url,
+			formulation_document_url,
+			industry,
+			technology,
+		}
+
+	const handle_data_sheet_file_upload=async()=>{
+		if (data_sheet == ''){
+			return alert('err')
+		}
+		const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet.name + v4()}`);
+		await uploadBytes(data_sheet_documentRef,data_sheet).then(snapshot => {
+			getDownloadURL(snapshot.ref).then((url) => {
+				console.log(url)
+				set_data_sheet_url(url)
+			});
 		})
+	}
+
+	const handle_safety_sheet_file_upload=async()=>{
+		if (safety_data_sheet == ''){
+			return alert('err')
+		}
+		const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet.name + v4()}`);
+		await uploadBytes(safety_data_sheet_documentRef,safety_data_sheet).then(snapshot => {
+			getDownloadURL(snapshot.ref).then((url) => {
+				console.log(url)
+				set_safety_data_sheet_url(url)
+			});
+		})
+	}
+
+	const handle_formulation_document_file_upload=async()=>{
+		if (formulation_document == ''){
+			return alert('err')
+		}
+		const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document.name + v4()}`);
+		await uploadBytes(formulation_document_documentRef,formulation_document).then(snapshot => {
+	      getDownloadURL(snapshot.ref).then((url) => {
+	      		console.log(url)
+				set_formulation_document_url(url)
+			});
+	    })
+	}
+
+
+	const handle_File_Upload=async()=>{
+		await handle_data_sheet_file_upload()
+		await handle_safety_sheet_file_upload()
+		await handle_formulation_document_file_upload()
+		console.log(data_sheet_url,safety_data_sheet_url,formulation_document_url)
+		console.log(payload)
+	}
+
+	const handle_add_new_product=async()=>{
+		console.log(payload)
+		handle_File_Upload()
+		if(!data_sheet_url || !safety_data_sheet_url || !formulation_document_url){
+			handle_File_Upload()
+			setTimeout(()=>{
+				Add_New_Product(payload).then(()=>{
+						alert("successfully created a new product")
+						router.push("/inventory")
+					})
+				console.log(payload)
+			},10000)
+		}else{
+			setTimeout(()=>{
+				Add_New_Product(payload).then(()=>{
+						alert("successfully created a new product")
+						router.push("/inventory")
+					})
+				console.log(payload)
+			},10000)
+		}
 	}
 	return(
 		<Flex direction='column'>
@@ -78,7 +173,7 @@ function Product(){
 			<Flex className={styles.productbody} direction='column' p='3' gap='3'>
 				<Text fontSize='32px' fontWeight='bold'>Add New Product</Text>
 				<Flex direction='column'>
-					<Text>Name</Text>
+					<Text>Name/Title of product</Text>
 					<Input type='text' placeholder='Name of product/Brand' variant='filled' onChange={((e)=>{set_name_of_product(e.target.value)})}/>
 				</Flex>
 				<Flex direction='column'>
@@ -104,17 +199,23 @@ function Product(){
 				<Flex direction='column' gap='2'>
 					<Text fontFamily='ClearSans-Bold'>Industry</Text>
 					<Select variant='filled' placeholder='Select Industry' onChange={((e)=>{set_industry(e.target.value)})}>
-			          <option value='personalcare'>Personal Care</option>
-			          <option value='hi&i'>H I & I</option>
-			          <option value='building&construction'>Building and Construction</option>
-			          <option value='food&nutrition'>Food and Nutrition</option>
+						{industries_data?.map((item)=>{
+								return(
+									<option key={item._id} value={item.title}>{item.title}</option>
+
+								)
+							})}
 			        </Select>
 				</Flex>
 				<Flex direction='column' gap='3'>
 					<Text fontFamily='ClearSans-Bold'>Technology</Text>
 					<Select variant='filled' placeholder='Select Technology' onChange={((e)=>{set_technology(e.target.value)})}>
-			          <option value='pharmaceuticals'>Pharmaceuticals</option>
-			          <option value='cosmetics'>Cosmetics</option>
+						{technologies_data?.map((item)=>{
+							return(
+								<option key={item._id} value={item.title}>{item.title}</option>
+
+							)
+						})}
 			        </Select>
 				</Flex>
 				<Flex direction='column'>
@@ -131,7 +232,7 @@ function Product(){
 				</Flex>
 				<Flex direction='column'>
 					<Text>Data Sheet</Text>
-					<Input type='file' placeholder='product data sheet' variant='filled' onChange={((e)=>{set_data_sheet(e.target.value)})}/>
+					<Input type='file' accept='.pdf,' placeholder='product data sheet' variant='filled' onChange={((e)=>{set_data_sheet(e.target.files[0])})}/>
 				</Flex>
 				<Flex direction='column'>
 					<Text>Formulation Document</Text>
@@ -143,19 +244,19 @@ function Product(){
 				</Flex>
 				<Flex direction='column'>
 					<Text>Features & Benefits</Text>
-					<Input type='text' placeholder='features and Benefits products' variant='filled' onChange={((e)=>{set_features_of_product(e.target.value)})}/>
+					<Textarea type='text' placeholder='features and Benefits products' variant='filled' onChange={((e)=>{set_features_of_product(e.target.value)})}/>
 				</Flex>
 				<Flex direction='column'>
 					<Text>Application</Text>
-					<Input type='text' placeholder='use commas to separate different applications' variant='filled' onChange={((e)=>{set_application_of_product(e.target.value)})}/>
+					<Textarea type='text' placeholder='use commas to separate different applications' variant='filled' onChange={((e)=>{set_application_of_product(e.target.value)})}/>
 				</Flex>
 				<Flex direction='column'>
 					<Text>Packaging</Text>
-					<Input type='text' placeholder='packaging infomation' variant='filled' onChange={((e)=>{set_packaging_of_product(e.target.value)})}/>
+					<Textarea type='text' placeholder='packaging infomation' variant='filled' onChange={((e)=>{set_packaging_of_product(e.target.value)})}/>
 				</Flex>
 				<Flex direction='column'>
 					<Text>Storage & Handling</Text>
-					<Input type='text' placeholder='storage and product handling information' variant='filled' onChange={((e)=>{set_storage_of_product(e.target.value)})}/>
+					<Textarea type='text' placeholder='storage and product handling information' variant='filled' onChange={((e)=>{set_storage_of_product(e.target.value)})}/>
 				</Flex>
 				<Flex direction='column'>
 					<Text>List as Short on Expiry</Text>
