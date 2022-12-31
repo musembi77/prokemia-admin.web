@@ -5,7 +5,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import {useRouter} from 'next/router';
 import Get_Order from '../api/orders/get_order.js';
 import Edit_Order from '../api/orders/edit_order.js';
-import Create_Invoice_PDF from './create_invoice_pdf.js';
+import Create_Invoice_PDF from '../api/orders/create_invoice_pdf.js';
 import Create_Invoice from '../api/orders/create_invoice.js';
 
 function Order(){

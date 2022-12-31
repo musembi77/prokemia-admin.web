@@ -1,10 +1,8 @@
 import easyinvoice from 'easyinvoice';
-import axios from 'axios';
 
 export default async function Create_Invoice_PDF(payload){
+	console.log(payload)
 	create_invoice(payload)
-    // const result = await axios.post("http://localhost:5001/api/edit_order",payload)
-    // return result
 }
 
 const create_invoice=(payload)=>{
@@ -32,10 +30,11 @@ const create_invoice=(payload)=>{
 	    },
 	    // Your recipient
 	    "client": {
-	        "company": payload.name_of_client,
-	        "address": `company_name: ${payload.name_of_client}`,
-	        "zip": `location: ${payload.email_of_client}`,
-	        "city": `mobile: ${payload.email_of_client}`,
+	        "company": payload?.name_of_client,
+	        "address": payload?.company_name_of_client,
+	        "zip": payload?.email_of_client,
+	        "city": payload?.mobile_of_client,
+	        "country": payload?.location_of_client,
 	        // "address": "Clientstreet 456",
 	        // "zip": "4567 CD",
 	        // "city": "Clientcity",
@@ -46,20 +45,20 @@ const create_invoice=(payload)=>{
 	    },
 	    "information": {
 	        // Invoice number
-	        "number": payload._id,
+	        "number": payload?._id,
 	        // Invoice data
-	        "date": payload.createdAt,
+	        "date": payload?.createdAt,
 	        // Invoice due date
-	        "due-date": "with Order"
+	        "due-date": payload?.delivery_date
 	    },
 	    // The products you would like to see on your invoice
 	    // Total values are being calculated automatically
 	    "products": [
 	        {
-	            "quantity": payload.volume_of_items,
-	            "description": payload.name_of_product,
+	            "quantity": payload?.volume_of_items,
+	            "description": payload?.name_of_product,
 	            "tax-rate": 16,
-	            "price": payload.unit_price
+	            "price": payload?.unit_price
 	        },
 	    ],
 	    // The message you would like to display on the bottom of your invoice
@@ -96,7 +95,7 @@ const create_invoice=(payload)=>{
 	};
 	try{
 		easyinvoice.createInvoice(data, function (result) {
-		   easyinvoice.download('myInvoice.pdf', result.pdf);
+		   easyinvoice.download(`${payload?.name_of_product}.pdf`, result.pdf);
 		});
 		
 		
