@@ -18,7 +18,7 @@ function Distributor(){
 
 	const router = useRouter()
 	const query = router.query
-	const id = query.id
+	const id = query?.id
 
 	const [distributor_data,set_distributor_data] = useState('')
 	const [recents,set_recents]=useState(distributor_data?.recents)
@@ -30,21 +30,21 @@ function Distributor(){
 	const get_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
 			console.log(response)
-			return set_distributor_data(response.data)
+			return set_distributor_data(response?.data)
 		})
 	}
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
-			const data = response.data
+			const data = response?.data
 			console.log(data)
-			const result = data?.filter(item => item.email_of_lister.includes(distributor_data?.email_of_company))
+			const result = data?.filter(item => item?.email_of_lister.includes(distributor_data?.email_of_company))
 			set_products(result)
 			console.log(result)
 		})
 	}
 		
 	useEffect(()=>{
-		if (!payload || payload._id === 'undefined'){
+		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{
@@ -93,7 +93,7 @@ function Distributor(){
 							<Flex wrap='Wrap'> 
 							{distributor_data?.industries?.map((item)=>{
 								return(
-									<Industry key={item._id} item={item}/>
+									<Industry key={item?._id} item={item}/>
 								)
 							})}
 						</Flex>
@@ -109,7 +109,7 @@ function Distributor(){
 						<Flex wrap='Wrap' gap='2'>
 							{products?.map((item)=>{
 								return(
-									<Product key={item._id} item={item}/>
+									<Product key={item?._id} item={item}/>
 								)
 							})}
 						</Flex>
@@ -124,12 +124,12 @@ function Distributor(){
 							<Flex wrap='Wrap' gap='2'> 
 							{distributor_data?.experts?.map((item)=>{
 								return(
-									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+									<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 										<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 										<Flex direction='column'>
-											<Text fontWeight='bold'>Email: {item.email}</Text>
-											<Text>Mobile: {item.mobile}</Text>
-											<Text>Role: {item.role}</Text>
+											<Text fontWeight='bold'>Email: {item?.email}</Text>
+											<Text>Mobile: {item?.mobile}</Text>
+											<Text>Role: {item?.role}</Text>
 										</Flex>
 									</Flex>
 								)
@@ -138,7 +138,7 @@ function Distributor(){
 						}
 					</Flex>
 					<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
-					{distributor_data.suspension_status? 
+					{distributor_data?.suspension_status? 
 						<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
 						: 
 						<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
@@ -154,8 +154,8 @@ export default Distributor;
 const Industry=({item})=>{
 	return(
 		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' >
-			<Image borderRadius='10px' objectFit='cover' src={item.img} alt='next'/>
-			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item.name}</Text>
+			<Image borderRadius='10px' objectFit='cover' src={item?.img} alt='next'/>
+			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item?.name}</Text>
 		</Flex>
 	)
 }

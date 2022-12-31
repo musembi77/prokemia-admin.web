@@ -17,7 +17,7 @@ function Distributor(){
 
 	const router = useRouter()
 	const query = router.query
-	const id = query.id
+	const id = query?.id
 
 	const [distributor_data,set_distributor_data] = useState('')
 	const [recents,set_recents]=useState(distributor_data?.recents)
@@ -29,21 +29,21 @@ function Distributor(){
 	const get_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
 			console.log(response)
-			return set_distributor_data(response.data)
+			return set_distributor_data(response?.data)
 		})
 	}
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
-			const data = response.data
+			const data = response?.data
 			console.log(data)
-			const result = data?.filter(item => item.email_of_lister.includes(distributor_data?.email_of_company))
+			const result = data?.filter(item => item?.email_of_lister.includes(distributor_data?.email_of_company))
 			set_products(result)
 			console.log(result)
 		})
 	}
 		
 	useEffect(()=>{
-		if (!payload || payload._id === 'undefined'){
+		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{

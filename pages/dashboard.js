@@ -103,11 +103,11 @@ function Dashboard(){
 				<Revenue_Tag orders_data={orders_data}/>
 				<Flex w='30vw' justify='space-around' direction='column' mr='3'>
 					<Flex w='100%' h='50%' gap='2' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' align='center' justify='center' >
-						<Text color='#009393' fontSize='20px'>{products.length}</Text>
+						<Text color='#009393' fontSize='20px'>{products?.length}</Text>
 						<Text>Products</Text>
 					</Flex>
 					<Flex w='100%' h='50%' gap='2' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' align='center' justify='center' >
-						<Text color='#009393' fontSize='20px'>{orders_data.length}</Text>
+						<Text color='#009393' fontSize='20px'>{orders_data?.length}</Text>
 						<Text>Orders</Text>
 					</Flex>
 				</Flex>
@@ -118,7 +118,7 @@ function Dashboard(){
 					<Text fontWeight='bold'>clients</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{clients_data.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/customer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
+					{clients_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/customer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/customers')})}>view all</Text>					
 				</Flex>
 			</Flex>
@@ -128,7 +128,7 @@ function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Manufacturers</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{manufacturers_data.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name} {item?.last_name}</Text>)})}
+					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name} {item?.last_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/manufacturers')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -138,7 +138,7 @@ function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Salespersons</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{salespeople_data.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/salesperson/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
+					{salespeople_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/salesperson/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/salespersons')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -148,7 +148,7 @@ function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Distributors</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{distributors_data.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
+					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -191,15 +191,15 @@ export default Dashboard;
 const User_Tag=({user})=>{
 	return(
 		<Flex w='175px' color={user.color} borderRadius='5' boxShadow='lg' p='1' m='1' align='center' justify='center' direction='column' gap='4' h='150px' bg={user.bg}>
-			<Text fontSize='42px' >{user.numbers}</Text>
-			<Text fontWeight='bold'>{user.title}</Text>
+			<Text fontSize='42px' >{user?.numbers}</Text>
+			<Text fontWeight='bold'>{user?.title}</Text>
 		</Flex>
 	)
 }
 
 const Revenue_Tag=({orders_data})=>{
 //	//console.log(orders_data)090F14bg='rgb(0, 147, 147,0.6)'
-	const completed_orders = orders_data.filter((item)=>item.order_status.includes('completed'))
+	const completed_orders = orders_data?.filter((item)=>item.order_status.includes('completed'))
 	const data = completed_orders.map((item)=> item.total)
 	let total = Intl.NumberFormat().format(data.reduce((a, b) => a + b, 0));
 	

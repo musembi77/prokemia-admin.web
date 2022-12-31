@@ -55,7 +55,7 @@ function Orders(){
 			<Flex wrap='flex' direction='column' p='2' gap='2' mb='2' overflowY='scroll' h='80vh'>
 				{orders_data.map((order)=>{
 					return(
-						<OrderItem key={order._id} setisvieworderModalvisible={setisvieworderModalvisible} order={order}/>
+						<OrderItem key={order?._id} setisvieworderModalvisible={setisvieworderModalvisible} order={order}/>
 					)
 				})}
 			</Flex>
@@ -68,17 +68,17 @@ export default Orders;
 const OrderItem=({setisvieworderModalvisible,order})=>{
 	const router = useRouter();
 	return(
-		<Flex _hover={{transform:"scale(1.01)",transition:'ease-out 1s all',bg:'#009393',color:'#fff'}} boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
-			<Text fontSize='20px' fontWeight='bold'>Order Id: {order._id}</Text>
-			<Text>Product Name: {order.name_of_product}</Text>
-			<Text>Unit Price: {order.unit_price}</Text>
-			<Text>Volume: {order.volume_of_items}</Text>
-			<Text>Total: {order.total}</Text>	
-			<Text>Email of Client: {order.email_of_client}</Text>	
-			<Text>date: {order.createdAt}</Text>	
+		<Flex _hover={{transform:"scale(1.01)",transition:'ease-out 1s all',bg:'#009393',color:'#fff'}} boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
+			<Text fontSize='20px' fontWeight='bold'>Order Id: {order?._id}</Text>
+			<Text>Product Name: {order?.name_of_product}</Text>
+			<Text>Unit Price: {order?.unit_price}</Text>
+			<Text>Volume: {order?.volume_of_items}</Text>
+			<Text>Total: {order?.total}</Text>	
+			<Text>Email of Client: {order?.email_of_client}</Text>	
+			<Text>date: {order?.createdAt}</Text>	
 			<Flex gap='1'>
 				<Text>Order Status:</Text>
-				<Text color={order.order_status === 'completed'? 'green' : 'orange'}>{order.order_status}</Text>
+				<Text color={order?.order_status === 'completed'? 'green' : 'orange'}>{order?.order_status}</Text>
 			</Flex>
 		</Flex>
 	)

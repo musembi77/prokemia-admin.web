@@ -61,19 +61,19 @@ function Salesperson(){
 				<Flex justify='space-between' gap='4'>
 					<Flex direction='column' align='center'>
 						<AccountBoxIcon style={{fontSize:'150px'}}/>
-						<Text fontWeight='bold' fontSize='20px'>{salesperson_data.first_name} {salesperson_data.last_name}</Text>
-						{salesperson_data.suspension_status? 
+						<Text fontWeight='bold' fontSize='20px'>{salesperson_data?.first_name} {salesperson_data?.last_name}</Text>
+						{salesperson_data?.suspension_status? 
 							<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
 							: 
 							null
 						}
 					</Flex>
 					<Flex flex='1' direction='column' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
-							<Text><span style={{fontWeight:"bold"}}>Email:</span> {salesperson_data.email_of_salesperson}</Text>
-							<Text><span style={{fontWeight:"bold"}}>Mobile:</span>  {salesperson_data.mobile_of_salesperson}</Text>
-							<Text><span style={{fontWeight:"bold"}}>Address:</span> {salesperson_data.address}</Text>
-							<Text><span style={{fontWeight:"bold"}}>Company:</span>  {salesperson_data.company_name}</Text>
-							<Text><span style={{fontWeight:"bold"}}>Joined in:</span> {salesperson_data.joined_in}</Text>
+							<Text><span style={{fontWeight:"bold"}}>Email:</span> {salesperson_data?.email_of_salesperson}</Text>
+							<Text><span style={{fontWeight:"bold"}}>Mobile:</span>  {salesperson_data?.mobile_of_salesperson}</Text>
+							<Text><span style={{fontWeight:"bold"}}>Address:</span> {salesperson_data?.address}</Text>
+							<Text><span style={{fontWeight:"bold"}}>Company:</span>  {salesperson_data?.company_name}</Text>
+							<Text><span style={{fontWeight:"bold"}}>Joined in:</span> {salesperson_data?.joined_in}</Text>
 							<Flex align='center' color='#009393'>
 								<DoneAllIcon/>
 								<Text fontWeight='bold' >Open for Cosultancy</Text>
@@ -81,7 +81,7 @@ function Salesperson(){
 					</Flex>
  				</Flex>
 				<Button bg='#009393' color='#fff'>Contact</Button>
-				{salesperson_data.suspension_status? 
+				{salesperson_data?.suspension_status? 
 					<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
 					: 
 					<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>

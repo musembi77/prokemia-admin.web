@@ -44,7 +44,7 @@ function Product(){
 			router.back()
 		})
 	}
-	let manufactured_date = new Date(product_data.manufactured_date).toLocaleDateString()
+	let manufactured_date = new Date(product_data?.manufactured_date).toLocaleDateString()
 	return(
 		<Flex direction='column'>
 		<SuspendProductModal issuspendproductModalvisible={issuspendproductModalvisible} setissuspendproductModalvisible={setissuspendproductModalvisible}/>

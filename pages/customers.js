@@ -66,7 +66,7 @@ function Customers(){
 				<Flex direction='column' p='2' gap='2'>
 					{clients_data?.map((client_data)=>{
 						return(
-							<div key={client_data._id} >
+							<div key={client_data?._id} >
 								<Customer client_data={client_data}/>
 							</div>
 						)
@@ -84,13 +84,13 @@ const Customer=({client_data})=>{
 	return(
 		<Flex direction='column' m='1' w='100%' gap='1' bg='#fff' borderRadius='5' p='2' boxShadow='lg' cursor='pointer'>
 			<Flex justify='space-between'>
-				<Text fontWeight='bold' fontSize='24px'>{client_data.first_name},{client_data.last_name}</Text>
-				<Text border={client_data.suspension_status === true ? '1px solid red' : null} p='1'>{client_data.suspension_status === true? 'Suspended' : null}</Text>
+				<Text fontWeight='bold' fontSize='24px'>{client_data?.first_name},{client_data?.last_name}</Text>
+				<Text border={client_data?.suspension_status === true ? '1px solid red' : null} p='1'>{client_data?.suspension_status === true? 'Suspended' : null}</Text>
 			</Flex>
-			<Text>{client_data.email_of_company}</Text>
-			<Text>{client_data.company_name}</Text>
+			<Text>{client_data?.email_of_company}</Text>
+			<Text>{client_data?.company_name}</Text>
 
-			<Text onClick={(()=>{router.push(`/customer/${client_data._id}`)})} cursor='pointer' color='#009393'>View</Text>
+			<Text onClick={(()=>{router.push(`/customer/${client_data?._id}`)})} cursor='pointer' color='#009393'>View</Text>
 		</Flex>
 	)
 }

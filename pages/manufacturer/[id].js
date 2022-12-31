@@ -17,7 +17,7 @@ function Manufacturer(){
 
 	const router = useRouter()
 	const query = router.query
-	const id = query.id
+	const id = query?.id
 
 	const [manufacturer_data,set_manufacturer_data] = useState('')
 	const [recents,set_recents]=useState(manufacturer_data?.recents)
@@ -35,7 +35,7 @@ function Manufacturer(){
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
 			const data = response.data
-			const result = data?.filter(item => item.email_of_lister.includes(manufacturer_data.email_of_company))
+			const result = data?.filter(item => item.email_of_lister.includes(manufacturer_data?.email_of_company))
 			set_products(result)
 			console.log(result)
 		})
@@ -47,7 +47,7 @@ function Manufacturer(){
 	// 	})
 	// }
 	useEffect(()=>{
-		if (!payload || payload._id === 'undefined'){
+		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{

@@ -8,7 +8,7 @@ import Get_Industries from '../api/controls/get_industries';
 import Get_Technologies from '../api/controls/get_technologies'
 import axios from 'axios'
 
-import {storage} from '../firebase';
+import {storage} from '../../components/firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
 
@@ -101,7 +101,7 @@ function Product(){
 		if (data_sheet == ''){
 			return alert('err')
 		}
-		const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet.name + v4()}`);
+		const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet?.name + v4()}`);
 		await uploadBytes(data_sheet_documentRef,data_sheet).then(snapshot => {
 			getDownloadURL(snapshot.ref).then((url) => {
 				console.log(url)
@@ -114,7 +114,7 @@ function Product(){
 		if (safety_data_sheet == ''){
 			return alert('err')
 		}
-		const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet.name + v4()}`);
+		const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet?.name + v4()}`);
 		await uploadBytes(safety_data_sheet_documentRef,safety_data_sheet).then(snapshot => {
 			getDownloadURL(snapshot.ref).then((url) => {
 				console.log(url)
@@ -127,7 +127,7 @@ function Product(){
 		if (formulation_document == ''){
 			return alert('err')
 		}
-		const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document.name + v4()}`);
+		const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document?.name + v4()}`);
 		await uploadBytes(formulation_document_documentRef,formulation_document).then(snapshot => {
 	      getDownloadURL(snapshot.ref).then((url) => {
 	      		console.log(url)
@@ -201,7 +201,7 @@ function Product(){
 					<Select variant='filled' placeholder='Select Industry' onChange={((e)=>{set_industry(e.target.value)})}>
 						{industries_data?.map((item)=>{
 								return(
-									<option key={item._id} value={item.title}>{item.title}</option>
+									<option key={item?._id} value={item?.title}>{item?.title}</option>
 
 								)
 							})}
@@ -212,7 +212,7 @@ function Product(){
 					<Select variant='filled' placeholder='Select Technology' onChange={((e)=>{set_technology(e.target.value)})}>
 						{technologies_data?.map((item)=>{
 							return(
-								<option key={item._id} value={item.title}>{item.title}</option>
+								<option key={item?._id} value={item?.title}>{item?.title}</option>
 
 							)
 						})}

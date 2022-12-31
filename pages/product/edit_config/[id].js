@@ -9,7 +9,7 @@ import Get_Industries from '../../api/controls/get_industries';
 import Get_Technologies from '../../api/controls/get_technologies'
 import axios from 'axios'
 
-import {storage} from '../../firebase';
+import {storage} from '../../../components/firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
 

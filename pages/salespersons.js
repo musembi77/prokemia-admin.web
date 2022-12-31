@@ -61,7 +61,7 @@ function SalesPersons(){
 			<Flex gap='2' w='' direction='column' bg='#eee' borderRadius='5' m='2' p='2' h=''>
 				{salespeople_data?.map((salesperson_data)=>{
 					return(
-						<div key={salesperson_data._id} >
+						<div key={salesperson_data?._id} >
 							<SalesPerson salesperson_data={salesperson_data}/>
 						</div>
 					)
@@ -76,12 +76,12 @@ export default SalesPersons;
 const SalesPerson=({salesperson_data})=>{
 	const router = useRouter()
 	return(
-		<Flex cursor='pointer' onClick={(()=>{router.push(`/salesperson/${salesperson_data._id}`)})} bg='#fff' p='2' borderRadius='5' boxShadow='lg' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}}>
+		<Flex cursor='pointer' onClick={(()=>{router.push(`/salesperson/${salesperson_data?._id}`)})} bg='#fff' p='2' borderRadius='5' boxShadow='lg' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}}>
 			<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 			<Flex direction='column'>
-				<Text fontWeight='bold'>Name: {salesperson_data.first_name} {salesperson_data.last_name}</Text>
-				<Text >Email: {salesperson_data.email_of_salesperson}</Text>
-				<Text>Mobile: {salesperson_data.mobile_of_salesperson}</Text>
+				<Text fontWeight='bold'>Name: {salesperson_data?.first_name} {salesperson_data?.last_name}</Text>
+				<Text >Email: {salesperson_data?.email_of_salesperson}</Text>
+				<Text>Mobile: {salesperson_data?.mobile_of_salesperson}</Text>
 			</Flex>
 		</Flex>
 	)

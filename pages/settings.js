@@ -3,7 +3,7 @@ import {Flex,Text,Button,Input} from '@chakra-ui/react';
 import Header from '../components/Header.js';
 import AddNewAdmin from '../components/modals/AddNewAdmin.js';
 import RemoveAdmin from '../components/modals/RemoveAdmin.js';
-import Get_Admin_Users from './api/auth/get_admin_users.js';
+import Get_Admin_Users from './api/auth/get_admin_users?.js';
 
 function Settings(){
 	const [isaddnewadminModalvisible,setisaddnewadminModalvisible]=useState(false);
@@ -26,7 +26,7 @@ function Settings(){
 				<RemoveAdmin isremoveModalvisible={isremoveModalvisible} setisremoveModalvisible={setisremoveModalvisible}/>
 				<Text fontSize='14'>assign different roles to administrators </Text>
 				<Flex direction='column' gap='2'>
-					{users.map((user)=>{
+					{users?.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
 								<Flex direction='column'>
@@ -41,7 +41,7 @@ function Settings(){
 				<Button bg='#009393' color="#fff" onClick={(()=>{setisaddnewadminModalvisible(true)})}>Add new Admin user</Button>
 				<Text fontWeight='bold' fontSize='20px' borderBottom='1px solid #000'>Password Management</Text>
 				<Flex direction='column' gap='2'>
-					{users.map((user)=>{
+					{users?.map((user)=>{
 						return(
 							<Flex key={user.id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
 								<Text fontWeight='bold' fontSize='20px'>{user.user_name}</Text>

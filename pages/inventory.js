@@ -101,7 +101,7 @@ function Inventory(){
 					<Input placeholder='search Products' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
-				{products.length === 0?
+				{products?.length === 0?
 					<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 						<Text>Listed Products have not been verified <br/> or <br/> No products have been listed yet</Text>
 					</Flex>

@@ -115,7 +115,7 @@ function Index(){
 			<Flex direction='column' gap='2' p='2' mb='2'>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Products</Text>
-					{products.length === 0?
+					{products?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new Listed Products to verify.</Text>
 						</Flex>
@@ -131,7 +131,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column' gap='2' p='2'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Orders</Text>
-					{orders_data.length === 0?
+					{orders_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have any orders to view.</Text>
 						</Flex>
@@ -147,7 +147,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Distributors</Text>
-					{distributors_data.length === 0?
+					{distributors_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new distributors to verify.</Text>
 						</Flex>
@@ -163,7 +163,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Manufacturers</Text>
-					{manufacturers_data.length === 0?
+					{manufacturers_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new manufacturers to verify.</Text>
 						</Flex>
@@ -179,7 +179,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>SalesPersons</Text>
-					{salespeople_data.length === 0?
+					{salespeople_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new salespeople to verify.</Text>
 						</Flex>
@@ -195,7 +195,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Requests</Text>
-					{requests_data.length === 0?
+					{requests_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new requests to verify.</Text>
 						</Flex>
@@ -211,7 +211,7 @@ function Index(){
 				</Flex>
 				<Flex direction='column'>
 					<Text fontWeight='bold' fontSize='24px' textDecoration='underline 2px solid #009393'>Suggestions</Text>
-					{industries_data.length === 0?
+					{industries_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new industries to verify.</Text>
 						</Flex>
@@ -224,7 +224,7 @@ function Index(){
 							})}
 						</Flex>
 					}
-					{technologies_data.length === 0?
+					{technologies_data?.length === 0?
 						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
 							<Text>You dont have new technologies to verify.</Text>
 						</Flex>
@@ -262,11 +262,11 @@ const Distributor=({item})=>{
 	return(
 		<Flex direction='column' m='1' w='300px' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='175px' p='1'>
 			<Flex p='2' direction='column'>
-				<Text fontWeight='bold' fontSize='20px'>{item.company_name}</Text>
-				<Text>{item.email_of_company}</Text>
-				<Text>{item.address_of_company}</Text>
+				<Text fontWeight='bold' fontSize='20px'>{item?.company_name}</Text>
+				<Text>{item?.email_of_company}</Text>
+				<Text>{item?.address_of_company}</Text>
 				<Text>Subscription: <span style={{color:'orange'}}>Not Subscribed</span></Text>
-				<Button onClick={(()=>{router.push(`/notifications/distributor/${item._id}`)})} bg='#000' color='#fff'>View</Button>
+				<Button onClick={(()=>{router.push(`/notifications/distributor/${item?._id}`)})} bg='#000' color='#fff'>View</Button>
 			</Flex>
 		</Flex>
 	)
@@ -277,11 +277,11 @@ const Manufacturer=({item})=>{
 	return(
 		<Flex direction='column' m='1' w='300px' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='175px' p='1'>
 			<Flex p='2' direction='column'>
-				<Text fontWeight='bold' fontSize='20px'>{item.company_name}</Text>
-				<Text>{item.email_of_company}</Text>
-				<Text>{item.address_of_company}</Text>
+				<Text fontWeight='bold' fontSize='20px'>{item?.company_name}</Text>
+				<Text>{item?.email_of_company}</Text>
+				<Text>{item?.address_of_company}</Text>
 				<Text>Subscription: <span style={{color:'orange'}}>Not Subscribed</span></Text>
-				<Button onClick={(()=>{router.push(`/notifications/manufacturer/${item._id}`)})} bg='#000' color='#fff'>View</Button>
+				<Button onClick={(()=>{router.push(`/notifications/manufacturer/${item?._id}`)})} bg='#000' color='#fff'>View</Button>
 			</Flex>
 		</Flex>
 	)
@@ -291,10 +291,10 @@ const SalesPerson=({item})=>{
 	const router = useRouter()
 	return(
 		<Flex direction='column' m='1' gap='1' bg='#eee' borderRadius='5' p='2' boxShadow='lg' h='150px'>
-			<Text fontWeight='bold' fontSize='24px'>{item.first_name} {item.last_name}</Text>
-			<Text>{item.email_of_salesperson}</Text>
-			<Text>{item.company_name}</Text>
-			<Text onClick={(()=>{router.push(`/notifications/salesperson/${item._id}`)})} cursor='pointer' color='#009393'>View</Text>
+			<Text fontWeight='bold' fontSize='24px'>{item?.first_name} {item?.last_name}</Text>
+			<Text>{item?.email_of_salesperson}</Text>
+			<Text>{item?.company_name}</Text>
+			<Text onClick={(()=>{router.push(`/notifications/salesperson/${item?._id}`)})} cursor='pointer' color='#009393'>View</Text>
 		</Flex>
 	)
 }
@@ -303,12 +303,12 @@ const Orders=({item})=>{
 	const router = useRouter();
 	return(
 		<Flex direction='column' m='1' w='300px' bg='#eee' borderRadius='5' p='2' boxShadow='lg' h='200px'>
-			<Text fontWeight='bold' fontSize='24px'>{item.name_of_client}</Text>
-			<Text>Unit Price: {item.unit_price} </Text>
-			<Text>Volume: {item.volume_of_items} </Text>
-			<Text>Total: {item.total} </Text>
-			<Text>Date: {item.createdAt}</Text>
-			<Button bg='#000' color='#fff' onClick={(()=>{router.push(`/order/${item._id}`)})}>View Order</Button>
+			<Text fontWeight='bold' fontSize='24px'>{item?.name_of_client}</Text>
+			<Text>Unit Price: {item?.unit_price} </Text>
+			<Text>Volume: {item?.volume_of_item?s} </Text>
+			<Text>Total: {item?.total} </Text>
+			<Text>Date: {item?.createdAt}</Text>
+			<Button bg='#000' color='#fff' onClick={(()=>{router.push(`/order/${item?._id}`)})}>View Order</Button>
 		</Flex>
 	)
 }
@@ -316,11 +316,11 @@ const Orders=({item})=>{
 const Requests=({item})=>{
 	return(
 		<Flex direction='column' bg='#eee' boxShadow='lg' borderRadius='5' m='2' p='2'>
-			<Text>Requested by: {item.name_of_requester}</Text>
-			<Text>Industry: {item.industry}</Text>
-			<Text>Technology: {item.technology}</Text>
-			<Text>Region: {item.region}</Text>
-			<Text>description: {item.description}</Text>
+			<Text>Requested by: {item?.name_of_requester}</Text>
+			<Text>Industry: {item?.industry}</Text>
+			<Text>Technology: {item?.technology}</Text>
+			<Text>Region: {item?.region}</Text>
+			<Text>description: {item?.description}</Text>
 			<Flex gap='2'>
 				<Button bg='#000' color='#fff' flex='1'>contact</Button>
 				<Button bg='#009393' color='#fff' flex='1'>Complete</Button>
@@ -331,7 +331,7 @@ const Requests=({item})=>{
 
 const Industry=({item})=>{
 	const payload = {
-		_id : item._id
+		_id : item?._id
 	}
 	const handle_approve_industry=async()=>{
 		await Approve_Industry(payload).then(()=>{
@@ -340,7 +340,7 @@ const Industry=({item})=>{
 	}
 	return(
 		<Flex direction='column' bg='#eee' boxShadow='lg' borderRadius='5' m='2' p='2' h='100px' gap='2'>
-			<Text fontWeight='bold' fontSize='20px'>Industry: {item.title}</Text>
+			<Text fontWeight='bold' fontSize='20px'>Industry: {item?.title}</Text>
 			<Flex gap='2'>
 				<Button bg='#000' color='#fff' onClick={handle_approve_industry}>Approve</Button> 
 				<Button bg='#fff' color='red' border='1px solid red'>Decline</Button> 
@@ -351,7 +351,7 @@ const Industry=({item})=>{
 
 const Technology=({item})=>{
 	const payload = {
-		_id : item._id
+		_id : item?._id
 	}
 	const handle_approve_technology=async()=>{
 		await Approve_Technology(payload).then(()=>{
@@ -360,7 +360,7 @@ const Technology=({item})=>{
 	}
 	return(
 		<Flex direction='column' bg='#eee' boxShadow='lg' borderRadius='5' m='2' p='2' h='100px' gap='2'>
-			<Text fontWeight='bold' fontSize='20px'>Technology: {item.title}</Text>
+			<Text fontWeight='bold' fontSize='20px'>Technology: {item?.title}</Text>
 			<Flex gap='2'>
 				<Button bg='#000' color='#fff' onClick={handle_approve_technology}>Approve</Button> 
 				<Button bg='#fff' color='red' border='1px solid red'>Decline</Button> 

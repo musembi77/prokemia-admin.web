@@ -16,7 +16,7 @@ function Manufacturer(){
 
 	const router = useRouter()
 	const query = router.query
-	const id = query.id
+	const id = query?.id
 
 	const [manufacturer_data,set_manufacturer_data] = useState('')
 	const [recents,set_recents]=useState(manufacturer_data?.recents)
@@ -28,13 +28,13 @@ function Manufacturer(){
 	const get_data=async(payload)=>{
 		await Get_Manufacturer(payload).then((response)=>{
 			console.log(response)
-			return set_manufacturer_data(response.data)
+			return set_manufacturer_data(response?.data)
 		})
 	}
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
-			const data = response.data
-			const result = data?.filter(item => item.email_of_lister.includes(manufacturer_data.email_of_company))
+			const data = response?.data
+			const result = data?.filter(item => item?.email_of_lister.includes(manufacturer_data?.email_of_company))
 			set_products(result)
 			console.log(result)
 		})
@@ -46,7 +46,7 @@ function Manufacturer(){
 	// 	})
 	// }
 	useEffect(()=>{
-		if (!payload || payload._id === 'undefined'){
+		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{
@@ -102,7 +102,7 @@ function Manufacturer(){
 							<Flex wrap='Wrap'> 
 							{manufacturer_data?.industries?.map((item)=>{
 								return(
-									<Industry key={item._id} item={item}/>
+									<Industry key={item?._id} item={item}/>
 								)
 							})}
 						</Flex>
@@ -118,12 +118,12 @@ function Manufacturer(){
 					<Flex wrap='Wrap' m='1' p='2' borderRadius='5' bg='#eee' gap='3'> 
 					{manufacturer_data?.experts?.map((item)=>{
 						return(
-							<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
+							<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
 								<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 								<Flex direction='column'>
-									<Text fontWeight='bold'>Email: {item.email}</Text>
-									<Text>Mobile: {item.mobile}</Text>
-									<Text>Role: {item.role}</Text>
+									<Text fontWeight='bold'>Email: {item?.email}</Text>
+									<Text>Mobile: {item?.mobile}</Text>
+									<Text>Role: {item?.role}</Text>
 								</Flex>
 							</Flex>
 						)
@@ -140,7 +140,7 @@ function Manufacturer(){
 					<Flex direction='column' p='1'>
 						{products?.map((item)=>{
 							return(
-								<Product key={item._id} item={item}/>
+								<Product key={item?._id} item={item}/>
 							)
 						})}
 					</Flex>
@@ -155,7 +155,7 @@ function Manufacturer(){
 						<Flex wrap='Wrap' m='1' p='2' borderRadius='5' bg='#eee' gap='2'> 
 						{manufacturer_data?.distributors?.map((item)=>{
 							return(
-								<Distributor key={item._id} item={item}/>
+								<Distributor key={item?._id} item={item}/>
 							)
 						})}
 					</Flex>
@@ -175,8 +175,8 @@ export default Manufacturer;
 const Industry=({item})=>{
 	return(
 		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' bg='#000'>
-			<Image borderRadius='10px' objectFit='cover' src={item.img} alt='next'/>
-			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item.name}</Text>
+			<Image borderRadius='10px' objectFit='cover' src={item?.img} alt='next'/>
+			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item?.name}</Text>
 		</Flex>
 	)
 }
@@ -207,11 +207,11 @@ const industries=[
 const Distributor=({item})=>{
 	const router = useRouter()
 	return(
-		<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
+		<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
 			<FactoryIcon style={{fontSize:'70px',textAlign:'center'}}/>
 			<Flex direction='column' ml='2'>
-				<Text fontWeight='bold'>Email: {item.email}</Text>
-				<Text>Mobile: {item.mobile}</Text>
+				<Text fontWeight='bold'>Email: {item?.email}</Text>
+				<Text>Mobile: {item?.mobile}</Text>
 			</Flex>
 		</Flex>
 	)

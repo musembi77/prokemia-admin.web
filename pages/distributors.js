@@ -69,7 +69,7 @@ function Distributors(){
 			<Flex p='2' gap='2'>
 				{distributors_data?.map((distributor_data)=>{
 					return(
-						<div key={distributor_data._id} >
+						<div key={distributor_data?._id} >
 							<Distributor distributor_data={distributor_data}/>
 						</div>
 					)
@@ -87,10 +87,10 @@ const Distributor=({distributor_data})=>{
 		<Flex direction='column' m='1' w='225px' boxShadow='dark-lg' h='200px' gap='1' bg='#eee' borderRadius='5'>
 			<Image h='70px' src='./Pro.png' bg='grey' alt='photo' objectFit='cover' border='1px solid #eee'/>
 			<Flex p='2' direction='column' flex='1' justify='space-between'>
-				<Text>{distributor_data.company_name}</Text>
-				<Text fontSize='14px'>{distributor_data.mobile_of_company}</Text>
-				<Text fontSize='14px'>{distributor_data.email_of_company}</Text>
-				<Button onClick={(()=>{router.push(`/distributor/${distributor_data._id}`)})} bg='#009393' color='#fff'>View</Button>
+				<Text>{distributor_data?.company_name}</Text>
+				<Text fontSize='14px'>{distributor_data?.mobile_of_company}</Text>
+				<Text fontSize='14px'>{distributor_data?.email_of_company}</Text>
+				<Button onClick={(()=>{router.push(`/distributor/${distributor_data?._id}`)})} bg='#009393' color='#fff'>View</Button>
 			</Flex>
 		</Flex>
 	)

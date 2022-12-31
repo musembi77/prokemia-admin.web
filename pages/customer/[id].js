@@ -15,7 +15,7 @@ function Customer(){
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
 	const router = useRouter()
 	const query = router.query
-	const id = query.id
+	const id = query?.id
 
 	const [client_data,set_client_data] = useState('')
 	const [recents,set_recents]=useState(client_data?.recents)
@@ -29,7 +29,7 @@ function Customer(){
 	const get_data=async(payload)=>{
 		await Get_Client(payload).then((response)=>{
 			//console.log(response)
-			return set_client_data(response.data)
+			return set_client_data(response?.data)
 		})
 	}
 	
@@ -39,7 +39,7 @@ function Customer(){
 		})
 	}
 	useEffect(()=>{
-		if (!payload || payload._id === undefined){
+		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{
@@ -54,7 +54,7 @@ function Customer(){
 			<Flex direction='column' p='1'>
 			<Flex gap='1'>
 			<Text fontSize='28px' ml='2' fontWeight='bold'>{client_data?.first_name} {client_data?.last_name}</Text>
-			{client_data.suspension_status? 
+			{client_data?.suspension_status? 
 				<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
 				: null
 			}
@@ -72,9 +72,9 @@ function Customer(){
 					<Flex>
 						{recents?.map((recent)=>{
 							return(
-								<Flex key={recent.id} bg='#eee' p='2' borderRadius='5' direction='column'>
-									<Text>{recent.Name}</Text>
-									<Text>{recent.Item}</Text>
+								<Flex key={recent?.id} bg='#eee' p='2' borderRadius='5' direction='column'>
+									<Text>{recent?.Name}</Text>
+									<Text>{recent?.Item}</Text>
 								</Flex>
 							)
 						})}
@@ -87,7 +87,7 @@ function Customer(){
 			</Flex>
 			<Flex direction='column' p='2' gap='2'>
 				<Button bg='#009393' color='#fff'>Contact</Button>
-				{client_data.suspension_status? 
+				{client_data?.suspension_status? 
 					<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
 					: 
 					<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
