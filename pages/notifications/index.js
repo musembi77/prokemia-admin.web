@@ -305,7 +305,7 @@ const Orders=({item})=>{
 		<Flex direction='column' m='1' w='300px' bg='#eee' borderRadius='5' p='2' boxShadow='lg' h='200px'>
 			<Text fontWeight='bold' fontSize='24px'>{item?.name_of_client}</Text>
 			<Text>Unit Price: {item?.unit_price} </Text>
-			<Text>Volume: {item?.volume_of_item?s} </Text>
+			<Text>Volume: {item?.volume_of_items} </Text>
 			<Text>Total: {item?.total} </Text>
 			<Text>Date: {item?.createdAt}</Text>
 			<Button bg='#000' color='#fff' onClick={(()=>{router.push(`/order/${item?._id}`)})}>View Order</Button>
