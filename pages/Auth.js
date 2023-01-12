@@ -56,11 +56,11 @@ export default function ClientSignUp(){
 		})
   	}
 
-  	useEffect(()=>{
-  		if (token || token !== null){
-  			router.push("/dashboard")
-  		}
-  	},[])
+  	// useEffect(()=>{
+  	// 	if (token || token !== null){
+  	// 		router.push("/dashboard")
+  	// 	}
+  	// },[token])
 	return(
 		<Flex h='100vh' className={styles.SigninBody}>
 			<Flex className={styles.authSection} gap='2' p='8'>
