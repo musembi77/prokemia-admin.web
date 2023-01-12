@@ -66,20 +66,16 @@ function Product(){
 					<Text color='grey'>{product_data?.manufactured_by}</Text>
 				</Flex>
 				<Flex>
-					<Text>Manufactured date:</Text>
-					<Text color='grey'>{manufactured_date}</Text>
-				</Flex>
-				<Flex>
-					<Text>Expired by:</Text>
-					<Text color='grey'>{product_data?.manufactured_date}</Text>
-				</Flex>
-				<Flex>
 					<Text>Distributed by:</Text>
 					<Text color='grey'>{product_data?.distributed_by}</Text>
 				</Flex>
+				<Flex>
+					<Text>Listed by:</Text>
+					<Text color='grey'>{product_data?.email_of_lister}</Text>
+				</Flex>
 				<Flex direction='column'>
 					<Text color='#000' fontWeight='bold'>Description</Text>
-					<Text>{product_data?.description}</Text>
+					<Text>{product_data?.description_of_product}</Text>
 					<Text mt='4'>{product_data?.chemical_name}</Text>
 				</Flex>
 				<Flex direction='column' gap='2' mt='2'>

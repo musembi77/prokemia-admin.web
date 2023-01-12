@@ -61,6 +61,29 @@ function Order(){
 			router.back()
 		})
 	}
+
+	const handle_download_invoice=()=>{
+		const payload = {
+		_id: order_data?._id,
+		//client-info
+		name_of_client: order_data?.name_of_client,
+		company_name_of_client: order_data?.company_name_of_client,
+		mobile_of_client: order_data?.mobile_of_client,
+		email_of_client: order_data?.email_of_client,
+		location_of_client: order_data?.location_of_client,
+		//product info
+		name_of_product: order_data?.name_of_product,
+		volume_of_items: order_data?.volume_of_items,
+		unit_price: order_data?.unit_price,
+		total: order_data?.volume_of_items * order_data?.unit_price,
+		//payment&delivery
+		createdAt:today,
+		delivery_date: delivery_date,
+		delivery_terms: order_data?.delivery_terms,
+		payment_terms: order_data?.payment_terms
+    }
+		Create_Invoice_PDF(payload)
+	}
 	return(
 		<Flex direction='column' gap='2'>
 			<Header />
@@ -81,7 +104,7 @@ function Order(){
 							<Text>Compamy Name of Client: {order_data?.company_name_of_client}</Text>
 							<Text>Email of Client: {order_data?.email_of_client}</Text>
 							<Text>Mobile of Client: {order_data?.mobile_of_client}</Text>
-							<Text>Compamy_location of Client: {order_data?.location_of_client}</Text>
+							<Text>Company_location of Client: {order_data?.location_of_client}</Text>
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
 							<Text>Volume of Product: {order_data?.volume_of_items}</Text>
@@ -102,7 +125,10 @@ function Order(){
 						</Flex>
 					</Flex>
 					{order_data?.order_status === 'completed'?
-						<Button mt='2' bg='#eee'>Order has been Completed</Button>
+						<Flex justify='center' gap='2' align='center' m='2'>
+							<Button bg='#009393' color='#fff' flex='1' onClick={handle_download_invoice}>Download Invoice</Button>
+							<Button bg='#eee' color='green'>Order has been Completed</Button>
+						</Flex>
 					:
 						<Flex direction='column' gap='2'>
 							<Flex justify='center' gap='2'>

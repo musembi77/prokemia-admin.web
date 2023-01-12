@@ -20,6 +20,11 @@ import {
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
 import Edit_Industry from '../../pages/api/controls/edit_industry';
+import {storage} from '../firebase';
+import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+import { v4 } from "uuid";
+import Cookies from 'universal-cookie';
+import DoneIcon from '@mui/icons-material/Done';
 
 
 function Edit_Industry_Modal({
@@ -28,6 +33,7 @@ function Edit_Industry_Modal({
     item,
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const cookies = new Cookies();
     
     //console.log(isaddingreviewgModalvisible);
 
@@ -41,7 +47,14 @@ function Edit_Industry_Modal({
       }
     }
 
-    const [edited_title,set_edited_title]=useState('');
+    const [edited_title,set_edited_title]=useState(item?.title);
+    const [is_edit,set_is_edit]=useState(false);
+    const [is_change_image,set_is_change_image]=useState(false);
+    const [image,set_image]=useState('')
+    const [image_url,set_image_url]=useState(item?.cover_image);
+    const [image_uploaded,set_image_uploaded]=useState(false);
+    const [is_submitting,set_is_submitting]=useState(false);
+    const [is_retry,set_is_retry]=useState(false);
 
     useEffect(()=>{
       HandleModalOpen();
@@ -50,12 +63,44 @@ function Edit_Industry_Modal({
     
     const payload = {
     	_id: item?._id,
-    	title:edited_title
+    	title:edited_title,
+        cover_image: image_url
     }
-    const handle_edit_industry=async()=>{
-      await Edit_Industry(payload).then(()=>{
-        alert("Industry edited successfuly")
+
+    const handle_image_upload=async()=>{
+      if (image.name == undefined){
+        return alert('could not process image, try again.')
+      }else{
+        console.log(image.name)
+        const image_documentRef = ref(storage, `industry_images/${image?.name + v4()}`);
+        const snapshot= await uploadBytes(image_documentRef,image)
+        set_image_uploaded(true)
+        const file_url = await getDownloadURL(snapshot.ref)
+        cookies.set('ind_image_url', file_url, { path: '/' });
+        set_image_url(file_url)
+        return file_url
+      }
+    }
+
+    const Upload_File=async()=>{
+      set_is_submitting(true)
+      await handle_image_upload().then(()=>{
+        handle_edit_industry()
       })
+    }
+
+    const handle_edit_industry=async()=>{
+        if (payload.cover_image == ''){
+            set_image_url(cookies.get("ind_image_url"))
+            set_is_retry(true)
+        }else{
+              await Edit_Industry(payload).then(()=>{
+                alert(`${payload.title} has been edited successfuly`)
+              })
+              set_is_submitting(false)
+              set_is_retry(false)
+              onClose()
+        }
     }
     return (
 		<>
@@ -68,13 +113,37 @@ function Edit_Industry_Modal({
 					<ModalCloseButton />
 					<ModalBody>
 						<Stack spacing={4}>
-							<Image src={item?.cover_image} alt='industry photo' h='300px' w='100%' objectFit='cover'/>
-							<Text>{item?.title}</Text>
-							<Text mt='2'>Edit Title</Text>
-							<InputGroup>
-								<Input type='text' placeholder={item?.title} variant='filled' onChange={((e)=>{set_edited_title(e.target.value)})}/>
-							</InputGroup>
-							<Button bg='#009393' borderRadius='0' color='#fff' onClick={handle_edit_industry}>Edit_Industry</Button>
+                            {is_edit?
+    							<Flex direction='column' gap='2'>
+                                    <Text>Industry title</Text>
+                                    <Input type='text' placeholder={edited_title} variant='filled' onChange={((e)=>{set_edited_title(e.target.value)})}/>
+                                    <Flex direction='column'>
+                                      <Text>Select a image to edit cover photo</Text>
+                                        {is_change_image || item?.cover_image == ''?
+                                            <>
+                                            {image_uploaded?
+                                                <Uploaded name={image.name}/>
+                                                :
+                                                <Input type='file' accept='.jpeg,.jpg,.png' placeholder='Industry_image_cover' variant='filled' onChange={((e)=>{set_image(e.target.files[0])})}/>
+                                            }
+                                            </>
+                                        :
+                                            <Button onClick={handle_edit_industry}>Change Image Photo</Button>
+                                        }
+                                    </Flex>
+                                    {is_retry?
+                                        <Button bg='#000' borderRadius='0' color='#fff' onClick={handle_edit_industry}>Complete uploading</Button>
+                                        :
+                                        <Button bg='#009393' borderRadius='0' color='#fff' onClick={Upload_File} disabled={is_submitting?true:false}>Update changes</Button>
+                                    }
+    							</Flex>
+                            :
+                                <>
+                                    <Image src={item?.cover_image} alt='industry photo' h='300px' w='100%' objectFit='cover'/>
+                                    <Text fontSize='20px' fontWeight='bold'>{item?.title}</Text>
+                                    <Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_is_edit(true)})}>Edit_Industry</Button>
+                                </>
+                            }
 						</Stack>
 					</ModalBody>
 				</ModalContent>
@@ -84,3 +153,12 @@ function Edit_Industry_Modal({
 }   
 
 export default Edit_Industry_Modal;
+
+const Uploaded=({name})=>{
+  return(
+    <Flex boxShadow='lg' borderRadius='5' p='2' borderRight='2px solid green'>
+      <Text w='100%' >{name} uploaded</Text>
+      <DoneIcon style={{color:"green"}}/>
+    </Flex>
+  )
+}

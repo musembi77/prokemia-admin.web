@@ -25,6 +25,7 @@ function Inventory(){
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
 	const [technology,set_technology] = useState('');
+	const [sort,set_sort]=useState('desc')
 
 	const [industries_data, set_industries_data]=useState([]);
 	const [technologies_data, set_technologies_data]=useState([]);
@@ -48,10 +49,17 @@ function Inventory(){
 														item?.manufactured_by.includes(search_query) ||
 														item?.description_of_product.toLowerCase().includes(search_query))		
 			console.log(result_data)
-			set_products(result_data)
+			if (sort == 'desc'){
+				const sorted_result = result_data.sort((a, b) => a.name_of_product.localeCompare(b.name_of_product))	
+				set_products(sorted_result)
+			}else{
+				const sorted_result = result_data.sort((a, b) => b.name_of_product.localeCompare(a.name_of_product))
+				set_products(sorted_result)
+			}
+			
 		})
 
-	},[search_query,industry,technology])
+	},[search_query,industry,technology,sort])
 
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
@@ -92,21 +100,21 @@ function Inventory(){
 				}
 				<Flex gap='2' p='2' align='center'>
 					<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
-					<Select placeholder='sort' w='100px'> 
-						<option>A - Z</option>
-						<option>Z - A</option>
+					<Select placeholder='sort' w='100px' onChange={((e)=>{set_sort(e.target.value)})}> 
+						<option value='desc'>A - Z</option>
+						<option value='asc'>Z - A</option>
 					</Select>
 				</Flex>
 				<Flex gap='2' p='2'>
-					<Input placeholder='search Products' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
+					<Input placeholder='search Products by Name, Industry, Technology...' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
 				{products?.length === 0?
 					<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
-						<Text>Listed Products have not been verified <br/> or <br/> No products have been listed yet</Text>
+						<Text>Listed Products have not been verified <br/> or <br/> No products meet your search terms</Text>
 					</Flex>
 				:
-					<Flex wrap='Wrap' h='90vh' overflowY='scroll' justify='space-between'>
+					<Flex wrap='Wrap' h='90vh' overflowY='scroll' bg='#eee' justify=''>
 						{products?.map((item)=>{
 							return(
 								<Product item={item} key={item._id}/>

@@ -62,7 +62,7 @@ const create_invoice=(payload)=>{
 	        },
 	    ],
 	    // The message you would like to display on the bottom of your invoice
-	    "bottom-notice": "Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch",
+	    "bottom-notice": `Terms:${payload.delivery_terms}. Payment_Terms: ${payload.payment_terms}. Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch`,
 	    // "bottom-notice": "Cash with Order.",
 	    // "bottom-notice": "Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch",
 	    // Settings to customize your invoice

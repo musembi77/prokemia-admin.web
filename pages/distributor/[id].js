@@ -11,6 +11,8 @@ import Product from '../../components/Product.js';
 //api calls
 import Get_Distributor from '../api/distributors/get_distributor.js'
 import Get_Products from '../api/Products/get_products.js'
+//icons
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 
 function Distributor(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -27,13 +29,13 @@ function Distributor(){
 	const payload = {
 		_id : id
 	}
-	const get_data=async(payload)=>{
+	const get_User_Data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
-			console.log(response)
+			console.log(response.data)
 			return set_distributor_data(response?.data)
 		})
 	}
-	const get_Data=async()=>{
+	const get_Product_Data=async()=>{
 		await Get_Products().then((response)=>{
 			const data = response?.data
 			console.log(data)
@@ -48,8 +50,8 @@ function Distributor(){
 			alert("missing info could not fetch data")
 			router.back()
 		}else{
-			get_data(payload)
-			get_Data()
+			get_User_Data(payload)
+			get_Product_Data()
 		}
 	},[id])
 	return(
@@ -67,17 +69,25 @@ function Distributor(){
 					}
 				</Flex>
 				<Flex p='1' direction='column' gap='2'>
-					<Flex direction='column' bg='#eee' p='2' boxShadow='lg' borderRadius='5'>
-							<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
-							<Text>Name of company: {distributor_data?.company_name}</Text>
-							<Text>Email: {distributor_data?.email_of_company}</Text>
-							<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
-							<Text>Address: {distributor_data?.address_of_company}</Text>
+					<Flex gap='2'>
+						{distributor_data?.profile_photo_url == ''? 
+							<LocationCityIcon style={{fontSize:'150px',padding:'10px'}}/> 
+						: 
+						<Flex gap='2' >
+						<Image boxSize='200px' src={distributor_data?.profile_photo_url} alt='profile photo' boxShadow='lg' objectFit='cover'/>
+						</Flex>
+						}
+						<Flex direction='column' bg='#eee' p='2' boxShadow='lg' borderRadius='5' flex='1' gap='2'>
+								<Text fontWeight='bold' fontSize='20px'>Company Contacts</Text>
+								<Text>Name of company: {distributor_data?.company_name}</Text>
+								<Text>Email: {distributor_data?.email_of_company}</Text>
+								<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
+								<Text>Address: {distributor_data?.address_of_company}</Text>
+						</Flex>
 					</Flex>
 					<Flex direction='column' gap='2' bg='#eee' p='2' boxShadow='lg' borderRadius='5'>
 							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
-							<Text>Key contact: {distributor_data?.key_contact}</Text>
-							<Text>Position: Manager</Text>
+							<Text>Contact: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
 					</Flex>
 					<Flex direction='column' boxShadow='lg' borderRadius='5' bg='#eee' p='2'>
 						<Text fontWeight='bold'>Description</Text>
@@ -121,10 +131,10 @@ function Distributor(){
 								<Text>The User has not added experts to this profile.</Text>
 							</Flex>
 							:
-							<Flex wrap='Wrap' gap='2'> 
+							<Flex gap='2' overflowY='scroll' h='30vh' direction='column'> 
 							{distributor_data?.experts?.map((item)=>{
 								return(
-									<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+									<Flex key={item?._id} bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 										<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 										<Flex direction='column'>
 											<Text fontWeight='bold'>Email: {item?.email}</Text>

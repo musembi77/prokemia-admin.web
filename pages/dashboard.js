@@ -14,6 +14,7 @@ import Get_Manufacturers from '../pages/api/manufacturers/get_manufacturers.js';
 import Get_SalesPeople from '../pages/api/salespeople/get_salespeople.js';
 import Get_Orders from './api/orders/get_orders.js';
 import Get_Products from './api/Products/get_products.js'
+import { RWebShare } from "react-web-share";
 
 function Dashboard(){
 	const [isaddnewproductModalvisible,setisaddnewProductModalvisible]=useState(false);
@@ -43,11 +44,11 @@ function Dashboard(){
 	      ////console.log(decoded);
 	      set_user_name(decoded.user_name)
 		    Get_Clients().then((response)=>{
-		  		const data = response?.data
+		  		const data = response?.data.reverse()
 		  		set_clients_data(data)
 			})
 			Get_Distributors().then((response)=>{
-		  		const data = response?.data
+		  		const data = response?.data.reverse()
 		  		set_distributors_data(data)
 		  		//console.log(data)
 		  		const notification_result = data.filter(item => !item.verification_status)
@@ -55,13 +56,13 @@ function Dashboard(){
 		  		set_distributors_notification_data(notification_result?.length)
 			})
 			Get_Manufacturers().then((response)=>{
-		  		const data = response?.data
+		  		const data = response?.data.reverse()
 		  		set_manufacturers_data(data)
 		  		const notification_result = data.filter(item => !item.verification_status)
 		  		set_manufacturers_notification_data(notification_result?.length)
 			})
 			Get_SalesPeople().then((response)=>{
-		  		const data = response?.data
+		  		const data = response?.data.reverse()
 		  		set_salespeople_data(data)
 		  		//console.log(data)
 		  		const notification_result = data.filter(item => !item.verification_status)
@@ -152,6 +153,14 @@ function Dashboard(){
 					<Text color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
+			<RWebShare
+		        data={{
+		          text: "Account Sign Up Link.",
+		          url: "https://prokemia-client-web.vercel.app/signup/sales",
+		          title: "Signup Link",
+		        }}>
+		        <Button bg='#009393' m='2' color='#fff'>Share Salesperson Account Signup link 🔗</Button>
+			</RWebShare>
 				<Flex m='2' flex='1' direction='column' borderBottom='1px solid #000' bg='#eee' borderRadius='5' p='2' gap='2'>
 					<Flex justify='space-between' align='center'>
 						<Text fontWeight='bold' fontSize='20px'>Notifications</Text>

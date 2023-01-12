@@ -16,7 +16,7 @@ function Customers(){
 	const [status,set_status] = useState('false')
 	const [search_query,set_search_query] = useState('')
 	const [region,set_region] = useState('')
-	const [date,set_date] = useState('')
+	const [sort,set_sort]=useState('desc')
 
 	const filter_obj = {
 		suspension_status : status
@@ -28,34 +28,48 @@ function Customers(){
 		Get_Clients().then((response)=>{
 			console.log(response.data)
 			const data = response.data
-			const result_data = data?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query) || item?.last_name.toLowerCase().includes(search_query)).sort((a, b) => a.first_name.localeCompare(b.first_name))
-			if(status === 'true'){
-				const result = result_data?.filter((item) => !item.suspension_status)
-				console.log(result)
-				set_clients_data(result);
+			if (sort == 'desc'){
+				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
+				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query))
+				if(status === 'true'){
+					const result = result_data?.filter((item) => item.suspension_status)
+					console.log(result)
+					set_clients_data(result);
+				}else{
+					const result = result_data?.filter((item) => !item.suspension_status)
+					console.log(result)
+					set_clients_data(result_data);
+				}
 			}else{
-				// const result = result_data?.filter((item) => item.suspension_status)
-				// console.log(result)
-				set_clients_data(result_data);
+				const sorted_result = data.sort((a, b) => b.first_name.localeCompare(a.first_name))
+				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query))
+				if(status === 'true'){
+					const result = result_data?.filter((item) => item.suspension_status)
+					console.log(result)
+					set_clients_data(result);
+				}else{
+					const result = result_data?.filter((item) => !item.suspension_status)
+					console.log(result)
+					set_clients_data(result_data);
+				}
 			}
-			
+
 		})
-	},[status,search_query])
+	},[status,search_query,sort])
 	return(
 		<Flex direction='column'>
 			<Header />
 			<Flex direction='column'>
 				<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Customers</Text>
 				{filter_active? 
-					<FilterBar set_filter_active={set_filter_active} set_status={set_status} set_region={set_region} set_date={set_date}/>
+					<FilterBar set_filter_active={set_filter_active} set_status={set_status}/>
 					: null
 				}
 				<Flex gap='2' p='2' align='center'>
 					<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
-					<Select placeholder='sort' w='100px'> 
-						<option>A - Z</option>
-						<option>Z - A</option>
-						<option></option>
+					<Select placeholder='sort' w='100px' onChange={((e)=>{set_sort(e.target.value)})}> 
+						<option value='desc'>A - Z</option>
+						<option value='asc'>Z - A</option>
 					</Select>
 				</Flex>
 				<Flex gap='2' p='2'>
@@ -95,7 +109,7 @@ const Customer=({client_data})=>{
 	)
 }
 
-const FilterBar=({set_filter_active,set_date,set_status,set_region})=>{
+const FilterBar=({set_filter_active,set_status})=>{
 	return(
 			<Flex color='#fff' direction='column' gap='3' p='4' w='50vw' h='90vh' bg='#090F14' position='absolute' top='75px' left='0px' zIndex='2' boxShadow='dark-lg'>
 				<Flex justify='space-between' p='2'>
@@ -105,20 +119,12 @@ const FilterBar=({set_filter_active,set_date,set_status,set_region})=>{
 				<Flex direction='column' >
 					<Text>Suspension status</Text>
 					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_status(e.target.value)})}>
-						<option value={'false'} >Suspended</option>
-						<option value={'true'} >Active</option>
+						<option value={'false'} >Active</option>
+						<option value={'true'} >Suspended</option>
 						<option value={''} >All</option>
 					</Select>
 				</Flex>
-				<Flex direction='column' >
-					<Text>Region</Text>
-					<Input type='text' placeholder='Region' variant='filled' bg='#fff' color='#fff'/>
-				</Flex>
-				<Flex direction='column' gap='2'>
-					<Text>Joined date</Text>
-					<Input type='date' placeholder='expiry date' variant='filled'  color='#000'/>
-				</Flex>
-				<Button bg='#009393' borderRadius='0' color='#fff'>Filter Results</Button>
+				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>
 			</Flex>
 	)
 }

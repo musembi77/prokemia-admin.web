@@ -21,7 +21,7 @@ function Header(){
 		router.push('/')
 	}
 	return(
-		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center'>
+		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center' position='sticky' top='0px' zIndex='10'>
 			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#000' fontWeight='bold' >Admin</Text>
 			<Flex align='center' gap='2'>
 				<Button w='100%' bg='#000' color='#fff' onClick={handle_LogOut}>Log-out</Button>
@@ -115,7 +115,7 @@ const MenuBar=()=>{
 	const [currentValue,setcurrentValue]=useState('');
 	const router = useRouter()
 	return(
-		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='50vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
+		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
 			{navigation.map((item)=>{
 				return(
 					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/${item.link}`)})}>

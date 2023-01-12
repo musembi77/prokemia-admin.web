@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Text,Button,Link} from '@chakra-ui/react'
+import {Flex,Text,Button,Link,useToast} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -8,14 +8,17 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DescriptionIcon from '@mui/icons-material/Description';
 import Header from '../../../components/Header';
 import SuspendProductModal from '../../../components/modals/suspendProduct.js';
+import Decline_Product from '../../../components/modals/Product_Modals/Decline_Product.js';
 import Get_Product from '../../api/Products/get_product.js';
 import Approve_Product from '../../api/Products/approve_product.js';
 
 function Product(){
 	const router = useRouter();
+	const toast = useToast();
 	const id = router.query;
 
 	const [issuspendproductModalvisible,setissuspendproductModalvisible]=useState(false);
+	const [isdeleteproductModalvisible,setisdeleteproductModalvisible]=useState(false);
 
 	const payload = {
 		_id : id.id
@@ -40,7 +43,12 @@ function Product(){
 
 	const handle_approve_product=async()=>{
 		await Approve_Product(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description:`${product_data.name_of_product} has been approved`,
+              status: 'success',
+              isClosable: true,
+            });
 			router.back()
 		})
 	}
@@ -48,6 +56,7 @@ function Product(){
 	return(
 		<Flex direction='column'>
 		<SuspendProductModal issuspendproductModalvisible={issuspendproductModalvisible} setissuspendproductModalvisible={setissuspendproductModalvisible}/>
+		<Decline_Product isdeleteproductModalvisible={isdeleteproductModalvisible} setisdeleteproductModalvisible={setisdeleteproductModalvisible} id={id} name_of_product={product_data?.name_of_product}/>
 		<Header />
 		<Flex className={styles.productbody} >
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
@@ -57,12 +66,8 @@ function Product(){
 					<Text color='grey'>{product_data?.manufactured_by}</Text>
 				</Flex>
 				<Flex>
-					<Text>Manufactured date:</Text>
-					<Text color='grey'>{product_data?.manufactured_date}</Text>
-				</Flex>
-				<Flex>
-					<Text>Expired by:</Text>
-					<Text color='grey'>{manufactured_date}</Text>
+					<Text>Contact of lister:</Text>
+					<Text color='grey'>{product_data?.email_of_lister}</Text>
 				</Flex>
 				<Flex>
 					<Text>Distributed by:</Text>
@@ -118,7 +123,7 @@ function Product(){
 			<Flex p='2' gap='2' className={styles.productsection2} direction='column'>
 				<Button color='#fff' borderRadius='0' bg='#009393' onClick={handle_approve_product}>Approve Product</Button>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1' onClick={(()=>{router.push(`/product/edit_config/${payload._id}`)})}>Edit Product</Button>
-				<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Product</Button>
+				<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setisdeleteproductModalvisible(true)})}>Delete Product</Button>
 			</Flex>
 			</Flex>
 		</Flex>

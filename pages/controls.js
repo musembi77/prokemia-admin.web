@@ -100,13 +100,13 @@ const Industry=({item})=>{
 		})
 	}
 	return(
-		<Flex key={item._id} borderRadius='5' bg='#eee' p='2' gap='1' direction='column' w='180px' boxShadow={'lg'}>
-			<Image src={item.cover_image} alt='industry photo' h='100px'/>
-			<Text fontSize='18px' fontWeight='bold'>{item.title}</Text>
-			<Flex gap='2' justify='space-between'>
-				<Text color='#009393' onClick={(()=>{set_is_edit_industry_Modalvisible(true)})} cursor='pointer'>Edit</Text>
-				<Text color='red' cursor='pointer' onClick={handle_delete_industry}>Delete</Text>
-			</Flex>
+		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
+			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
+			<Text p='2' fontSize='20px' fontWeight='bold'>{item.title}</Text>
+			<Flex gap='2' justify='space-between' direction='' p='2'>
+					<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_industry_Modalvisible(true)})} cursor='pointer'>Edit</Button>
+					<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_industry}>Delete</Button>
+				</Flex>
 			<Edit_Industry is_edit_industry_Modalvisible={is_edit_industry_Modalvisible} set_is_edit_industry_Modalvisible={set_is_edit_industry_Modalvisible} item={item}/>
 		</Flex>
 	)
@@ -123,12 +123,12 @@ const Technology=({item})=>{
 		})
 	}
 	return(
-		<Flex key={item._id} borderRadius='5' bg='#eee' p='2' gap='1' direction='column' w='180px' boxShadow={'lg'}>
-			<Image src={item.cover_image} alt='technology photo' h='100px'/>
-			<Text fontSize='18px' fontWeight='bold'>{item.title}</Text>
-			<Flex gap='2' justify='space-between'>
-				<Text color='#009393' onClick={(()=>{set_is_edit_technology_Modalvisible(true)})} cursor='pointer'>Edit</Text>
-				<Text color='red' cursor='pointer' onClick={handle_delete_technology}>Delete</Text>
+		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
+			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
+			<Text p='2' fontSize='20px' fontWeight='bold'>{item.title}</Text>
+			<Flex gap='2' justify='space-between' direction='' p='2'>
+				<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_technology_Modalvisible(true)})} cursor='pointer'>Edit</Button>
+				<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_technology}>Delete</Button>
 			</Flex>
 			<Edit_Technology is_edit_technology_Modalvisible={is_edit_technology_Modalvisible} set_is_edit_technology_Modalvisible={set_is_edit_technology_Modalvisible} item={item}/>
 		</Flex>

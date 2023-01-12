@@ -28,7 +28,7 @@ function Settings(){
 				<Flex direction='column' gap='2'>
 					{users?.map((user)=>{
 						return(
-							<Flex key={user.id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
+							<Flex key={user._id} borderRadius='5' justify='space-between' p='3' bg='#eee'>
 								<Flex direction='column'>
 									<Text>{user.user_name}</Text>
 									<Text>Role:{user.role}</Text>
@@ -43,7 +43,7 @@ function Settings(){
 				<Flex direction='column' gap='2'>
 					{users?.map((user)=>{
 						return(
-							<Flex key={user.id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
+							<Flex key={user._id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
 								<Text fontWeight='bold' fontSize='20px'>{user.user_name}</Text>
 								<Input bg='#fff' type='password' placeholder={user.user_password}/>
 								<Flex gap='2' mt='2'>

@@ -111,15 +111,16 @@ function Manufacturer(){
 						<Text>The User has not added experts to this profile.</Text>
 					</Flex>
 					:
-					<Flex wrap='Wrap' m='1' p='2' borderRadius='5' bg='#eee' gap='3'> 
+					<Flex overflowY='scroll' h='30vh' m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column'> 
 					{manufacturer_data?.experts?.map((item)=>{
 						return(
-							<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
+							<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 								<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
 								<Flex direction='column'>
 									<Text fontWeight='bold'>Email: {item.email}</Text>
 									<Text>Mobile: {item.mobile}</Text>
 									<Text>Role: {item.role}</Text>
+									<Text>Description: {item.description}</Text>
 								</Flex>
 							</Flex>
 						)
@@ -127,13 +128,13 @@ function Manufacturer(){
 					</Flex>
 					}
 				</Flex>
-				<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products</Text>
+				<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products listed by this user</Text>
 				{products?.length === 0?
 					<Flex align='center' justify='center' bg='#eee' h='10vh' p='3'>
 						<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
 					</Flex>
 					:
-					<Flex direction='column' p='1'>
+					<Flex direction='column' p='1' wrap='Wrap'>
 						{products?.map((item)=>{
 							return(
 								<Product key={item._id} item={item}/>
@@ -148,7 +149,7 @@ function Manufacturer(){
 							<Text>The User has not added distributors to this account</Text>
 						</Flex>
 						:
-						<Flex wrap='Wrap' m='1' p='2' borderRadius='5' bg='#eee' gap='2'> 
+						<Flex m='1' p='2' borderRadius='5' bg='#eee' gap='2' direction='column' h='30vh' overflowY='scroll'> 
 						{manufacturer_data?.distributors?.map((item)=>{
 							return(
 								<Distributor key={item._id} item={item}/>

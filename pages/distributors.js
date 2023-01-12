@@ -66,7 +66,7 @@ function Distributors(){
 				<Input placeholder='search Manufacturers' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 			</Flex>
-			<Flex p='2' gap='2'>
+			<Flex p='2' gap='2' wrap='Wrap'>
 				{distributors_data?.map((distributor_data)=>{
 					return(
 						<div key={distributor_data?._id} >

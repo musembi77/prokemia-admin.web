@@ -1,9 +1,10 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {Flex,Center,Text,Button,Input,InputGroup,InputRightElement,useToast} from '@chakra-ui/react'
 import styles from '../styles/Home.module.css'
 import {Room,Visibility,VisibilityOff} from '@mui/icons-material'
 import {useRouter} from 'next/router'
 import SignIn from './api/auth/signin.js'
+import Cookies from 'universal-cookie';
 
 export default function ClientSignUp(){
 	const [show, setShow] = useState(false);
@@ -13,6 +14,8 @@ export default function ClientSignUp(){
 
 	const [user_password,set_user_password]=useState('');
 	const [user_name,setuser_name]=useState('');
+	const cookies = new Cookies();
+  	let token = cookies.get('admin_token');
 	let route = '';
 
 	const payload = {
@@ -52,6 +55,12 @@ export default function ClientSignUp(){
 			}
 		})
   	}
+
+  	useEffect(()=>{
+  		if (token || token !== null){
+  			router.push("/dashboard")
+  		}
+  	},[])
 	return(
 		<Flex h='100vh' className={styles.SigninBody}>
 			<Flex className={styles.authSection} gap='2' p='8'>
