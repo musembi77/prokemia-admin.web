@@ -23,11 +23,11 @@ function Orders(){
 		Get_Orders().then((response)=>{
 			console.log(response.data)
 			const data = response.data
-			const result_data = data?.filter((item) => 	item?.order_status.includes(search_query) ||
-														item?.name_of_client.toLowerCase().includes(search_query) ||
-														item?.name_of_product.toLowerCase().includes(search_query) ||
-														item?.name_of_client.toLowerCase().includes(search_query) || 
-														item?._id.includes(search_query))
+			const result_data = data?.filter((item) => 	item?.order_status.includes(search_query.toLowerCase()) ||
+														item?.name_of_client.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.name_of_product.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.name_of_client.toLowerCase().includes(search_query.toLowerCase()) || 
+														item?._id.includes(search_query.toLowerCase()))
 			console.log(result_data)
 			set_orders(result_data)
 		})
