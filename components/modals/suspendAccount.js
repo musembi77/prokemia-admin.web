@@ -34,6 +34,7 @@ function SuspendAccountModal({
     payload
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const toast = useToast();
     
     //console.log(isaddingreviewgModalvisible);
 
@@ -68,19 +69,67 @@ function SuspendAccountModal({
       if (confirm_name === name){  
         if (acc_type === 'client'){
           await Suspend_Client(payload).then(()=>{
-            alert("account suspended")
+            toast({
+              title: '',
+              description: `${name} account has been suspended`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'distributors'){
           await Suspend_Distributor(payload).then(()=>{
-            alert("distributor account suspended")
+            toast({
+              title: '',
+              description: `${name} account has been suspended`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'manufacturers'){
           await Suspend_Manufacturer(payload).then(()=>{
-            alert("manufacturer account suspended")
+            toast({
+              title: '',
+              description: `${name} account has been suspended`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'salespersons')
           await Suspend_Salesperson(payload).then(()=>{
-            alert("manufacturer account suspended")
+            toast({
+              title: '',
+              description: `${name} account has been suspended`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
       }else{
         alert("Wrong input")

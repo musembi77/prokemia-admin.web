@@ -1,8 +1,7 @@
 import React,{useState,useEffect}from 'react';
 //module imports
-import {Flex,Text,Button,Image} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,useToast,Link} from '@chakra-ui/react';
 import {useRouter} from 'next/router'
-import Person2Icon from '@mui/icons-material/Person2';
 //components imports
 import Header from '../../components/Header.js'
 import SuspendAccountModal from '../../components/modals/suspendAccount.js';
@@ -13,45 +12,74 @@ import Get_Distributor from '../api/distributors/get_distributor.js'
 import Get_Products from '../api/Products/get_products.js'
 //icons
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Person2Icon from '@mui/icons-material/Person2';
 
 function Distributor(){
-	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
-	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
-
+		//utils
 	const router = useRouter()
 	const query = router.query
 	const id = query?.id
 
-	const [distributor_data,set_distributor_data] = useState('')
-	const [recents,set_recents]=useState(distributor_data?.recents)
-	const [products,set_products]=useState([])
-
 	const payload = {
 		_id : id
 	}
-	const get_User_Data=async(payload)=>{
+
+	const toast = useToast();
+	//states
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
+	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
+
+	const [distributor_data,set_distributor_data] = useState('')
+	const [recents,set_recents]=useState(distributor_data?.recents)
+	const [products,set_products]=useState([])
+	//useEffects
+	//functions
+	//api calls
+	const get_distributor_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
-			console.log(response.data)
-			return set_distributor_data(response?.data)
+			console.log(response)
+			set_distributor_data(response?.data)
+			const email = response?.data?.email_of_company
+			get_products_data(email)
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err}`,
+				status: 'error',
+				isClosable: true,
+			});
 		})
 	}
-	const get_Product_Data=async()=>{
+	const get_products_data=async(email)=>{
 		await Get_Products().then((response)=>{
 			const data = response?.data
-			console.log(data)
-			const result = data?.filter(item => item?.email_of_lister.includes(distributor_data?.email_of_company))
+			const result = data?.filter((item)=> item?.email_of_lister.toLowerCase().includes(email))
 			set_products(result)
 			console.log(result)
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err.data}`,
+				status: 'error',
+				isClosable: true,
+			});
 		})
 	}
-		
+
 	useEffect(()=>{
 		if (!payload || id === undefined){
-			alert("missing info could not fetch data")
-			router.back()
+			toast({
+				title: '',
+				description: `...broken link,we are redirecting you`,
+				status: 'info',
+				isClosable: true,
+			});
+			router.push('/manufacturers')
 		}else{
-			get_User_Data(payload)
-			get_Product_Data()
+			get_distributor_data(payload)
 		}
 	},[id])
 	return(
@@ -60,57 +88,83 @@ function Distributor(){
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<Flex direction='column' p='2'>
-				<Flex gap='1'>
-					<Text fontWeight='bold' fontSize='24px' textTransform='capitalize' >{distributor_data?.first_name} {distributor_data?.last_name}</Text>
-					{distributor_data?.suspension_status? 
-						<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
-						: 
-						null
-					}
-				</Flex>
 				<Flex p='1' direction='column' gap='2'>
-					<Flex gap='2'>
-						{distributor_data?.profile_photo_url == ''? 
-							<LocationCityIcon style={{fontSize:'150px',padding:'10px'}}/> 
+					<Flex gap='2' p='2'>
+						{distributor_data?.profile_photo_url == '' || !distributor_data?.profile_photo_url? 
+							<Flex gap='2' >
+								<AccountCircleIcon style={{fontSize:'150px',backgroundColor:"#eee",borderRadius:'150px'}} />
+							</Flex>
 						: 
-						<Flex gap='2' >
-						<Image boxSize='200px' src={distributor_data?.profile_photo_url} alt='profile photo' boxShadow='lg' objectFit='cover'/>
-						</Flex>
+							<Flex gap='2' >
+								<Image borderRadius='5' boxSize='150px' src={distributor_data?.profile_photo_url} alt='profile photo' boxShadow='lg' objectFit='cover'/>
+							</Flex>
 						}
-						<Flex direction='column' bg='#eee' p='2' boxShadow='lg' borderRadius='5' flex='1' gap='2'>
-								<Text fontWeight='bold' fontSize='20px'>Company Contacts</Text>
-								<Text>Name of company: {distributor_data?.company_name}</Text>
-								<Text>Email: {distributor_data?.email_of_company}</Text>
-								<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
-								<Text>Address: {distributor_data?.address_of_company}</Text>
+						<Flex direction='column'>
+							<Text fontSize='28px' ml='2' fontWeight='bold'>{distributor_data?.company_name}</Text>
+							{distributor_data?.suspension_status? 
+								<Text fontWeight='bold' color='red' p='1' m='1'>Suspended</Text>
+								: null
+							}
 						</Flex>
 					</Flex>
-					<Flex direction='column' gap='2' bg='#eee' p='2' boxShadow='lg' borderRadius='5'>
-							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
-							<Text>Contact: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
+					<Flex direction='column' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
+							<Text>Name: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
+							<Text>Email: {distributor_data?.email_of_company}</Text>
+							<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
+							<Text>Address: {distributor_data?.address_of_company}</Text>
 					</Flex>
-					<Flex direction='column' boxShadow='lg' borderRadius='5' bg='#eee' p='2'>
-						<Text fontWeight='bold'>Description</Text>
-						<Text>{distributor_data?.description}</Text>
-					</Flex>
-					<Flex direction='column' gap='2'>
-						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Distributor</Text>
-						{distributor_data?.industries?.length === 0 ?
+					<Flex direction='column'>
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
+						{distributor_data?.description === ''? 
 							<Flex justify='center' align='center' h='15vh'>
-								<Text>The User has not seletected an industry to specialize in yet</Text>
+								<Text>The User has not created a bio/description</Text>
 							</Flex>
 							:
-							<Flex wrap='Wrap'> 
-							{distributor_data?.industries?.map((item)=>{
+							<Flex mt='2' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
+								<Text>{distributor_data?.description}sdjklel</Text>
+							</Flex>
+						}
+					</Flex>
+					<Flex direction='column' gap='2'>
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Manufacturer</Text>
+						{distributor_data?.industries?.length === 0 ?
+								<Flex justify='center' align='center' h='15vh' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
+									<Text>The User has not seletected an industry to specialize in yet</Text>
+								</Flex>
+								:
+								<Flex wrap='Wrap'> 
+								{distributor_data?.industries?.map((item)=>{
+									return(
+										<Industry key={item._id} item={item}/>
+									)
+								})}
+							</Flex>
+							}
+					</Flex>
+					<Flex direction='column' gap='2'>
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
+						{distributor_data?.experts?.length === 0 ?
+							<Flex justify='center' align='center' h='15vh'>
+								<Text>The User has not added experts to this profile.</Text>
+							</Flex>
+						:
+						<Flex overflowY='scroll' h='40vh' m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column' boxShadow='lg'> 
+							{distributor_data?.experts?.map((item)=>{
 								return(
-									<Industry key={item?._id} item={item}/>
+									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+										<Flex direction='column'>
+											<Text fontWeight='bold'>Email: {item.email}</Text>
+											<Text>Mobile: {item.mobile}</Text>
+											<Text>Role: {item.role}</Text>
+											<Text>Description: {item.description}</Text>
+										</Flex>
+									</Flex>
 								)
 							})}
 						</Flex>
 						}
 					</Flex>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products</Text>
-					
 					{products?.length === 0?
 						<Flex align='center' justify='center' bg='#eee' h='10vh' p='3'>
 							<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
@@ -124,35 +178,16 @@ function Distributor(){
 							})}
 						</Flex>
 					}
-					<Flex direction='column' gap='2' p='2'>
-						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
-						{distributor_data?.experts?.length === 0 ?
-							<Flex justify='center' align='center' h='15vh'>
-								<Text>The User has not added experts to this profile.</Text>
-							</Flex>
-							:
-							<Flex gap='2' overflowY='scroll' h='30vh' direction='column'> 
-							{distributor_data?.experts?.map((item)=>{
-								return(
-									<Flex key={item?._id} bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
-										<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
-										<Flex direction='column'>
-											<Text fontWeight='bold'>Email: {item?.email}</Text>
-											<Text>Mobile: {item?.mobile}</Text>
-											<Text>Role: {item?.role}</Text>
-										</Flex>
-									</Flex>
-								)
-							})}
-						</Flex>
+					<Flex p='2' gap='2'>
+						<Button flex='1' bg='#009393' color='#fff'>
+		                    <Link href={`mailto: ${distributor_data?.email_of_company}`} isExternal>Email Distributor</Link>
+		                </Button>
+						{distributor_data?.suspension_status? 
+							<Button flex='1' bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
+							: 
+							<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
 						}
 					</Flex>
-					<Button bg='#009393' color='#fff'>Contact Distributor by email</Button>
-					{distributor_data?.suspension_status? 
-						<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
-						: 
-						<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
-					}
 				</Flex>
 			</Flex>
 		</Flex>

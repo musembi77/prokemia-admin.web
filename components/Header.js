@@ -1,19 +1,28 @@
 import React,{useState,useEffect} from 'react'
-import {Flex, Text,Button,Stack,Divider} from '@chakra-ui/react'
+import {Flex, Text,Button,Stack,Divider,useToast} from '@chakra-ui/react'
 import {Menu,Receipt,Close,Add,HorizontalRule,ArrowForward,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
 import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 import Cookies from 'universal-cookie';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
-function Header(){
+export default function Header(){
 	const [showmenubar,setshowmenubar]=useState(false);
 	const router = useRouter();
+	const toast = useToast();
 	const cookies = new Cookies();
   	let token = cookies.get('admin_token');
 
   	useEffect(()=>{
-	    if (!token)
+	    if (!token){
+	    	toast({
+              title: '',
+              description: `You need to signed in, to have access`,
+              status: 'info',
+              isClosable: true,
+            });
 	    	router.push("/")
+	    }
 	},[token])
 	const handle_LogOut=()=>{
 		cookies.remove('admin_token', { path: '/' });
@@ -23,7 +32,10 @@ function Header(){
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center' position='sticky' top='0px' zIndex='10'>
 			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#000' fontWeight='bold' >Admin</Text>
-			<Flex align='center' gap='2'>
+			<Flex align='center' gap='3'>
+				<Widgets onClick={(()=>{router.push("/dashboard")})}/>
+				<NotificationsActiveIcon onClick={(()=>{router.push("/notifications")})}/>
+				<Chat onClick={(()=>{router.push("/hub")})}/>
 				<Button w='100%' bg='#000' color='#fff' onClick={handle_LogOut}>Log-out</Button>
 				{showmenubar ? 
 					<Close onClick={(()=>{setshowmenubar(!showmenubar)})}/>
@@ -40,71 +52,51 @@ function Header(){
 	)
 }
 
-export default Header;
-
 const navigation=[
 	{
 		id:1,
-		title:'Dashboard',
-		link:'dashboard',
-		logo:<Widgets/>
-	},
-	{
-		id:2,
-		title:'Notifications',
-		link:'notifications',
-		logo:<FactCheck/>
-	},
-	{
-		id:3,
 		title:'Inventory',
 		link:'inventory',
 		logo:<Inventory/>
 	},
 	{
-		id:4,
+		id:2,
 		title:'Orders',
 		link:'orders',
 		logo:<Receipt/>
 	},
 	{
-		id:5,
-		title:'The Hub',
-		link:'hub',
-		logo:<Chat/>
-	},
-	{
-		id:6,
+		id:3,
 		title:'Distributors',
 		link:'distributors',
 		logo:<Groups/>
 	},
 	{
-		id:7,
+		id:4,
 		title:'Salespersons',
 		link:'salespersons',
 		logo:<Groups/>
 	},
 	{
-		id:8,
+		id:5,
 		title:'Manufacturers',
 		link:'manufacturers',
 		logo:<Groups/>
 	},
 	{
-		id:9,
+		id:6,
 		title:'Customers',
 		link:'customers',
 		logo:<Groups/>
 	},
 	{
-		id:10,
+		id:7,
 		title:'Control',
 		link:'controls',
 		logo:<Tune/>
 	},
 	{
-		id:11,
+		id:8,
 		title:'Settings',
 		link:'settings',
 		logo:<Settings/>

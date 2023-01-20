@@ -1,99 +1,105 @@
+//modules
 import React,{useState,useEffect}from 'react';
 import {Flex,Text,Button,Input,Image,Select} from '@chakra-ui/react'
-import Header from '../components/Header.js'
+//utils
+import {useRouter} from 'next/router';
+//icons
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {useRouter} from 'next/router'
 import TuneIcon from '@mui/icons-material/Tune';
-import FilterManufacturerModal from '../components/modals/filterManufacturers.js';
+
+//api
 import Get_Manufacturers from '../pages/api/manufacturers/get_manufacturers.js';
 import Get_Industries from '../pages/api/controls/get_industries';
 import Get_Technologies from '../pages/api/controls/get_technologies'
+//components
+import Header from '../components/Header.js';
 
-function Manufacturers(){
+export default function Manufacturers(){
+	//utils
 	const router = useRouter();
-	const [isfiltermanufacturerModalvisible,setisfiltermanufacturerModalvisible]=useState(false);
+	//states
+
 	const [manufacturers_data, set_manufacturers_data]=useState([]);
 	const [industries_data, set_industries_data]=useState([]);
 	const [technologies_data, set_technologies_data]=useState([]);
 
 	const [filter_active, set_filter_active] = useState(false);
-	const [suspenstion_status,set_suspenstion_status] = useState('true')
-	const [subscription_status,set_subscription_status] = useState('')
+	const [suspenstion_status,set_suspenstion_status] = useState('true');
+	const [subscription_status,set_subscription_status] = useState('');
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
 	const [technology,set_technology] = useState('');
 
-
-	console.log(suspenstion_status)
-	useEffect(()=>{
-		console.log(suspenstion_status)
-		get_Industries_Data()
-		get_Technology_Data()
-		Get_Manufacturers().then((response)=>{
-			console.log(response.data)
-			const data = response.data
-			const result_data = data?.filter((item) =>  item?.email_of_company?.toLowerCase().includes(search_query) ||
-														item?.company_name?.toLowerCase().includes(search_query) || 
-														item?.first_name?.toLowerCase().includes(search_query) ||
-														item?.industry?.toLowerCase().includes(industry) ||
-														item?.technology?.toLowerCase().includes(technology) || 
-														item?.email_of_company?.includes(search_query) ||
-														item?.company_name?.includes(search_query) || 
-														item?.first_name?.includes(search_query) || 
-														item?.last_name?.includes(search_query) ||
-														item?.last_name?.toLowerCase().includes(search_query))
-
-			if (suspenstion_status === 'true'){
-				const result = result_data?.filter((item) => !item.suspension_status)
-				set_manufacturers_data(result)
-			}else if(suspenstion_status === 'false'){
-				const result = result_data?.filter((item) => item?.suspension_status)
-				set_manufacturers_data(result)
-			}else{
-				set_manufacturers_data(result_data)
-			}
-			// if(suspenstion_status === 'true'){
-			// 	const result = result_data?.filter((item) => !item.suspension_status)
-			// 	console.log(result)
-			// 	set_manufacturers_data(result);
-			// }else{
-			// 	const result = result_data?.filter((item) => item.suspension_status)
-			// 	console.log(result)
-			// 	set_manufacturers_data(result);
-			// }
-			// if(subscription_status === 'false'){
-			// 	const result = result_data?.filter((item) => item.subscription)
-			// 	console.log(result)
-			// 	set_manufacturers_data(result);
-			// }else{
-			// 	const result = result_data?.filter((item) => !	item.subscription)
-			// 	console.log(result)
-			// 	set_manufacturers_data(result);
-			// }
-		})
-	},[suspenstion_status,subscription_status,search_query])
+	const [sort,set_sort]=useState('desc');
+	//api
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_industries_data(result)
+		}).catch((err)=>{
+			set_industry([])
 		})
 	}
+
 	const get_Technology_Data=async()=>{
 		await Get_Technologies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_technologies_data(result)
+		}).catch((err)=>{
+			set_technology([])
 		})
 	}
+
+	const handle_get_manufacturers=async()=>{
+		await Get_Manufacturers().then((response)=>{
+			//console.log(response.data)
+			const data = response.data
+			if (sort === 'desc'){
+				const sorted_result = data.sort((a, b) => a.company_name.localeCompare(b.company_name))
+				//console.log(sorted_result)
+				if (suspenstion_status === 'true'){
+					const result = sorted_result?.filter((item) => !item.suspension_status)
+					set_manufacturers_data(result)
+				}else if(suspenstion_status === 'false'){
+					const result = sorted_result?.filter((item) => item?.suspension_status)
+					set_manufacturers_data(result)
+				}else{
+					set_manufacturers_data(sorted_result)
+				}
+			}else{
+				const sorted_result = data.sort((a, b) => b.company_name.localeCompare(a.company_name))
+				//console.log(sorted_result)
+				if (suspenstion_status === 'true'){
+					const result = sorted_result?.filter((item) => !item.suspension_status)
+					set_manufacturers_data(result)
+				}else if(suspenstion_status === 'false'){
+					const result = sorted_result?.filter((item) => item?.suspension_status)
+					set_manufacturers_data(result)
+				}else{
+					set_manufacturers_data(sorted_result)
+				}
+			}
+		}).catch((err)=>{
+			set_manufacturers_data([])
+		})
+	}
+	//functions
+	//useEffect
+	useEffect(()=>{
+		get_Industries_Data()
+		get_Technology_Data()
+		handle_get_manufacturers()
+	},[suspenstion_status,subscription_status,search_query,sort])
+
 	return(
 		<Flex direction='column'>
-			<FilterManufacturerModal isfiltermanufacturerModalvisible={isfiltermanufacturerModalvisible} setisfiltermanufacturerModalvisible={setisfiltermanufacturerModalvisible}/>
 			<Header />
 			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px'>Manufacturers</Text>
 			{filter_active? 
@@ -102,9 +108,9 @@ function Manufacturers(){
 			}
 			<Flex gap='2' p='2' align='center'>
 				<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
-				<Select placeholder='sort' w='100px'> 
-					<option>A - Z</option>
-					<option>Z - A</option>
+				<Select placeholder='sort' w='100px' onChange={((e)=>{set_sort(e.target.value)})}> 
+					<option value='desc'>A - Z</option>
+					<option value='asc'>Z - A</option>
 				</Select>
 			</Flex>
 			<Flex gap='2' p='2'>
@@ -113,11 +119,17 @@ function Manufacturers(){
 			</Flex>
 			{manufacturers_data.length == 0?
 				<Flex h='40vh' justify='center' align='center'>
-					<Text fontSize='28px' fontWeight='bold' color='grey'>No Users match your result</Text>
+					<Text fontSize='28px' fontWeight='bold' color='grey'>No Users match your search query</Text>
 				</Flex>
 			:
-				<Flex p='2' gap='2' wrap='Wrap'>
-					{manufacturers_data?.map((manufacturer_data)=>{
+				<Flex p='2' gap='2' direction='column'>
+					{manufacturers_data?.filter((item) => item?.email_of_company?.toLowerCase().includes(search_query.toLowerCase()) ||
+																item?.company_name?.toLowerCase().includes(search_query.toLowerCase()) || 
+																item?.first_name?.toLowerCase().includes(search_query.toLowerCase()) ||
+																item?.industry?.toLowerCase().includes(industry.toLowerCase()) ||
+																item?.technology?.toLowerCase().includes(technology.toLowerCase()) ||
+																item?.mobile_of_company?.includes(search_query) ||
+																item?.last_name?.toLowerCase().includes(search_query.toLowerCase())).map((manufacturer_data)=>{
 						return(
 							<div key={manufacturer_data?._id} >
 								<Manufacturer manufacturer_data={manufacturer_data}/>
@@ -130,15 +142,13 @@ function Manufacturers(){
 	)
 }
 
-export default Manufacturers;
-
 const Manufacturer=({manufacturer_data})=>{
 	const router = useRouter()
 	return(
-		<Flex direction='column' m='1' w='225px' boxShadow='dark-lg' h='200px' gap='1' bg='#eee' borderRadius='5'>
-			<Image h='70px' src='./Pro.png' bg='grey' alt='photo' objectFit='cover' border='1px solid #eee'/>
-			<Flex p='2' direction='column' flex='1' justify='space-between'>
-				<Text fontWeight='bold'>{manufacturer_data?.company_name}</Text>
+		<Flex boxShadow='lg' gap='1' bg='#fff' borderRadius='5'>
+			<Image boxSize='150px' src={manufacturer_data?.profile_photo_url == '' || !manufacturer_data?.profile_photo_url ? './Pro.png' : manufacturer_data?.profile_photo_url} bg='grey' alt='photo' objectFit='cover' border='1px solid #eee' borderRadius='5'/>
+			<Flex p='2' direction='column' flex='1' gap='2'>
+				<Text fontWeight='bold' fontSize='20px'>{manufacturer_data?.company_name}</Text>
 				<Text fontSize='14px'>{manufacturer_data?.mobile_of_company}</Text>
 				<Text fontSize='14px'>{manufacturer_data?.email_of_company}</Text>
 				<Button onClick={(()=>{router.push(`/manufacturer/${manufacturer_data?._id}`)})} bg='#009393' color='#fff'>View</Button>

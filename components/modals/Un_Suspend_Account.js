@@ -35,7 +35,8 @@ function Un_Suspend_Account_Modal({
     payload
     }){
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const router = useRouter()
+    const router = useRouter();
+    const toast = useToast();
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
@@ -69,19 +70,67 @@ function Un_Suspend_Account_Modal({
       if (confirm_name === name){
         if (acc_type === 'client'){
           await Un_Suspend_Client(payload).then(()=>{
-            alert("client account un-suspended")
+            toast({
+              title: '',
+              description: `${name} account has been activated`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'distributors'){
           await Un_Suspend_Distributor(payload).then(()=>{
-            alert("distributor account un-suspended")
+            toast({
+              title: '',
+              description: `${name} account has been activated`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'manufacturers'){
           await Un_Suspend_Manufacturer(payload).then(()=>{
-            alert("manufacturer account un-suspended")
+            toast({
+              title: '',
+              description: `${name} account has been activated`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
         }else if (acc_type === 'salespersons')
           await Un_Suspend_Salesperson(payload).then(()=>{
-            alert("salesperson account un-suspended")
+            toast({
+              title: '',
+              description: `${name} account has been activated`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
+                      title: '',
+                      description: err.response.data,
+                      status: 'error',
+                      isClosable: true,
+                  })
           })
       }else{
         alert("Wrong input")

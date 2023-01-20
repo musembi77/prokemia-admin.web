@@ -1,5 +1,5 @@
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image,Input} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,Input,useToast} from '@chakra-ui/react';
 import Header from '../../components/Header.js'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import {useRouter} from 'next/router';
@@ -7,9 +7,14 @@ import Get_Order from '../api/orders/get_order.js';
 import Edit_Order from '../api/orders/edit_order.js';
 import Create_Invoice_PDF from '../api/orders/create_invoice_pdf.js';
 import Create_Invoice from '../api/orders/create_invoice.js';
+import Reject_Order from '../api/orders/reject_order.js'
+import Approve_Order from '../api/orders/approve_order.js'
+import Delete_Order from '../api/orders/delete_order.js'
 
 function Order(){
 	const router = useRouter();
+	const toast = useToast();
+
 	const id = router.query;
 
 	const payload = {
@@ -26,10 +31,15 @@ function Order(){
 	}
 	useEffect(()=>{
 		if (!payload || id === undefined){
-			alert("broken link could not fetch data")
-			router.back()
+			toast({
+				title: '',
+				description: `...broken link, redirecting you`,
+				status: 'info',
+				isClosable: true,
+			});
+			router.push('/orders')
 		}else{
-			console.log(payload)
+			//console.log(payload)
 			get_Data(payload)
 		}
 	},[id])
@@ -84,13 +94,69 @@ function Order(){
     }
 		Create_Invoice_PDF(payload)
 	}
+
+	const Handle_Reject_Order=async()=>{
+		await Reject_Order(payload).then(()=>{
+			toast({
+				title: '',
+				description: `Order has been rejected`,
+				status: 'success',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err.response.data}`,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
+
+	const Handle_Approve_Order=async()=>{
+		await Approve_Order(payload).then(()=>{
+			toast({
+				title: '',
+				description: `Order has been approved`,
+				status: 'success',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err.response.data}`,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
+	const Handle_Delete_Order=async()=>{
+		await Delete_Order(payload).then(()=>{
+			toast({
+				title: '',
+				description: `Order has been delted`,
+				status: 'success',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err.response.data}`,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
 	return(
 		<Flex direction='column' gap='2'>
 			<Header />
 			{edit?
 				<Edit_Order_Item order_data={order_data} set_edit={set_edit}/>
 			:
-				<Flex p='1' direction='column' gap='2'>
+				<Flex p='4' direction='column' gap='2'>
 					<Flex boxShadow='lg' p='2' bg='#eee' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393' gap='2'>
 						<Text fontSize='28px' fontWeight='bold'>{order_data?.name_of_product}</Text>
 						<Text fontSize='18px'>Order Id: {order_data?._id}</Text>						
@@ -131,11 +197,22 @@ function Order(){
 						</Flex>
 					:
 						<Flex direction='column' gap='2'>
-							<Flex justify='center' gap='2'>
-								<Button bg='#009393' color='#fff' flex='1' onClick={handle_create_invoice}>Create Invoice</Button>
-								<Button bg='#000' color='#fff' flex='1' onClick={(()=>{set_edit(true)})}>Edit Order</Button>
-							</Flex>
-							<Button bg='#fff' color='red' border='1px solid red'>Reject Order</Button>	
+							{order_data.order_status === 'rejected'?
+								null
+							:
+								<Flex justify='center' gap='2'>
+									<Button bg='#009393' color='#fff' flex='1' onClick={handle_create_invoice}>Create Invoice</Button>
+									<Button bg='#000' color='#fff' flex='1' onClick={(()=>{set_edit(true)})}>Edit Order</Button>
+								</Flex>
+							}
+							{order_data.order_status === 'rejected'?
+								<Flex gap='2'>
+									<Button flex='1' bg='#fff' border='1px solid #000' onClick={Handle_Approve_Order}>Approve Order</Button>
+									<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={Handle_Delete_Order}>Delete Order</Button>
+								</Flex>
+							:
+								<Button bg='#fff' color='red' border='1px solid red' onClick={Handle_Reject_Order}>Reject Order</Button>	
+							}
 						</Flex>
 					}
 				</Flex>

@@ -1,6 +1,6 @@
 //modules imports
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,Link,useToast} from '@chakra-ui/react';
 import {useRouter} from 'next/router';
 //comsponents imports
 import Header from '../../components/Header.js'
@@ -16,8 +16,8 @@ function Salesperson(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
 
-	
-	const router = useRouter()
+	const toast = useToast();
+	const router = useRouter();
 	const query = router.query
 	const id = query.id
 
@@ -36,22 +36,17 @@ function Salesperson(){
 
 	useEffect(()=>{
 		if (!payload || id === undefined){
-			alert("missing info could not fetch data")
-			router.push("/salespersons")
+			toast({
+              title: '',
+              description: `...broken link, redirecting you.`,
+              status: 'info',
+              isClosable: true,
+            });
+			router.push('/salespersons')
 		}else{
 			get_data(payload)
 		}
 	},[])
-				// 	<Flex direction='column' gap='2'>
-				// 	<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Specializes in Industry</Text>
-				// 	<Flex wrap='Wrap'> 
-				// 		{industries.map((item)=>{
-				// 			return(
-				// 				<Industry key={item.id} item={item}/>
-				// 			)
-				// 		})}
-				// 	</Flex>
-				// </Flex>
 	return(
 		<Flex direction='column' gap='2'>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
@@ -60,7 +55,15 @@ function Salesperson(){
 			<Flex p='1' direction='column' gap='2'>
 				<Flex justify='space-between' gap='4'>
 					<Flex direction='column' align='center'>
-						<AccountBoxIcon style={{fontSize:'150px'}}/>
+						{salesperson_data?.profile_photo_url == '' || !salesperson_data?.profile_photo_url? 
+							<Flex gap='2' >
+								<AccountBoxIcon style={{fontSize:'150px',backgroundColor:"#eee",borderRadius:'150px'}} />
+							</Flex>
+						: 
+							<Flex gap='2' >
+								<Image borderRadius='5' boxSize='150px' src={salesperson_data?.profile_photo_url} alt='profile photo' boxShadow='lg' objectFit='cover'/>
+							</Flex>
+						}
 						<Text fontWeight='bold' fontSize='20px'>{salesperson_data?.first_name} {salesperson_data?.last_name}</Text>
 						{salesperson_data?.suspension_status? 
 							<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
@@ -74,18 +77,25 @@ function Salesperson(){
 							<Text><span style={{fontWeight:"bold"}}>Address:</span> {salesperson_data?.address}</Text>
 							<Text><span style={{fontWeight:"bold"}}>Company:</span>  {salesperson_data?.company_name}</Text>
 							<Text><span style={{fontWeight:"bold"}}>Joined in:</span> {salesperson_data?.joined_in}</Text>
-							<Flex align='center' color='#009393'>
-								<DoneAllIcon/>
-								<Text fontWeight='bold' >Open for Cosultancy</Text>
+							<Flex align='center' >
+								{salesperson_data?.open_to_consultancy? 
+									<Text fontWeight='bold' color='#009393' ><DoneAllIcon/> Open for Cosultancy</Text>
+								:
+									null
+								}
 							</Flex>
 					</Flex>
  				</Flex>
-				<Button bg='#009393' color='#fff'>Contact</Button>
-				{salesperson_data?.suspension_status? 
-					<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
-					: 
-					<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
-				}
+ 				<Flex p='2' gap='2'>
+					<Button flex='1' bg='#009393' color='#fff'>
+	                    <Link href={`mailto: ${salesperson_data?.email_of_salesperson}`} isExternal>Email Salesperson</Link>
+	                </Button>
+					{salesperson_data?.suspension_status? 
+						<Button flex='1' bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
+						: 
+						<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
+					}
+				</Flex>
 			</Flex>
 		</Flex>
 	)

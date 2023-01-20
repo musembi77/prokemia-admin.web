@@ -1,58 +1,85 @@
+//modules
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image} from '@chakra-ui/react'
-import Person2Icon from '@mui/icons-material/Person2';
-import FactoryIcon from '@mui/icons-material/Factory';
+import {Flex,Text,Button,Image,Link,useToast} from '@chakra-ui/react'
+import {useRouter} from 'next/router';
+//components
+import SuspendAccountModal from '../../components/modals/suspendAccount.js';
+import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.js';
 import Header from '../../components/Header.js';
 import Product from '../../components/Product.js';
-import {useRouter} from 'next/router';
-import SuspendAccountModal from '../../components/modals/suspendAccount.js';
+//icons
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Person2Icon from '@mui/icons-material/Person2';
+import FactoryIcon from '@mui/icons-material/Factory';
 //api calls
-import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.js';
 import Get_Manufacturer from '../api/manufacturers/get_manufacturer.js'
 import Get_Products from '../api/Products/get_products.js'
 
-function Manufacturer(){
-	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
-	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
-
+export default function Manufacturer(){
+	//utils
 	const router = useRouter()
 	const query = router.query
 	const id = query?.id
 
-	const [manufacturer_data,set_manufacturer_data] = useState('')
-	const [recents,set_recents]=useState(manufacturer_data?.recents)
-	const [products,set_products]=useState([])
-
 	const payload = {
 		_id : id
 	}
-	const get_data=async(payload)=>{
+
+	const toast = useToast();
+	//states
+	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
+	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
+
+	const [manufacturer_data,set_manufacturer_data] = useState('')
+	const [recents,set_recents]=useState(manufacturer_data?.recents)
+	const [products,set_products]=useState([])
+	//useEffects
+	//functions
+	//api calls
+	const get_manufacturer_data=async(payload)=>{
 		await Get_Manufacturer(payload).then((response)=>{
 			console.log(response)
-			return set_manufacturer_data(response.data)
+			set_manufacturer_data(response?.data)
+			const email = response?.data?.email_of_company
+			get_products_data(email)
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err}`,
+				status: 'error',
+				isClosable: true,
+			});
 		})
 	}
-	const get_Data=async()=>{
+	const get_products_data=async(email)=>{
 		await Get_Products().then((response)=>{
-			const data = response.data
-			const result = data?.filter(item => item.email_of_lister.includes(manufacturer_data?.email_of_company))
+			const data = response?.data
+			const result = data?.filter((item)=> item?.email_of_lister.toLowerCase().includes(email))
 			set_products(result)
 			console.log(result)
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				title: '',
+				description: `${err.data}`,
+				status: 'error',
+				isClosable: true,
+			});
 		})
 	}
-	
-	// const handle_suspension=async()=>{
-	// 	await Suspend_Client(payload).then(()=>{
-	// 		alert("account suspended")
-	// 	})
-	// }
+
 	useEffect(()=>{
 		if (!payload || id === undefined){
-			alert("missing info could not fetch data")
-			router.back()
+			toast({
+				title: '',
+				description: `...broken link,we are redirecting you`,
+				status: 'info',
+				isClosable: true,
+			});
+			router.push('/distributors')
 		}else{
-			get_data(payload)
-			get_Data()
+			get_manufacturer_data(payload)
 		}
 	},[id])
 	return(
@@ -61,17 +88,26 @@ function Manufacturer(){
 			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} manufacturer_data={manufacturer_data} acc_type={"manufacturers"} payload={payload}/>
 			<Header />
 			<Flex p='2' direction='column' gap='2'>
-				<Flex gap='1'>
-					<Text fontWeight='bold' fontSize='32px' textTransform='capitalize' >{manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
-					{manufacturer_data?.suspension_status? 
-						<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
-						: 
-						null
+				<Flex gap='2' p='2'>
+					{manufacturer_data?.profile_photo_url == '' || !manufacturer_data?.profile_photo_url? 
+						<Flex gap='2' >
+							<AccountCircleIcon style={{fontSize:'150px',backgroundColor:"#eee",borderRadius:'150px'}} />
+						</Flex>
+					: 
+						<Flex gap='2' >
+							<Image borderRadius='5' boxSize='150px' src={manufacturer_data?.profile_photo_url} alt='profile photo' boxShadow='lg' objectFit='cover'/>
+						</Flex>
 					}
+					<Flex direction='column'>
+						<Text fontSize='28px' ml='2' fontWeight='bold'>{manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
+						{manufacturer_data?.suspension_status? 
+							<Text fontWeight='bold' color='red' p='1' m='1'>Suspended</Text>
+							: null
+						}
+					</Flex>
 				</Flex>
-				<Flex direction='column' bg='#eee' p='2'>
-						<Text fontWeight='bold' fontSize='20px'>Contacts</Text>
-						<Text>Name of company: {manufacturer_data?.company_name}</Text>
+				<Flex direction='column' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
+						<Text>Name: {manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
 						<Text>Email: {manufacturer_data?.email_of_company}</Text>
 						<Text>Mobile:{manufacturer_data?.mobile_of_company}</Text>
 						<Text>Address: {manufacturer_data?.address_of_company}</Text>
@@ -83,7 +119,7 @@ function Manufacturer(){
 							<Text>The User has not created a bio/description</Text>
 						</Flex>
 						:
-						<Flex m='1' h='10vh' p='2' borderRadius='5' bg='#eee'>
+						<Flex mt='2' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
 							<Text>{manufacturer_data?.description}sdjklel</Text>
 						</Flex>
 					}
@@ -91,7 +127,7 @@ function Manufacturer(){
 				<Flex direction='column' gap='2'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Manufacturer</Text>
 					{manufacturer_data?.industries?.length === 0 ?
-							<Flex justify='center' align='center' h='15vh'>
+							<Flex justify='center' align='center' h='15vh' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
 								<Text>The User has not seletected an industry to specialize in yet</Text>
 							</Flex>
 							:
@@ -104,27 +140,26 @@ function Manufacturer(){
 						</Flex>
 						}
 				</Flex>
-				<Flex direction='column' gap='2' p='2'>
+				<Flex direction='column' gap='2'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
 					{manufacturer_data?.experts?.length === 0 ?
-					<Flex justify='center' align='center' h='15vh'>
-						<Text>The User has not added experts to this profile.</Text>
-					</Flex>
+						<Flex justify='center' align='center' h='15vh'>
+							<Text>The User has not added experts to this profile.</Text>
+						</Flex>
 					:
-					<Flex overflowY='scroll' h='30vh' m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column'> 
-					{manufacturer_data?.experts?.map((item)=>{
-						return(
-							<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
-								<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
-								<Flex direction='column'>
-									<Text fontWeight='bold'>Email: {item.email}</Text>
-									<Text>Mobile: {item.mobile}</Text>
-									<Text>Role: {item.role}</Text>
-									<Text>Description: {item.description}</Text>
+					<Flex overflowY='scroll' h='40vh' m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column' boxShadow='lg'> 
+						{manufacturer_data?.experts?.map((item)=>{
+							return(
+								<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+									<Flex direction='column'>
+										<Text fontWeight='bold'>Email: {item.email}</Text>
+										<Text>Mobile: {item.mobile}</Text>
+										<Text>Role: {item.role}</Text>
+										<Text>Description: {item.description}</Text>
+									</Flex>
 								</Flex>
-							</Flex>
-						)
-					})}
+							)
+						})}
 					</Flex>
 					}
 				</Flex>
@@ -158,18 +193,21 @@ function Manufacturer(){
 					</Flex>
 					}
 				</Flex>
-				<Button bg='#009393' color='#fff'>Contact by Email</Button>
-				{manufacturer_data?.suspension_status? 
-					<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
-					: 
-					<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
-				}
+				<Flex p='2' gap='2'>
+					<Button flex='1' bg='#009393' color='#fff'>
+	                    <Link href={`mailto: ${manufacturer_data?.email_of_company}`} isExternal>Email Manufacturer</Link>
+	                </Button>
+					{manufacturer_data?.suspension_status? 
+						<Button flex='1' bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
+						: 
+						<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
+					}
+				</Flex>
+				
 			</Flex>
 		</Flex>
 	)
 }
-
-export default Manufacturer;
 
 const Industry=({item})=>{
 	return(

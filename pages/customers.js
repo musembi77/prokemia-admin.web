@@ -30,7 +30,8 @@ function Customers(){
 			const data = response.data
 			if (sort == 'desc'){
 				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
-				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query))
+				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
+																	item?.first_name.toLowerCase().includes(search_query.toLowerCase()))
 				if(status === 'true'){
 					const result = result_data?.filter((item) => item.suspension_status)
 					console.log(result)
@@ -42,7 +43,8 @@ function Customers(){
 				}
 			}else{
 				const sorted_result = data.sort((a, b) => b.first_name.localeCompare(a.first_name))
-				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query) || item?.first_name.toLowerCase().includes(search_query))
+				const result_data = sorted_result?.filter((item) => item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
+																	item?.first_name.toLowerCase().includes(search_query.toLowerCase()))
 				if(status === 'true'){
 					const result = result_data?.filter((item) => item.suspension_status)
 					console.log(result)
@@ -53,7 +55,6 @@ function Customers(){
 					set_clients_data(result_data);
 				}
 			}
-
 		})
 	},[status,search_query,sort])
 	return(
@@ -77,14 +78,22 @@ function Customers(){
 					<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 				</Flex>
 				
-				<Flex direction='column' p='2' gap='2'>
-					{clients_data?.map((client_data)=>{
-						return(
-							<div key={client_data?._id} >
-								<Customer client_data={client_data}/>
-							</div>
-						)
-					})}
+				<Flex direction='column' gap='2' p='2'>
+					{clients_data?.length === 0?
+						<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center'>
+							<Text color='grey' fontSize='26px'>No customers meet the query search terms</Text>
+						</Flex>
+					:
+						<Flex direction='column' gap='2' h='90vh' overflowY='scroll'>
+							{clients_data?.map((client_data)=>{
+								return(
+									<div key={client_data?._id} >
+										<Customer client_data={client_data}/>
+									</div>
+								)
+							})}
+						</Flex>
+					}
 				</Flex>
 			</Flex>
 		</Flex>
@@ -96,15 +105,14 @@ export default Customers;
 const Customer=({client_data})=>{
 	const router = useRouter()
 	return(
-		<Flex direction='column' m='1' w='100%' gap='1' bg='#fff' borderRadius='5' p='2' boxShadow='lg' cursor='pointer'>
+		<Flex direction='column' w='100%' gap='1' bg='#fff' borderRadius='5' p='2' boxShadow='lg' cursor='pointer'>
 			<Flex justify='space-between'>
 				<Text fontWeight='bold' fontSize='24px'>{client_data?.first_name},{client_data?.last_name}</Text>
 				<Text border={client_data?.suspension_status === true ? '1px solid red' : null} p='1'>{client_data?.suspension_status === true? 'Suspended' : null}</Text>
 			</Flex>
 			<Text>{client_data?.email_of_company}</Text>
 			<Text>{client_data?.company_name}</Text>
-
-			<Text onClick={(()=>{router.push(`/customer/${client_data?._id}`)})} cursor='pointer' color='#009393'>View</Text>
+			<Button bg='#009393' color='#fff' onClick={(()=>{router.push(`/customer/${client_data?._id}`)})}>View</Button>
 		</Flex>
 	)
 }
