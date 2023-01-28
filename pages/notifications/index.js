@@ -347,7 +347,20 @@ const Industry=({item})=>{
 	}
 	const handle_approve_industry=async()=>{
 		await Approve_Industry(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description: `${item?.title} has been approved`,
+              status: 'info',
+              isClosable: true,
+            });
+			router.back()
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description: err.response?.data,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 	return(
@@ -367,7 +380,20 @@ const Technology=({item})=>{
 	}
 	const handle_approve_technology=async()=>{
 		await Approve_Technology(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description: `${item?.title} has been approved`,
+              status: 'info',
+              isClosable: true,
+            });
+			router.back()
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description: err.response?.data,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 	return(

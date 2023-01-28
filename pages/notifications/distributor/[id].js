@@ -1,6 +1,6 @@
 import React,{useState,useEffect}from 'react';
 //module imports
-import {Flex,Text,Button,Image} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,useToast} from '@chakra-ui/react';
 import {useRouter} from 'next/router'
 import Person2Icon from '@mui/icons-material/Person2';
 //components imports
@@ -15,7 +15,8 @@ import Get_Products from '../../api/Products/get_products.js'
 function Distributor(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 
-	const router = useRouter()
+	const router = useRouter();
+	const toast = useToast()
 	const query = router.query
 	const id = query?.id
 
@@ -54,8 +55,20 @@ function Distributor(){
 
 	const handle_approve_distributor=async()=>{
 		await Approve_Distributor(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description: `${distributor_data.company_name} has been approved`,
+              status: 'info',
+              isClosable: true,
+            });
 			router.back()
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description: err.response?.data,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 	return(
@@ -64,7 +77,7 @@ function Distributor(){
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<Flex direction='column' p='2'>
 				<Flex gap='1'>
-					<Text fontWeight='bold' fontSize='24px' textTransform='capitalize' >{distributor_data?.first_name} {distributor_data?.last_name}</Text>
+					<Text fontWeight='bold' fontSize='24px' textTransform='capitalize' >{distributor_data?.company_name}</Text>
 					{distributor_data?.suspension_status? 
 						<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
 						: 
@@ -81,8 +94,7 @@ function Distributor(){
 				</Flex>
 					<Flex direction='column' gap='2' bg='#eee' p='2'>
 							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
-							<Text>Key contact: {distributor_data?.key_contact}</Text>
-							<Text>Position: Manager</Text>
+							<Text>Name: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
 					</Flex>
 					<Flex direction='column'>
 						<Text fontWeight='bold'>Description</Text>

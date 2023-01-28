@@ -30,8 +30,8 @@ const create_invoice=(payload)=>{
 	    },
 	    // Your recipient
 	    "client": {
-	        "company": payload?.name_of_client,
-	        "address": payload?.company_name_of_client,
+	        "company": payload?.company_name_of_client,
+	        "address": payload?.name_of_client,
 	        "zip": payload?.email_of_client,
 	        "city": payload?.mobile_of_client,
 	        "country": payload?.location_of_client,

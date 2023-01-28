@@ -21,6 +21,10 @@ function Product({item}){
 					<Text fontWeight='bold'>Brand:</Text>
 					<Text>{item?.brand}</Text>
 				</Flex>
+				<Flex direction='column'>
+					<Text fontWeight='bold'>Manufactured by:</Text>
+					<Text>{item?.manufactured_by}</Text>
+				</Flex>
 			</Flex>
 			<Button m='1' color='#fff' bg='#009393' p='1' cursor='pointer' onClick={(()=>{router.push(`/product/${item?._id}`)})} border='1px solid #009393'>View product</Button>
 		</Flex>

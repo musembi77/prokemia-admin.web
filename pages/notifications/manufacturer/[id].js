@@ -1,5 +1,5 @@
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image} from '@chakra-ui/react'
+import {Flex,Text,Button,Image,useToast} from '@chakra-ui/react'
 import Person2Icon from '@mui/icons-material/Person2';
 import FactoryIcon from '@mui/icons-material/Factory';
 import Header from '../../../components/Header.js';
@@ -15,6 +15,7 @@ function Manufacturer(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 
 	const router = useRouter()
+	const toast = useToast();
 	const query = router.query
 	const id = query?.id
 
@@ -56,8 +57,20 @@ function Manufacturer(){
 	},[id])
 	const handle_approve_manufacturer=async()=>{
 		await Approve_Manufacturer(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description: `${manufacturer_data.company_name} has been approved`,
+              status: 'info',
+              isClosable: true,
+            });
 			router.back()
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description: err.response?.data,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 	return(
@@ -66,7 +79,7 @@ function Manufacturer(){
 			<Header />
 			<Flex p='2' direction='column' gap='2'>
 				<Flex gap='1'>
-					<Text fontWeight='bold' fontSize='32px' textTransform='capitalize' >{manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
+					<Text fontWeight='bold' fontSize='32px' textTransform='capitalize' >{manufacturer_data?.company_name}</Text>
 					{manufacturer_data?.suspension_status? 
 						<Text fontSize='16px' opacity='.6' border='1px solid red' w='100px' p='1' m='1'>Suspended</Text>
 						: 
@@ -79,6 +92,10 @@ function Manufacturer(){
 						<Text>Email: {manufacturer_data?.email_of_company}</Text>
 						<Text>Mobile:{manufacturer_data?.mobile_of_company}</Text>
 						<Text>Address: {manufacturer_data?.address_of_company}</Text>
+				</Flex>
+				<Flex direction='column' gap='2' bg='#eee' p='2'>
+						<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+						<Text>Name: {manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
 				</Flex>
 				<Flex direction='column'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>

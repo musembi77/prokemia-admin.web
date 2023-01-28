@@ -41,6 +41,7 @@ function Inventory(){
 			const result =  data.filter(v => v.verification_status)
 			const result_data = result?.filter((item) => 	item?.industry.includes(search_query) ||
 														item?.technology.includes(search_query) ||
+														item?.email_of_lister.includes(search_query) ||
 														item?.name_of_product.toLowerCase().includes(search_query) ||
 														item?.brand.toLowerCase().includes(search_query) ||
 														item?.function.toLowerCase().includes(search_query) ||
@@ -131,6 +132,10 @@ function Inventory(){
 export default Inventory;
 
 const FilterBar=({set_filter_active,set_industry,set_technology,set_search_query,industries_data,technologies_data})=>{
+	const Handle_Clear=()=>{
+		set_search_query('')
+		set_filter_active(false)
+	}
 	return(
 			<Flex color='#fff' direction='column' gap='3' p='4' w='50vw' h='90vh' bg='#090F14' position='absolute' top='75px' left='0px' zIndex='2' boxShadow='dark-lg'>
 				<Flex justify='space-between' p='2'>
@@ -159,6 +164,7 @@ const FilterBar=({set_filter_active,set_industry,set_technology,set_search_query
 					</Select>
 				</Flex>
 				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>
+				<Button bg='#fff' borderRadius='0' color='#000' onClick={Handle_Clear}>Clear Filter Results</Button>
 			</Flex>
 	)
 }

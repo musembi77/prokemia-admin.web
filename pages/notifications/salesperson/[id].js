@@ -1,5 +1,5 @@
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,useToast} from '@chakra-ui/react';
 import Header from '../../../components/Header.js'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -10,6 +10,7 @@ import Approve_Salesperson from '../../api/salespeople/approve_salesperson.js'
 
 function Salesperson(){
 	const router = useRouter();
+	const toast = useToast();
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 
 	const [salesperson_data,set_salesperson_data] = useState('')
@@ -30,8 +31,20 @@ function Salesperson(){
 	}
 	const handle_approve_salesperson=async()=>{
 		await Approve_Salesperson(payload).then(()=>{
-			alert('success')
+			toast({
+              title: '',
+              description: `${salesperson_data.company_name} has been approved`,
+              status: 'info',
+              isClosable: true,
+            });
 			router.back()
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description: err.response?.data,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 

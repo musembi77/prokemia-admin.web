@@ -59,7 +59,7 @@ export default function Distributors(){
 			console.log(response.data)
 			const data = response.data
 			if (sort === 'desc'){
-				const sorted_result = data.sort((a, b) => a.company_name.localeCompare(b.company_name))
+				const sorted_result = data.filter(v => v.verification_status).sort((a, b) => a.company_name.localeCompare(b.company_name))
 				console.log(sorted_result)
 				if (suspenstion_status === 'true'){
 					const result = sorted_result?.filter((item) => !item.suspension_status)
@@ -71,7 +71,7 @@ export default function Distributors(){
 					set_distributors_data(sorted_result)
 				}
 			}else{
-				const sorted_result = data.sort((a, b) => b.company_name.localeCompare(a.company_name))
+				const sorted_result = data.filter(v => v.verification_status).sort((a, b) => b.company_name.localeCompare(a.company_name))
 				//console.log(sorted_result)
 				if (suspenstion_status === 'true'){
 					const result = sorted_result?.filter((item) => !item.suspension_status)

@@ -101,6 +101,11 @@ function Distributor(){
 						}
 						<Flex direction='column'>
 							<Text fontSize='28px' ml='2' fontWeight='bold'>{distributor_data?.company_name}</Text>
+							{distributor_data?.subscription? 
+								<Text fontWeight='bold' bg='#009393' color='#fff' borderRadius='5' p='2' m='1'>Subscribed</Text>
+								: 
+								<Text fontWeight='bold' bg='orange' color='#fff' borderRadius='5' p='2' m='1'>Not Subscribed</Text>
+							}
 							{distributor_data?.suspension_status? 
 								<Text fontWeight='bold' color='red' p='1' m='1'>Suspended</Text>
 								: null
@@ -121,7 +126,7 @@ function Distributor(){
 							</Flex>
 							:
 							<Flex mt='2' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
-								<Text>{distributor_data?.description}sdjklel</Text>
+								<Text>{distributor_data?.description}</Text>
 							</Flex>
 						}
 					</Flex>
@@ -153,7 +158,8 @@ function Distributor(){
 								return(
 									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 										<Flex direction='column'>
-											<Text fontWeight='bold'>Email: {item.email}</Text>
+											<Text fontWeight='bold'>Name: {item.name}</Text>
+											<Text >Email: {item.email}</Text>
 											<Text>Mobile: {item.mobile}</Text>
 											<Text>Role: {item.role}</Text>
 											<Text>Description: {item.description}</Text>

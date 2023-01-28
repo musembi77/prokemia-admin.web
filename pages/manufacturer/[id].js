@@ -99,7 +99,7 @@ export default function Manufacturer(){
 						</Flex>
 					}
 					<Flex direction='column'>
-						<Text fontSize='28px' ml='2' fontWeight='bold'>{manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
+						<Text fontWeight='bold' fontSize='32px' textTransform='capitalize' >{manufacturer_data?.company_name}</Text>
 						{manufacturer_data?.suspension_status? 
 							<Text fontWeight='bold' color='red' p='1' m='1'>Suspended</Text>
 							: null
@@ -112,6 +112,10 @@ export default function Manufacturer(){
 						<Text>Mobile:{manufacturer_data?.mobile_of_company}</Text>
 						<Text>Address: {manufacturer_data?.address_of_company}</Text>
 				</Flex>
+				<Flex direction='column' gap='2' bg='#eee' p='2'>
+						<Text fontWeight='bold' fontSize='20px'>key_contact details</Text>
+						<Text>Name: {manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
+				</Flex>
 				<Flex direction='column'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
 					{manufacturer_data?.description === ''? 
@@ -120,7 +124,7 @@ export default function Manufacturer(){
 						</Flex>
 						:
 						<Flex mt='2' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
-							<Text>{manufacturer_data?.description}sdjklel</Text>
+							<Text>{manufacturer_data?.description}</Text>
 						</Flex>
 					}
 				</Flex>
@@ -152,7 +156,8 @@ export default function Manufacturer(){
 							return(
 								<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 									<Flex direction='column'>
-										<Text fontWeight='bold'>Email: {item.email}</Text>
+										<Text fontWeight='bold'>Name: {item.name}</Text>
+										<Text >Email: {item.email}</Text>
 										<Text>Mobile: {item.mobile}</Text>
 										<Text>Role: {item.role}</Text>
 										<Text>Description: {item.description}</Text>
@@ -169,7 +174,7 @@ export default function Manufacturer(){
 						<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
 					</Flex>
 					:
-					<Flex direction='column' p='1' wrap='Wrap'>
+					<Flex p='1' wrap='Wrap'>
 						{products?.map((item)=>{
 							return(
 								<Product key={item._id} item={item}/>
@@ -244,11 +249,13 @@ const industries=[
 const Distributor=({item})=>{
 	const router = useRouter()
 	return(
-		<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
+		<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 			<FactoryIcon style={{fontSize:'70px',textAlign:'center'}}/>
 			<Flex direction='column' ml='2'>
-				<Text fontWeight='bold'>Email: {item.email}</Text>
+				<Text fontWeight='bold'>Name: {item.name}</Text>
+				<Text>Email: {item.email}</Text>
 				<Text>Mobile: {item.mobile}</Text>
+				<Text>Industry: {item.industry}</Text>
 			</Flex>
 		</Flex>
 	)
