@@ -94,30 +94,29 @@ function Distributor(){
 				</Flex>
 					<Flex direction='column' gap='2' bg='#eee' p='2'>
 							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
-							<Text>Name: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
+							<Text>Name: {distributor_data?.contact_person_name}</Text>
+							<Text>Mobile: {distributor_data?.contact_mobile}</Text>
+							<Text>Email: {distributor_data?.contact_email}</Text>
 					</Flex>
 					<Flex direction='column'>
-						<Text fontWeight='bold'>Description</Text>
-						<Text>{distributor_data?.description}</Text>
-					</Flex>
-					<Flex direction='column' gap='2'>
-						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Distributor</Text>
-						{distributor_data?.industries?.length === 0 ?
+						<Text fontSize='20px' fontWeight='bold' >Description</Text>
+						{distributor_data?.description === ''? 
 							<Flex justify='center' align='center' h='15vh'>
-								<Text>The User has not seletected an industry to specialize in yet</Text>
+								<Text>The User has not created a bio/description</Text>
 							</Flex>
 							:
-							<Flex wrap='Wrap'> 
-							{distributor_data?.industries?.map((item)=>{
-								return(
-									<Industry key={item._id} item={item}/>
-								)
-							})}
-						</Flex>
+							<Flex m='1' h='10vh' p='2' borderRadius='5' bg='#eee'>
+								<Text>{distributor_data?.description}</Text>
+							</Flex>
 						}
 					</Flex>
+					<Flex direction='column' gap='2'>
+						<Text fontSize='20px' fontWeight='bold' >Industry by this Manufacturer</Text>
+							<Flex bg='#eee' borderRadius='5' justify='center' align='center' h='15vh'>
+								<Text>The User has not seletected an industry to specialize in yet</Text>
+							</Flex>
+					</Flex>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products</Text>
-					
 					{products?.length === 0?
 						<Flex align='center' justify='center' bg='#eee' h='10vh' p='3'>
 							<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
@@ -126,7 +125,25 @@ function Distributor(){
 						<Flex wrap='Wrap' gap='2'>
 							{products?.map((item)=>{
 								return(
-									<Product key={item._id} item={item}/>
+									<Flex key={item?._id} bg='#eee' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
+										<Flex direction='column' position='relative' p='2'>
+											{item?.sponsored ? 
+												<Flex position='absolute' top='2' right='2' bg='#009393' p='2' borderRadius='5' color='#fff'>
+													<DoneAllIcon/>
+												</Flex>
+												:null}
+											<Text color='#009393' fontWeight='bold' fontSize="24px">{item?.name_of_product}</Text>
+											<Flex gap='2'>
+												<Text fontWeight='bold'>Industry:</Text>
+												<Text>{item?.industry}</Text>
+											</Flex>
+											<Flex gap='2'>
+												<Text fontWeight='bold'>Technology:</Text>
+												<Text>{item?.technology}</Text>
+											</Flex>
+										</Flex>
+										<Text w='60px' fontWeight='bold' bg='#fff' p='2' color='#009393' cursor='pointer' onClick={(()=>{router.push(`/product/${item?._id}`)})}>View product</Text>
+									</Flex>
 								)
 							})}
 						</Flex>

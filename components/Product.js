@@ -6,7 +6,7 @@ import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
 function Product({item}){
 	const router = useRouter()
 	return(
-		<Flex boxShadow='lg' bg='#fff' borderRadius='5px' direction='column' m='2' w='350px' position='relative' h='300px' justify='space-between'>
+		<Flex boxShadow='lg' bg='#fff' borderRadius='5px' direction='column' m='2' w='350px' position='relative' h='350px' justify='space-between'>
 			<Flex p='2' direction='column' w='100%' gap='2'>
 				<Text color='#009393' fontWeight='bold' fontSize="24px" w='100%'>{item?.name_of_product}</Text>
 				<Flex direction='column'>

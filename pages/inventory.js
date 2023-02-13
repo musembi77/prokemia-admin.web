@@ -7,7 +7,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddIcon from '@mui/icons-material/Add';
-
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 //components imports
 import Header from '../components/Header.js'
 import Product from '../components/Product.js'
@@ -15,12 +16,12 @@ import Add_New_Product from '../components/modals/addNewProduct.js';
 //api-calls
 import Get_Products from './api/Products/get_products.js'
 import Get_Industries from './api/controls/get_industries';
-import Get_Technologies from './api/controls/get_technologies'
+import Get_Technologies from './api/controls/get_technologies';
 
-function Inventory(){
+export default function Inventory(){
 	const router = useRouter();
 	const [isfilterproductModalvisible,setisfilterproductModalvisible]=useState(false);
-	const [products,set_products]=useState([])
+	const [products,set_products]=useState([]);
 	const [filter_active, set_filter_active] = useState(false);
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
@@ -30,26 +31,26 @@ function Inventory(){
 	const [industries_data, set_industries_data]=useState([]);
 	const [technologies_data, set_technologies_data]=useState([]);
 
-	console.log()
+	//console.log()
 	useEffect(()=>{
-		console.log(search_query,industry,technology)
+		//console.log(search_query,industry,technology)
 		get_Industries_Data()
 		get_Technology_Data()
 		Get_Products().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result =  data.filter(v => v.verification_status)
-			const result_data = result?.filter((item) => 	item?.industry.includes(search_query) ||
-														item?.technology.includes(search_query) ||
-														item?.email_of_lister.includes(search_query) ||
-														item?.name_of_product.toLowerCase().includes(search_query) ||
-														item?.brand.toLowerCase().includes(search_query) ||
-														item?.function.toLowerCase().includes(search_query) ||
-														item?.chemical_name.toLowerCase().includes(search_query) ||
-														item?.features_of_product.toLowerCase().includes(search_query) ||
-														item?.manufactured_by.includes(search_query) ||
-														item?.description_of_product.toLowerCase().includes(search_query))		
-			console.log(result_data)
+			const result_data = result?.filter((item) => 	item?.industry.includes(search_query.toLowerCase()) ||
+														item?.technology.includes(search_query.toLowerCase()) ||
+														item?.email_of_lister.includes(search_query.toLowerCase()) ||
+														item?.name_of_product.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.brand.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.function.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.chemical_name.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.features_of_product.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.manufactured_by.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.description_of_product.toLowerCase().includes(search_query.toLowerCase()))		
+			//console.log(result_data)
 			if (sort == 'desc'){
 				const sorted_result = result_data.sort((a, b) => a.name_of_product.localeCompare(b.name_of_product))	
 				set_products(sorted_result)
@@ -64,37 +65,38 @@ function Inventory(){
 
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_products(result)
 		})
 	}
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_industries_data(result)
 		})
 	}
 	const get_Technology_Data=async()=>{
 		await Get_Technologies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_technologies_data(result)
 		})
 	}
-	console.log(products)
+	//console.log(products)
+
 	return(
 		<Flex direction='column' position='relative'>
 			<Header/>
 			<Flex p='2' direction='column'>
-				<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Inventory</Text>
+				<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Inventory ({products?.length})</Text>
 				{filter_active? 
 					<FilterBar technologies_data={technologies_data} industries_data={industries_data} set_filter_active={set_filter_active} set_industry={set_industry} set_technology={set_technology} set_search_query={set_search_query}/>
 					: null
@@ -115,10 +117,10 @@ function Inventory(){
 						<Text>Listed Products have not been verified <br/> or <br/> No products meet your search terms</Text>
 					</Flex>
 				:
-					<Flex wrap='Wrap' h='90vh' overflowY='scroll' bg='#eee' justify=''>
-						{products?.map((item)=>{
+					<Flex direction='column' gap='2' justify=''>
+						{products?.map((product)=>{
 							return(
-								<Product item={item} key={item._id}/>
+								<Product_Item product={product} key={product._id}/>
 							)
 						})}
 					</Flex>
@@ -128,8 +130,6 @@ function Inventory(){
 		</Flex>
 	)
 }
-
-export default Inventory;
 
 const FilterBar=({set_filter_active,set_industry,set_technology,set_search_query,industries_data,technologies_data})=>{
 	const Handle_Clear=()=>{
@@ -166,5 +166,35 @@ const FilterBar=({set_filter_active,set_industry,set_technology,set_search_query
 				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>
 				<Button bg='#fff' borderRadius='0' color='#000' onClick={Handle_Clear}>Clear Filter Results</Button>
 			</Flex>
+	)
+}
+
+const Product_Item=({product})=>{
+	const router = useRouter()
+	return(
+		<Flex borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#fff' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
+			<Flex direction='column' position='relative' p='2'>
+				<Text color='#009393' fontWeight='bold' fontSize="24px">{product?.name_of_product}</Text>
+				<Flex gap='2'>
+					<Text fontWeight='bold'>Industry:</Text>
+					<Text>{product?.industry}</Text>
+				</Flex>
+				<Flex gap='2'>
+					<Text fontWeight='bold'>Technology:</Text>
+					<Text>{product?.technology}</Text>
+				</Flex>
+			</Flex>
+			<Flex direction='column' justify='space-around' p='2' textAlign='center'>
+				{product?.sponsored ? 
+					<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center'>
+						<Text fontWeight='bold' >Featured</Text>
+						<VerifiedIcon style={{color:'gold'}}/>
+					</Flex>
+					:
+					<Text fontWeight='bold' >Not Featured</Text>				
+				}
+				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`product/${product?._id}`)})}>View</Text>
+			</Flex>
+		</Flex>
 	)
 }

@@ -56,11 +56,6 @@ export default function ClientSignUp(){
 		})
   	}
 
-  	// useEffect(()=>{
-  	// 	if (token || token !== null){
-  	// 		router.push("/dashboard")
-  	// 	}
-  	// },[token])
 	return(
 		<Flex h='100vh' className={styles.SigninBody}>
 			<Flex className={styles.authSection} gap='2' p='8'>
@@ -89,7 +84,6 @@ export default function ClientSignUp(){
 							</Button>
 						</InputRightElement>
 					</InputGroup>
-					<Text cursor='pointer' fontSize='14px' color='red'> Forgot Password?</Text>
 					<Button type="submit" onClick={handleSignIn} bg='#009393' color='#fff'>Sign In</Button>
 				</Flex>
 		</Flex>

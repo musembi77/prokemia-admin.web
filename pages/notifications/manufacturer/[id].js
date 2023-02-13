@@ -94,43 +94,35 @@ function Manufacturer(){
 						<Text>Address: {manufacturer_data?.address_of_company}</Text>
 				</Flex>
 				<Flex direction='column' gap='2' bg='#eee' p='2'>
-						<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
-						<Text>Name: {manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
-				</Flex>
+							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+							<Text>Name: {manufacturer_data?.contact_person_name}</Text>
+							<Text>Mobile: {manufacturer_data?.contact_mobile}</Text>
+							<Text>Email: {manufacturer_data?.contact_email}</Text>
+					</Flex>
 				<Flex direction='column'>
-					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
+					<Text fontSize='20px' fontWeight='bold' >Description</Text>
 					{manufacturer_data?.description === ''? 
 						<Flex justify='center' align='center' h='15vh'>
 							<Text>The User has not created a bio/description</Text>
 						</Flex>
 						:
 						<Flex m='1' h='10vh' p='2' borderRadius='5' bg='#eee'>
-							<Text>{manufacturer_data?.description}sdjklel</Text>
+							<Text>{manufacturer_data?.description}</Text>
 						</Flex>
 					}
 				</Flex>
 				<Flex direction='column' gap='2'>
-					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Manufacturer</Text>
-					{manufacturer_data?.industries?.length === 0 ?
-							<Flex justify='center' align='center' h='15vh'>
-								<Text>The User has not seletected an industry to specialize in yet</Text>
-							</Flex>
-							:
-							<Flex wrap='Wrap'> 
-							{manufacturer_data?.industries?.map((item)=>{
-								return(
-									<Industry key={item?._id} item={item}/>
-								)
-							})}
+					<Text fontSize='20px' fontWeight='bold' >Industry by this Manufacturer</Text>
+						<Flex bg='#eee' borderRadius='5' justify='center' align='center' h='15vh'>
+							<Text>The User has not seletected an industry to specialize in yet</Text>
 						</Flex>
-						}
 				</Flex>
 				<Flex direction='column' gap='2' p='2'>
-					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
+					<Text fontSize='20px' fontWeight='bold' >Experts</Text>
 					{manufacturer_data?.experts?.length === 0 ?
-					<Flex justify='center' align='center' h='15vh'>
-						<Text>The User has not added experts to this profile.</Text>
-					</Flex>
+						<Flex justify='center' align='center' h='15vh' bg='#eee'>
+							<Text>The User has not added experts to this profile.</Text>
+						</Flex>
 					:
 					<Flex wrap='Wrap' m='1' p='2' borderRadius='5' bg='#eee' gap='3'> 
 					{manufacturer_data?.experts?.map((item)=>{
@@ -148,7 +140,7 @@ function Manufacturer(){
 					</Flex>
 					}
 				</Flex>
-				<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Products</Text>
+				<Text fontSize='20px' fontWeight='bold' >Products</Text>
 				{products?.length === 0?
 					<Flex align='center' justify='center' bg='#eee' h='10vh' p='3'>
 						<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
@@ -157,15 +149,33 @@ function Manufacturer(){
 					<Flex direction='column' p='1'>
 						{products?.map((item)=>{
 							return(
-								<Product key={item?._id} item={item}/>
+								<Flex key={item?._id} bg='#eee' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
+									<Flex direction='column' position='relative' p='2'>
+										{item?.sponsored ? 
+											<Flex position='absolute' top='2' right='2' bg='#009393' p='2' borderRadius='5' color='#fff'>
+												<DoneAllIcon/>
+											</Flex>
+											:null}
+										<Text color='#009393' fontWeight='bold' fontSize="24px">{item?.name_of_product}</Text>
+										<Flex gap='2'>
+											<Text fontWeight='bold'>Industry:</Text>
+											<Text>{item?.industry}</Text>
+										</Flex>
+										<Flex gap='2'>
+											<Text fontWeight='bold'>Technology:</Text>
+											<Text>{item?.technology}</Text>
+										</Flex>
+									</Flex>
+									<Text w='60px' fontWeight='bold' bg='#fff' p='2' color='#009393' cursor='pointer' onClick={(()=>{router.push(`/product/${item?._id}`)})}>View product</Text>
+								</Flex>
 							)
 						})}
 					</Flex>
 				}
 				<Flex direction='column' gap='2' p='2'>
-					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Distributors</Text>
+					<Text fontSize='20px' fontWeight='bold' >Distributors</Text>
 					{manufacturer_data?.distributors?.length === 0 ?
-						<Flex justify='center' align='center' h='15vh'>
+						<Flex justify='center' align='center' h='15vh' bg='#eee'>
 							<Text>The User has not added distributors to this account</Text>
 						</Flex>
 						:

@@ -21,10 +21,11 @@ import { useEffect,useState } from 'react';
 import Delete_Product from '../../../pages/api/Products/delete_product.js';
 import {useRouter} from 'next/router'
 
-function SuspendProductModal({isdeleteproductModalvisible,setisdeleteproductModalvisible,id,name_of_product}){
+export default function Decline_Product({isdeleteproductModalvisible,setisdeleteproductModalvisible,id,name_of_product}){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [name,set_name]=useState('')
     const router = useRouter();
+    const toast = useToast();
     
     //console.log(isaddingreviewgModalvisible);
 
@@ -49,13 +50,32 @@ function SuspendProductModal({isdeleteproductModalvisible,setisdeleteproductModa
 	}
 
     const handle_Delete_Product=async()=>{
-    	if (name_of_product == name){
+        console.log(name_of_product,name)
+    	if (name_of_product === name){
     		await Delete_Product(payload).then(()=>{
+                toast({
+                  title: '',
+                  description:`${product_data.name_of_product} has been deleted`,
+                  status: 'success',
+                  isClosable: true,
+                });
 				router.back()
-				alert("successfuly deleted")
-			})
+			}).catch((err)=>{
+                console.log(err)
+                toast({
+                  title: '',
+                  description:`could not delete this product`,
+                  status: 'error',
+                  isClosable: true,
+                });
+            })
     	}else{
-    		alert("Enter the correct name to complete deletion")
+            toast({
+              title: '',
+              description:`Enter the correct product name to complete deletion`,
+              status: 'info',
+              isClosable: true,
+            });
     	}
 		
 	}
@@ -82,6 +102,4 @@ function SuspendProductModal({isdeleteproductModalvisible,setisdeleteproductModa
 			</Modal>
 		</>
       )
-}   
-
-export default SuspendProductModal;
+}

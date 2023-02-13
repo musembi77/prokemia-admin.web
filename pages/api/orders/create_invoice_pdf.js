@@ -95,7 +95,7 @@ const create_invoice=(payload)=>{
 	};
 	try{
 		easyinvoice.createInvoice(data, function (result) {
-		   easyinvoice.download(`${payload?.name_of_product}.pdf`, result.pdf);
+		   easyinvoice.download(`${payload?.company_name_of_client}.pdf`, result.pdf);
 		});
 		
 		

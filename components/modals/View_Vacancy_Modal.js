@@ -44,7 +44,7 @@ function View_Vacancy({is_view_vacancy_Modalvisible,set_is_view_vacancy_Modalvis
     const [valid_till,setvalid_till]=useState(item?.valid_till)
 
     const payload = {
-      _id : item._id,
+      _id : item?._id,
       title,
       description,
       requirements,
@@ -54,12 +54,12 @@ function View_Vacancy({is_view_vacancy_Modalvisible,set_is_view_vacancy_Modalvis
       valid_till
     }
     //console.log(payload)
-    const Handle_edit_vacancy=()=>{
+    const Handle_edit_vacancy=async()=>{
       console.log(payload)
       if (!title || !description || !requirements || !link || !company || !status || !valid_till)
         return alert("all inputs are required")
       
-      Edit_Vacancy(payload).then((response)=>{
+      await Edit_Vacancy(payload).then((response)=>{
       	onClose()
       	set_is_view_vacancy_Modalvisible(false)
         if (response.status === 200){
@@ -120,7 +120,7 @@ function View_Vacancy({is_view_vacancy_Modalvisible,set_is_view_vacancy_Modalvis
 			  <Text>post is valid till</Text>
 			  <Input type='date' placeholder={item?.valid_till} variant='filled' onChange={((e)=>{setvalid_till(e.target.value)})}/>
 			</Flex>
-			<Button bg='#009393' borderRadius='0' color='#fff' onClick={Handle_edit_vacancy}>Edit Vacancy</Button>
+			<Button bg='#009393' borderRadius='0' color='#fff' onClick={Handle_edit_vacancy}>Edit Career</Button>
 			</Stack>
 			</ModalBody>
 			</ModalContent>

@@ -18,6 +18,7 @@ import {
     useToast
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
+import {useRouter} from 'next/router';
 import Suspend_Client from '../../pages/api/clients/suspend_client_account';
 import Suspend_Distributor from '../../pages/api/distributors/suspend_distributor_account';
 import Suspend_Manufacturer from '../../pages/api/manufacturers/suspend_manufacturer_account';
@@ -35,6 +36,7 @@ function SuspendAccountModal({
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
+    const router = useRouter();
     
     //console.log(isaddingreviewgModalvisible);
 
@@ -56,9 +58,9 @@ function SuspendAccountModal({
       if (acc_type === 'client')
         set_name(client_data?.first_name)
       if (acc_type === 'distributors')
-        set_name(distributor_data?.first_name)
+        set_name(distributor_data?.company_name)
       if (acc_type === 'manufacturers')
-        set_name(manufacturer_data?.first_name)
+        set_name(manufacturer_data?.company_name)
       if (acc_type === 'salespersons')
         set_name(salesperson_data?.first_name)
     },[issuspendModalvisible])
@@ -83,6 +85,7 @@ function SuspendAccountModal({
                       isClosable: true,
                   })
           })
+          
         }else if (acc_type === 'distributors'){
           await Suspend_Distributor(payload).then(()=>{
             toast({
@@ -99,6 +102,7 @@ function SuspendAccountModal({
                       isClosable: true,
                   })
           })
+          
         }else if (acc_type === 'manufacturers'){
           await Suspend_Manufacturer(payload).then(()=>{
             toast({

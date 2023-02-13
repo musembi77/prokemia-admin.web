@@ -25,6 +25,7 @@ function Orders(){
 			const data = response.data
 			const result_data = data?.filter((item) => 	item?.order_status.includes(search_query.toLowerCase()) ||
 														item?.name_of_client.toLowerCase().includes(search_query.toLowerCase()) ||
+														item?.company_name_of_client.toLowerCase().includes(search_query.toLowerCase()) ||
 														item?.name_of_product.toLowerCase().includes(search_query.toLowerCase()) ||
 														item?.email_of_creator.toLowerCase().includes(search_query.toLowerCase()) || 
 														item?._id.includes(search_query.toLowerCase()))
@@ -68,8 +69,8 @@ export default Orders;
 const OrderItem=({setisvieworderModalvisible,order})=>{
 	const router = useRouter();
 	return(
-		<Flex _hover={{transform:"scale(1.01)",transition:'ease-out 1s all',bg:'#009393',color:'#fff'}} boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
-			<Text fontSize='20px' fontWeight='bold'>Order Id: {order?._id}</Text>
+		<Flex boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
+			<Text fontSize='20px' fontWeight='bold'>Company name: {order?.company_name_of_client}</Text>
 			<Text>Product Name: {order?.name_of_product}</Text>
 			<Text>Unit Price: {order?.unit_price}</Text>
 			<Text>Volume: {order?.volume_of_items}</Text>

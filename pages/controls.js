@@ -1,6 +1,6 @@
 //modules imports
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image,Grid} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,Grid,useToast} from '@chakra-ui/react';
 //components imports
 import Header from '../components/Header.js';
 import AddNewIndustryModal from '../components/modals/addNewIndustryModal.js';
@@ -45,13 +45,11 @@ function Control(){
 			<AddNewIndustryModal isaddindustryModalvisible={isaddindustryModalvisible} setisaddindustryModalvisible={setisaddindustryModalvisible}/>
 			<AddnewTechnology isaddtechnologyModalvisible={isaddtechnologyModalvisible} setisaddtechnologyModalvisible={setisaddtechnologyModalvisible}/>
 			<AddnewCareer isaddcareerModalvisible={isaddcareerModalvisible} setisaddcareerModalvisible={setisaddcareerModalvisible}/>
-			
-
 			<Header />
 			<Flex direction='column' p='2' gap='2'>
-				<Text fontSize='32px' fontWeight='bold'>Vacancies</Text>
+				<Text fontSize='32px' fontWeight='bold'>Careers</Text>
 				<Flex direction='column' gap='2' p='2'h='60vh' overflowY='scroll'>
-					<Flex wrap='Wrap' gap='2' direction='' >
+					<Flex gap='2' direction='column' >
 						{Vacancies_data?.map((item)=>{
 							return (
 								<Vacancy key={item._id} item={item}/>
@@ -90,6 +88,7 @@ function Control(){
 export default Control;
 
 const Industry=({item})=>{
+	const toast = useToast()
 	const [is_edit_industry_Modalvisible,set_is_edit_industry_Modalvisible]=useState(false);
 	const payload = {
 		_id: item._id
@@ -102,7 +101,8 @@ const Industry=({item})=>{
 	return(
 		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
 			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
-			<Text p='2' fontSize='20px' fontWeight='bold'>{item.title}</Text>
+			<Text p='2' fontSize='20px' fontWeight='bold'>{item?.title}</Text>
+			<Text p='2'>{item?.description}</Text>
 			<Flex gap='2' justify='space-between' direction='' p='2'>
 					<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_industry_Modalvisible(true)})} cursor='pointer'>Edit</Button>
 					<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_industry}>Delete</Button>
@@ -126,6 +126,7 @@ const Technology=({item})=>{
 		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
 			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
 			<Text p='2' fontSize='20px' fontWeight='bold'>{item.title}</Text>
+			<Text p='2'>{item?.description}</Text>
 			<Flex gap='2' justify='space-between' direction='' p='2'>
 				<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_technology_Modalvisible(true)})} cursor='pointer'>Edit</Button>
 				<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_technology}>Delete</Button>
@@ -136,17 +137,31 @@ const Technology=({item})=>{
 }
 
 const Vacancy=({item})=>{
+	const toast = useToast()
 	const [is_view_vacancy_Modalvisible,set_is_view_vacancy_Modalvisible]=useState(false);
 	const payload = {
 		_id: item._id
 	}
 	const handle_delete_vacancy=()=>{
-		Delete_Vacancy(payload).then((response)=>{
-			alert("successfully deleted this technology")
-		})
+		Delete_Vacancy(payload).then(()=>{
+            toast({
+              title: '',
+              description: `${item?.title} has been deleted`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            console.log(err)
+            toast({
+                      title: '',
+                      description: 'error while deleting this career',
+                      status: 'error',
+                      isClosable: true,
+                  })
+          })
 	}
 	return(
-		<Flex key={item._id} borderRadius='5' bg='#fff' p='2' gap='1' direction='column' w='45%' boxShadow={'dark-lg'}>
+		<Flex key={item._id} borderRadius='5' bg='#fff' p='2' gap='1' direction='column' boxShadow={'dark-lg'}>
 			<Text fontSize='24px' fontWeight='bold'>{item.title}</Text>
 			<Flex gap='2'>
 				<Text fontWeight='bold'>Posted by:</Text>
@@ -168,9 +183,9 @@ const Vacancy=({item})=>{
 				<Text fontWeight='bold'>Valid_till: </Text>
 				<Text>{item.valid_till}</Text>
 			</Flex>
-			<Flex gap='2' justify='space-between'>
-				<Text color='#009393' onClick={(()=>{set_is_view_vacancy_Modalvisible(true)})} cursor='pointer'>View details</Text>
-				<Text color='red' onClick={handle_delete_vacancy} cursor='pointer'>Delete</Text>
+			<Flex gap='2'>
+				<Button flex='1' bg='#009393' color='#fff' onClick={(()=>{set_is_view_vacancy_Modalvisible(true)})} cursor='pointer'>Edit details</Button>
+				<Button flex='1' bg='#fff' border='1px solid red' color='red' onClick={handle_delete_vacancy} cursor='pointer'>Delete</Button>
 			</Flex>
 			<View_Vacancy is_view_vacancy_Modalvisible={is_view_vacancy_Modalvisible} set_is_view_vacancy_Modalvisible={set_is_view_vacancy_Modalvisible} item={item}/>
 		</Flex>

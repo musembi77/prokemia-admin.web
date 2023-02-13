@@ -102,20 +102,25 @@ function Customers(){
 
 export default Customers;
 
+
 const Customer=({client_data})=>{
 	const router = useRouter()
 	return(
-		<Flex direction='column' w='100%' gap='1' bg='#fff' borderRadius='5' p='2' boxShadow='lg' cursor='pointer'>
-			<Flex justify='space-between'>
-				<Text fontWeight='bold' fontSize='24px'>{client_data?.first_name},{client_data?.last_name}</Text>
-				<Text border={client_data?.suspension_status === true ? '1px solid red' : null} p='1'>{client_data?.suspension_status === true? 'Suspended' : null}</Text>
+		<Flex boxShadow='lg' gap='1' bg='#fff' borderRadius='5'>
+			<Image boxSize='150px' src={client_data?.profile_photo_url == '' || !client_data?.profile_photo_url ? './Pro.png' : client_data?.profile_photo_url} bg='grey' alt='photo' objectFit='cover' border='1px solid #eee' borderRadius='5'/>
+			<Flex p='2' direction='column' flex='1' gap='2' justify='space-between'>
+				<Flex direction='column' gap='2'>
+					<Text fontWeight='bold' fontSize='20px'>{client_data?.first_name} {client_data?.last_name}</Text>
+					<Text fontSize='14px'>Mobile: {client_data?.mobile_of_company}</Text>
+					<Text fontSize='14px'>Email: {client_data?.email_of_company}</Text>					
+				</Flex>
+				<Button onClick={(()=>{router.push(`/customer/${client_data?._id}`)})} bg='#009393' color='#fff'>View</Button>
 			</Flex>
-			<Text>{client_data?.email_of_company}</Text>
-			<Text>{client_data?.company_name}</Text>
-			<Button bg='#009393' color='#fff' onClick={(()=>{router.push(`/customer/${client_data?._id}`)})}>View</Button>
 		</Flex>
 	)
 }
+
+
 
 const FilterBar=({set_filter_active,set_status})=>{
 	return(

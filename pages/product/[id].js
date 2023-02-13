@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Text,Button,Link} from '@chakra-ui/react'
+import {Flex,Text,Button,Link,useToast} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -15,6 +15,7 @@ import Delete_Product from '../api/Products/delete_product.js';
 
 function Product(){
 	const router = useRouter();
+	const toast = useToast()
 	const id = router.query;
 
 	const [isquotationModalvisible,setisquotationModalvisible]=useState(false);
@@ -32,8 +33,13 @@ function Product(){
 		})
 	}
 	useEffect(()=>{
-		if (!id || id === undefined){
-			alert("missing info could not fetch data")
+		if (!id.id || id.id === undefined){
+			toast({
+              title: '',
+              description:`could not fetch data, we are redirecting you`,
+              status: 'info',
+              isClosable: true,
+            });
 			router.back()
 		}else{
 			console.log(payload)
@@ -43,15 +49,27 @@ function Product(){
 	const handle_Delete_Product=async()=>{
 		await Delete_Product(payload).then(()=>{
 			router.back()
-			alert("successfuly deleted")
+			toast({
+              title: '',
+              description:`${product_data?.name_of_product} has been deleted.`,
+              status: 'success',
+              isClosable: true,
+            });
+		}).catch((err)=>{
+			toast({
+              title: '',
+              description:`could not delete this product.`,
+              status: 'error',
+              isClosable: true,
+            });
 		})
 	}
 	let manufactured_date = new Date(product_data.manufactured_date).toLocaleDateString()
 	return(
 		<Flex direction='column'>
 			<Header />
-			<QuotationModal isquotationModalvisible={isquotationModalvisible} setisquotationModalvisible={setisquotationModalvisible}/>
-			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible}/>
+			<QuotationModal isquotationModalvisible={isquotationModalvisible} setisquotationModalvisible={setisquotationModalvisible} product_data={product_data}/>
+			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible} product_data={product_data}/>
 			<Flex className={styles.productbody}>
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
 				{product_data?.sponsored?
@@ -106,7 +124,7 @@ function Product(){
 				<Link href={product_data?.website_link_to_Seller} bg='grey' borderRadius='5' boxShadow='lg' color='#fff' align='center' p='1' isExternal fontSize='20px'>Website link</Link>
 				<Text textAlign='center'>or</Text>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1' onClick={(()=>{router.push(`/product/edit_config/${payload._id}`)})}>Edit Product</Button>
-				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1'>List as short Expiry</Button>
+				
 				<Button bg='#eee' color='red' borderRadius='0' border='1px solid red' p='1' onClick={handle_Delete_Product}>Delete Product</Button>
 			</Flex>
 			</Flex>

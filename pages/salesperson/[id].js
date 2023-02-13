@@ -1,6 +1,6 @@
 //modules imports
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Image,Link,useToast} from '@chakra-ui/react';
+import {Flex,Text,Button,Image,Link,useToast,Select} from '@chakra-ui/react';
 import {useRouter} from 'next/router';
 //comsponents imports
 import Header from '../../components/Header.js'
@@ -11,6 +11,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 //api calls
 import Get_SalesPerson from '../api/salespeople/get_salesperson.js'
+import Get_Orders from '../api/orders/get_orders.js';
 
 function Salesperson(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -21,7 +22,10 @@ function Salesperson(){
 	const query = router.query
 	const id = query.id
 
-	const [salesperson_data,set_salesperson_data] = useState('')
+	const [salesperson_data,set_salesperson_data] = useState('');
+	const [sort_value,set_sort_value]=useState('')
+	const [orders_data,set_orders]=useState([]);
+	const [total,set_total]=useState(0);		
 	const [recents,set_recents]=useState(salesperson_data?.recents)
 
 	const payload = {
@@ -29,8 +33,26 @@ function Salesperson(){
 	}
 	const get_data=async(payload)=>{
 		await Get_SalesPerson(payload).then((response)=>{
-			console.log(response)
-			return set_salesperson_data(response.data)
+			//console.log(response)
+			const email = response.data?.email_of_salesperson
+			set_salesperson_data(response.data)
+			fetch_orders(email)
+		})
+	}
+
+	const fetch_orders=async(email)=>{
+		await Get_Orders().then((response)=>{
+			//console.log(response.data)
+			const data = response.data
+			//console.log(data)
+			const result_data = data?.filter((item) => 	item?.email_of_creator.toLowerCase().includes(email?.toLowerCase()) && item?.order_status.includes(sort_value.toLowerCase()) )
+			//console.log(result_data)
+			set_orders(result_data)
+
+			const completed_orders = result_data?.filter((item)=>item.order_status.includes('completed'))
+			const completed_sales_data = completed_orders.map((item)=> item.total)
+			let total_sales = Intl.NumberFormat().format(completed_sales_data.reduce((a, b) => a + b, 0));
+			set_total(total_sales)
 		})
 	}
 
@@ -46,7 +68,7 @@ function Salesperson(){
 		}else{
 			get_data(payload)
 		}
-	},[])
+	},[sort_value])
 	return(
 		<Flex direction='column' gap='2'>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
@@ -86,6 +108,44 @@ function Salesperson(){
 							</Flex>
 					</Flex>
  				</Flex>
+ 				<Flex direction='column' gap='2' p='1'>
+ 					<Text fontWeight='bold'>Bio</Text>
+ 					<Text p='2' bg='#eee' borderRadius='5' boxShadow='lg'>{salesperson_data?.bio}</Text>
+ 				</Flex>
+ 				<Flex direction='column' gap='2' p='1'>
+ 					<Text fontWeight='bold'>Payment Method</Text>
+ 					<Text p='2' bg='#eee' borderRadius='5' boxShadow='lg'>{salesperson_data?.payment_method}</Text>
+ 				</Flex>
+ 				<Flex direction='column' gap='2' p='1'>
+ 					<Text fontWeight='bold'>Sales summary</Text>
+ 					<Flex direction='column' gap='2' bg='#eee' p='1' boxShadow='lg'>
+		 				<Text><span style={{fontWeight:'bold'}}>Number of sales</span>: {orders_data?.length}</Text>
+		 				<Text> <span style={{fontWeight:'bold'}}>Total</span> : KES {total}</Text>
+	 				</Flex>
+ 				</Flex>
+ 				<Flex gap='2' p='2' align='center'>
+ 					<Text fontWeight='bold'>Sales</Text>
+	 				<Select w='150px' placeholder='sort sales' onChange={((e)=>{set_sort_value(e.target.value)})}>
+						<option value=''>All </option>
+						<option value='pending'>Pending </option>
+						<option value='disbursed'>Disbursed</option>
+						<option value='completed'>Completed</option>
+						<option value='rejected'>Rejected</option>
+					</Select>
+				</Flex>
+ 				{orders_data?.length == 0? 
+ 					<Flex justify='center' align='center' h='15vh' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
+						<Text>The User has not made any sales yet.</Text>
+					</Flex>
+					:
+					<Flex direction='column' p='2' gap='2' overflowY='scroll' h='60vh'>
+						{orders_data.map((order)=>{
+							return(
+								<OrderItem key={order?._id} order={order}/>
+							)
+						})}
+					</Flex>
+ 				}
  				<Flex p='2' gap='2'>
 					<Button flex='1' bg='#009393' color='#fff'>
 	                    <Link href={`mailto: ${salesperson_data?.email_of_salesperson}`} isExternal>Email Salesperson</Link>
@@ -103,13 +163,17 @@ function Salesperson(){
 
 export default Salesperson;
 
-const Industry=({item})=>{
+const OrderItem=({order})=>{
+	const router = useRouter();
 	return(
-		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' bg='#000'>
-			<Image borderRadius='10px' objectFit='cover' src='' alt='next'/>
-			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item}</Text>
+		<Flex boxShadow='lg' p='2' bg='#fff' onClick={(()=>{router.push(`/order/${order?._id}`)})} cursor='pointer' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393'>
+			<Text fontSize='20px' fontWeight='bold'>Company name: {order?.company_name_of_client}</Text>
+			<Text>Product Name: {order?.name_of_product}</Text>
+			<Text>Total: {order?.total}</Text>
+			<Flex gap='1'>
+				<Text>Order Status:</Text>
+				<Text color={order?.order_status === 'completed'? 'green' : 'orange'}>{order?.order_status}</Text>
+			</Flex>
 		</Flex>
 	)
 }
-
-const industries=['Personal Care','H&I','Industrial','Cleaning ingredients']

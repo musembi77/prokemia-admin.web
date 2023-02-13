@@ -26,13 +26,6 @@ function Dashboard(){
 	const [orders_data,set_orders]=useState([]);
 	const [products,set_products]=useState([]);
 
-	const [distributors_notification_data, set_distributors_notification_data]=useState(0);
-	const [manufacturers_notification_data, set_manufacturers_notification_data]=useState(0);
-	const [salespeople_notification_data, set_salespeople_notification_data]=useState(0);
-	const [orders_notification_data,set_orders_notification_data]=useState(0);
-	const [products_notification_data,set_products_notification_data]=useState(0);
-	const [notification_count,set_notification_count]=useState(0);
-
 	const [user_name,set_user_name] = useState("admin")
 	const router = useRouter();
 	const cookies = new Cookies();
@@ -51,54 +44,42 @@ function Dashboard(){
 		  		const data = response?.data.reverse()
 		  		set_distributors_data(data)
 		  		//console.log(data)
-		  		const notification_result = data.filter(item => !item.verification_status)
-		  		//console.log(notification_result)
-		  		set_distributors_notification_data(notification_result?.length)
+		  		
 			})
 			Get_Manufacturers().then((response)=>{
 		  		const data = response?.data.reverse()
 		  		set_manufacturers_data(data)
-		  		const notification_result = data.filter(item => !item.verification_status)
-		  		set_manufacturers_notification_data(notification_result?.length)
+		  		
 			})
 			Get_SalesPeople().then((response)=>{
 		  		const data = response?.data.reverse()
 		  		set_salespeople_data(data)
 		  		//console.log(data)
-		  		const notification_result = data.filter(item => !item.verification_status)
-		  		set_salespeople_notification_data(notification_result?.length)
+		  		
 			})
 			Get_Orders().then((response)=>{
 		  		const data = response?.data
 		  		set_orders(data)
 		  		//console.log(data)
-		  		// const notification_result = data.filter(item => !item.verification_status)
-		  		// set_distributors_notification_data(notification_result?.length)
+		  		
 			})
 			Get_Products().then((response)=>{
 		  		const data = response?.data
 		  		set_products(data)
-		  		const notification_result = data.filter(item => !item.verification_status)
-		  		set_products_notification_data(notification_result?.length)
+		  		
 			})
 			
 		}else{
 			router.push('/')
 		}
-		set_notification_count(distributors_notification_data+manufacturers_notification_data+salespeople_notification_data+orders_notification_data+products_notification_data)
 	  },[token])
 	return(
 		<Flex direction='column' bg='#eee'>
 			<AddNewProduct isaddnewproductModalvisible={isaddnewproductModalvisible} setisaddnewProductModalvisible={setisaddnewProductModalvisible}/>
 			<AddNewManufacturer isaddnewmanufacturerModalvisible={isaddnewmanufacturerModalvisible} setisaddnewmanufacturerModalvisible={setisaddnewmanufacturerModalvisible}/>
-			<Header notification_count={notification_count}/>
+			<Header/>
 			<Flex direction='column' position='relative'>
 				<Text ml='2' fontWeight='bold' fontSize='42px' color='#000' textTransform={"capitalize"}>Welcome, <br/>{user_name}</Text>
-				{notification_count !== 0?
-					<FiberManualRecordIcon style={{fontSize:'25px',color:'#009393',position:'absolute',top:'5px',left:'5px'}}/>
-					:null
-				}
-				<Text p='2'>You have {notification_count} new Notifications</Text>
 			</Flex>
 			<Flex w='100%' justify='center'>
 				<Revenue_Tag orders_data={orders_data}/>
@@ -129,7 +110,7 @@ function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Manufacturers</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name} {item?.last_name}</Text>)})}
+					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/manufacturers')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -149,7 +130,7 @@ function Dashboard(){
 					<Text fontWeight='bold' w='100%'>Distributors</Text>
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
-					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
+					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
 					<Text color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
@@ -161,37 +142,6 @@ function Dashboard(){
 		        }}>
 		        <Button bg='#009393' m='2' color='#fff'>Share Salesperson Account Signup link 🔗</Button>
 			</RWebShare>
-				<Flex m='2' flex='1' direction='column' borderBottom='1px solid #000' bg='#eee' borderRadius='5' p='2' gap='2'>
-					<Flex justify='space-between' align='center'>
-						<Text fontWeight='bold' fontSize='20px'>Notifications</Text>
-						<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/notifications/')})}>view all</Text>
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Products</Text>
-						<NotificationsIcon />
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Orders</Text>
-						<NotificationsIcon />
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Distributors</Text>
-						<NotificationsIcon />
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Salespersons</Text>
-						<NotificationsIcon />
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Manufacturers</Text>
-						<NotificationsIcon />
-					</Flex>
-					<Flex align='center' bg='#fff' p='2' justify='space-between'>
-						<Text>Industry/Technology</Text>
-						<NotificationsIcon />
-					</Flex>
-				</Flex>
-				
 		</Flex>
 	)}
 
@@ -216,14 +166,6 @@ const Revenue_Tag=({orders_data})=>{
 		<Flex flex='1' margin='2' color={'#fff'} borderRadius='5' boxShadow='lg' p='2' direction='column' gap='' h='150px' bg={'#009393'} justify='space-between'>
 			<Text fontSize='38px' fontWeight='bold'>KES {total}</Text>
 			<Text fontWeight='bold'>sales-completed:  {completed_orders?.length}</Text>
-		</Flex>
-	)
-}
-
-const Notification=({notification_count})=>{
-	return(
-		<Flex position='absolute' top='10px' right='10px'>
-			<Text>You have {notification_count} new Notifications</Text>
 		</Flex>
 	)
 }

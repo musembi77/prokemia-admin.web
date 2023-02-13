@@ -7,7 +7,7 @@ import Get_Admin_Users from './api/auth/get_admin_users?.js';
 
 function Settings(){
 	const [isaddnewadminModalvisible,setisaddnewadminModalvisible]=useState(false);
-	const [isremoveModalvisible,setisremoveModalvisible]=useState(false);
+	
 	const [users,set_users]=useState([])
 	useEffect(()=>{
 		Get_Admin_Users().then((response)=>{
@@ -16,14 +16,13 @@ function Settings(){
 			alert("error")
 		})
 	},[])
-	console.log(users)
+	//console.log(users)
 	return(
 		<Flex direction='column'>
 			<Header />
 			<Flex direction='column' p='2' gap='2'>
 				<Text fontSize='28px' fontWeight='bold'>Settings</Text>
 				<AddNewAdmin isaddnewadminModalvisible={isaddnewadminModalvisible} setisaddnewadminModalvisible={setisaddnewadminModalvisible}/>
-				<RemoveAdmin isremoveModalvisible={isremoveModalvisible} setisremoveModalvisible={setisremoveModalvisible}/>
 				<Text fontSize='14'>assign different roles to administrators </Text>
 				<Flex direction='column' gap='2'>
 					{users?.map((user)=>{
@@ -43,14 +42,7 @@ function Settings(){
 				<Flex direction='column' gap='2'>
 					{users?.map((user)=>{
 						return(
-							<Flex key={user._id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
-								<Text fontWeight='bold' fontSize='20px'>{user.user_name}</Text>
-								<Input bg='#fff' type='password' placeholder={user.user_password}/>
-								<Flex gap='2' mt='2'>
-									<Text color='#000'>Edit</Text>
-									<Text color='red' cursor='pointer' onClick={(()=>{setisremoveModalvisible(true)})}>Remove Admin User</Text>
-								</Flex>
-							</Flex>
+							<Admin_User_Item key={user._id} user={user} />
 						)
 					})}
 				</Flex>
@@ -61,35 +53,16 @@ function Settings(){
 
 export default Settings;
 
-const users=[
-	{
-		id:1,
-		name:'Admin-1',
-		status:true,
-		password:'admin-1'
-	},
-	{
-		id:2,
-		name:'Admin-2',
-		status:false,
-		password:'admin-2'
-	},
-	{
-		id:3,
-		name:'tech',
-		status:true,
-		password:'tech'
-	},
-	{
-		id:4,
-		name:'Sales',
-		status:true,
-		password:'sales'
-	},
-	{
-		id:5,
-		name:'Support',
-		status:true,
-		password:'Support'
-	},
-]
+const Admin_User_Item=({user})=>{
+	const [isremoveModalvisible,setisremoveModalvisible]=useState(false);
+	return(
+		<Flex key={user._id} borderRadius='5' direction='column' p='3' bg='#eee' gap='1'>
+			<RemoveAdmin isremoveModalvisible={isremoveModalvisible} setisremoveModalvisible={setisremoveModalvisible} admin_data={user}/>
+			<Text fontWeight='bold' fontSize='20px'>{user.user_name}</Text>
+			<Text>Role: {user.role}</Text>
+			<Flex gap='2' mt='2' align='center'>
+				<Button color='#000' border='1px solid red'  cursor='pointer' onClick={(()=>{setisremoveModalvisible(true)})}>Remove {user?.user_name}</Button>
+			</Flex>
+		</Flex>
+	)
+}

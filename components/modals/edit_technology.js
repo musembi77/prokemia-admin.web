@@ -46,6 +46,8 @@ function Edit_Technology_Modal({
     }
 
     const [edited_title,set_edited_title]=useState(item?.title);
+    const [edited_description,set_edited_description]=useState(item?.description);
+
     const [is_edit,set_is_edit]=useState(false);
     const [is_change_image,set_is_change_image]=useState(false);
     const [image,set_image]=useState('')
@@ -62,6 +64,7 @@ function Edit_Technology_Modal({
     const payload = {
         _id: item?._id,
         title:edited_title,
+        description: edited_description,
         cover_image: image_url
     }
 
@@ -82,24 +85,64 @@ function Edit_Technology_Modal({
 
     const Upload_File=async()=>{
       set_is_submitting(true)
-      await handle_image_upload().then(()=>{
-        handle_edit_Technology()
-      })
+        if (image !== '' || item?.title !== edited_title){
+            set_image_url('')
+            console.log('1')
+            await handle_image_upload().then(()=>{
+                handle_edit_Technology()
+            })
+            return ;
+        }
+        if ((image == '' && edited_title !== item?.title) || (image == '' && edited_description !== item?.description)){
+            console.log('2')
+            await Edit_Technology(payload).then(()=>{
+                alert(`${payload.title} has been edited successfuly`)
+            })
+            set_is_submitting(false)
+            set_is_retry(false)
+            onClose()
+            return;
+        }
     }
 
     const handle_edit_Technology=async()=>{
-        if (payload.cover_image == ''){
+        if ((image !== '' && edited_title !== item?.title) || (image !== '' && edited_description !== item?.description)){
+            await Edit_Technology(payload).then(()=>{
+                alert(`${payload.title} has been edited successfuly`)
+            })
+            return;
+        }
+        console.log(payload)
+        if (image_url == '' ){
+            console.log('3')
             set_image_url(cookies.get("tech_image_url"))
             set_is_retry(true)
+            return ;
         }else{
-              await Edit_Technology(payload).then(()=>{
+            console.log('4')
+            await Edit_Technology(payload).then(()=>{
                 alert(`${payload.title} has been edited successfuly`)
-              })
-              set_is_submitting(false)
-              set_is_retry(false)
-              onClose()
+            })
+            set_is_submitting(false)
+            set_is_retry(false)
+            onClose()
+            return;
         }
     }
+
+    // const handle_edit_Technology=async()=>{
+    //     if (payload.cover_image == ''){
+    //         set_image_url(cookies.get("tech_image_url"))
+    //         set_is_retry(true)
+    //     }else{
+    //           await Edit_Technology(payload).then(()=>{
+    //             alert(`${payload.title} has been edited successfuly`)
+    //           })
+    //           set_is_submitting(false)
+    //           set_is_retry(false)
+    //           onClose()
+    //     }
+    // }
     return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
@@ -115,6 +158,8 @@ function Edit_Technology_Modal({
                                 <Flex direction='column' gap='2'>
                                     <Text>Technology title</Text>
                                     <Input type='text' placeholder={edited_title} variant='filled' onChange={((e)=>{set_edited_title(e.target.value)})}/>
+                                    <Text>Description</Text>
+                                    <Input type='text' placeholder={edited_description} variant='filled' onChange={((e)=>{set_edited_description(e.target.value)})}/>
                                     <Flex direction='column'>
                                       <Text>Select a image to edit cover photo</Text>
                                         {is_change_image || item?.cover_image == ''?
@@ -139,6 +184,7 @@ function Edit_Technology_Modal({
                                 <>
                                     <Image src={item?.cover_image} alt='technology photo' h='300px' w='100%' objectFit='cover'/>
                                     <Text fontSize='20px' fontWeight='bold'>{item?.title}</Text>
+                                    <Text fontSize='14px' >{item?.description}</Text>
                                     <Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_is_edit(true)})}>Edit Technology</Button>
                                 </>
                             }

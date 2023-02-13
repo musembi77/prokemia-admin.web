@@ -6,7 +6,7 @@ import {useRouter} from 'next/router';
 import Get_Order from '../api/orders/get_order.js';
 import Edit_Order from '../api/orders/edit_order.js';
 import Create_Invoice_PDF from '../api/orders/create_invoice_pdf.js';
-import Create_Invoice from '../api/orders/create_invoice.js';
+//import Create_Invoice from '../api/orders/create_invoice.js';
 import Reject_Order from '../api/orders/reject_order.js'
 import Approve_Order from '../api/orders/approve_order.js'
 import Delete_Order from '../api/orders/delete_order.js'
@@ -46,8 +46,8 @@ function Order(){
 	let today = new Date().toLocaleDateString()
 	let delivery_date = new Date(order_data?.delivery_date).toLocaleDateString()
 
-	const handle_create_invoice=()=>{
-		const payload = {
+	const handle_create_invoice=async()=>{
+		const order_payload = {
 		_id: order_data?._id,
 		//client-info
 		name_of_client: order_data?.name_of_client,
@@ -66,14 +66,14 @@ function Order(){
 		delivery_terms: order_data?.delivery_terms,
 		payment_terms: order_data?.payment_terms
     }
-		Create_Invoice_PDF(payload)
-		Create_Invoice(payload).then(()=>{
-			router.back()
+		Create_Invoice_PDF(order_payload)
+		await Approve_Order(payload).then(()=>{
+			router.refresh()
 		})
 	}
 
 	const handle_download_invoice=()=>{
-		const payload = {
+		const order_payload = {
 		_id: order_data?._id,
 		//client-info
 		name_of_client: order_data?.name_of_client,
@@ -92,7 +92,7 @@ function Order(){
 		delivery_terms: order_data?.delivery_terms,
 		payment_terms: order_data?.payment_terms
     }
-		Create_Invoice_PDF(payload)
+		Create_Invoice_PDF(order_payload)
 	}
 
 	const Handle_Reject_Order=async()=>{

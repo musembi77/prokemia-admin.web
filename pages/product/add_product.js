@@ -13,10 +13,10 @@ import UploadFile from './upload_files.js'
 //styles
 import styles from '../../styles/Home.module.css';
  
-export default function Add_Product(){
+function Product(){
 //modules
-	const toast = useToast();
-	const router = useRouter();
+const toast = useToast();
+		const router = useRouter();
 	//useEffects
 	useEffect(()=>{
 		get_Industries_Data()
@@ -103,27 +103,25 @@ export default function Add_Product(){
 		console.log(payload)
 		set_isloading(true)
 		set_isfileupload(false)
-		setTimeout(()=>{
-			Add_New_Product(payload).then(()=>{
-					toast({
-		              title: '',
-		              description: `${payload.name_of_product} has been created`,
-		              status: 'success',
-		              isClosable: true,
-		            });
-					router.back()
-					set_isloading(false)
-				}).catch((err)=>{
-					toast({
-	                    title: 'could not create a new product',
-	                    description: err,
-	                    status: 'error',
-	                    isClosable: true,
-	                })
-	                set_isloading(false)
-				})
-			console.log(payload)
-		},5000)
+		await Add_New_Product(payload).then(()=>{
+				toast({
+	              title: '',
+	              description: `${payload.name_of_product} has been created`,
+	              status: 'success',
+	              isClosable: true,
+	            });
+				router.back()
+				set_isloading(false)
+			}).catch((err)=>{
+				//console.log(err)
+				toast({
+                    title: 'could not create a new product',
+                    description: err.response.data,
+                    status: 'error',
+                    isClosable: true,
+                })
+                set_isloading(false)
+			})
 	}
 	return(
 		<Flex direction='column'>
@@ -236,3 +234,5 @@ export default function Add_Product(){
 		</Flex>
 	)
 }
+
+export default Product;

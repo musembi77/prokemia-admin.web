@@ -33,7 +33,12 @@ function Product(){
 	}
 	useEffect(()=>{
 		if (!payload || payload._id === undefined){
-			alert("missing info could not fetch data")
+			toast({
+              title: '',
+              description:`missing info could not fetch data`,
+              status: 'info',
+              isClosable: true,
+            });
 			router.back()
 		}else{
 			console.log(payload)

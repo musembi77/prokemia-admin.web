@@ -9,21 +9,20 @@ import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.
 import Product from '../../components/Product.js';
 //api calls
 import Get_Distributor from '../api/distributors/get_distributor.js'
+import Subscribe_Account from '../api/distributors/subscribe_account.js'
 import Get_Products from '../api/Products/get_products.js'
 //icons
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Person2Icon from '@mui/icons-material/Person2';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function Distributor(){
 		//utils
 	const router = useRouter()
 	const query = router.query
 	const id = query?.id
-
-	const payload = {
-		_id : id
-	}
 
 	const toast = useToast();
 	//states
@@ -32,18 +31,25 @@ function Distributor(){
 
 	const [distributor_data,set_distributor_data] = useState('')
 	const [recents,set_recents]=useState(distributor_data?.recents)
-	const [products,set_products]=useState([])
+	const [products,set_products]=useState([]);
+	const [industries,set_industries]=useState([])
+
+	const payload = {
+		_id : id,
+		email: distributor_data?.email_of_company
+	}
 	//useEffects
 	//functions
+
 	//api calls
 	const get_distributor_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
-			console.log(response)
+			//console.log(response)
 			set_distributor_data(response?.data)
 			const email = response?.data?.email_of_company
 			get_products_data(email)
 		}).catch((err)=>{
-			//console.log(err)
+			////console.log(err)
 			toast({
 				title: '',
 				description: `${err}`,
@@ -55,14 +61,38 @@ function Distributor(){
 	const get_products_data=async(email)=>{
 		await Get_Products().then((response)=>{
 			const data = response?.data
-			const result = data?.filter((item)=> item?.email_of_lister.toLowerCase().includes(email))
+			//console.log(data)
+			const result = data?.filter((item)=> item?.email_of_lister.toLowerCase().includes(email.toLowerCase()))
 			set_products(result)
-			console.log(result)
+
+			const industry_values = result.map(item=>item?.industry)
+			//console.log([...new Set(industry_values)])
+			set_industries([...new Set(industry_values)])
+			//console.log(result)
 		}).catch((err)=>{
-			//console.log(err)
+			////console.log(err)
 			toast({
 				title: '',
 				description: `${err.data}`,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
+
+	const handle_subscribe_account=async()=>{
+		await Subscribe_Account(payload).then(()=>{
+			toast({
+				title: '',
+				description: `${distributor_data?.company_name} account has been upgraded.`,
+				status: 'info',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			////console.log(err)
+			toast({
+				title: '',
+				description: `could not upgrade account,`,
 				status: 'error',
 				isClosable: true,
 			});
@@ -77,7 +107,7 @@ function Distributor(){
 				status: 'info',
 				isClosable: true,
 			});
-			router.push('/manufacturers')
+			router.push('/distributors')
 		}else{
 			get_distributor_data(payload)
 		}
@@ -118,6 +148,12 @@ function Distributor(){
 							<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
 							<Text>Address: {distributor_data?.address_of_company}</Text>
 					</Flex>
+					<Flex direction='column' gap='2' bg='#eee' p='2'>
+							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+							<Text>Name: {distributor_data?.contact_person_name}</Text>
+							<Text>Mobile: {distributor_data?.contact_mobile}</Text>
+							<Text>Email: {distributor_data?.contact_email}</Text>
+					</Flex>
 					<Flex direction='column'>
 						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
 						{distributor_data?.description === ''? 
@@ -131,20 +167,20 @@ function Distributor(){
 						}
 					</Flex>
 					<Flex direction='column' gap='2'>
-						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Manufacturer</Text>
-						{distributor_data?.industries?.length === 0 ?
+						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Industry by this Distributor</Text>
+						{industries?.length === 0 ?
 								<Flex justify='center' align='center' h='15vh' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
 									<Text>The User has not seletected an industry to specialize in yet</Text>
 								</Flex>
 								:
-								<Flex wrap='Wrap'> 
-								{distributor_data?.industries?.map((item)=>{
+								<Flex direction='column'> 
+								{industries?.map((item)=>{
 									return(
 										<Industry key={item._id} item={item}/>
 									)
 								})}
 							</Flex>
-							}
+						}
 					</Flex>
 					<Flex direction='column' gap='2'>
 						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Experts</Text>
@@ -176,14 +212,15 @@ function Distributor(){
 							<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
 						</Flex>
 						:
-						<Flex wrap='Wrap' gap='2'>
-							{products?.map((item)=>{
+						<Flex direction='column' gap='2'>
+							{products?.map((product)=>{
 								return(
-									<Product key={item?._id} item={item}/>
+									<Product_Item product={product} key={product?._id}/>
 								)
 							})}
 						</Flex>
 					}
+					<Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>
 					<Flex p='2' gap='2'>
 						<Button flex='1' bg='#009393' color='#fff'>
 		                    <Link href={`mailto: ${distributor_data?.email_of_company}`} isExternal>Email Distributor</Link>
@@ -204,32 +241,38 @@ export default Distributor;
 
 const Industry=({item})=>{
 	return(
-		<Flex w='170px' borderRadius='5' h='225px' m='1' position='relative' >
-			<Image borderRadius='10px' objectFit='cover' src={item?.img} alt='next'/>
-			<Text position='absolute' bottom='10px' left='10px' fontSize='20px' color='#fff' fontFamily='ClearSans-Bold'>{item?.name}</Text>
+		<Flex flex='1' borderRadius='5' m='1' position='relative'  bg='#eee' p='2'>
+			<Text fontSize='20px' fontFamily='ClearSans-Bold'>{item}</Text>
 		</Flex>
 	)
 }
 
-const industries=[
-	{
-				id:'1',
-				name:"Adhesives",
-				img:"../images.jpeg",
-			},
-			{
-				id:'2',
-				name:"Agriculture",
-				img:"../download.jpeg",
-			},
-			{
-				id:'3',
-				name:"Food and Nutrition",
-				img:"../download (1).jpeg",
-			},
-			{
-				id:'4',
-				name:"Pharmaceuticals",
-				img:"../images (1).jpeg",
-			},
-]
+const Product_Item=({product})=>{
+	const router = useRouter()
+	return(
+		<Flex borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#fff' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
+			<Flex direction='column' position='relative' p='2'>
+				<Text color='#009393' fontWeight='bold' fontSize="24px">{product?.name_of_product}</Text>
+				<Flex gap='2'>
+					<Text fontWeight='bold'>Industry:</Text>
+					<Text>{product?.industry}</Text>
+				</Flex>
+				<Flex gap='2'>
+					<Text fontWeight='bold'>Technology:</Text>
+					<Text>{product?.technology}</Text>
+				</Flex>
+			</Flex>
+			<Flex direction='column' justify='space-around' p='2' textAlign='center'>
+				{product?.sponsored ? 
+					<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center'>
+						<Text fontWeight='bold' >Featured</Text>
+						<VerifiedIcon style={{color:'gold'}}/>
+					</Flex>
+					:
+					<Text fontWeight='bold' >Not Featured</Text>					
+				}
+				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`/product/${product?._id}`)})}>View</Text>
+			</Flex>
+		</Flex>
+	)
+}

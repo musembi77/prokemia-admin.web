@@ -28,11 +28,11 @@ function SalesPersons(){
 
 	const handle_get_salespeople=async()=>{
 		await Get_SalesPeople().then((response)=>{
-			console.log(response.data)
+			////console.log(response.data)
 			const data = response.data
 			if (sort === 'desc'){
 				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
-				console.log(sorted_result)
+				//console.log(sorted_result)
 				if (suspenstion_status === 'true'){
 					const result = sorted_result?.filter((item) => !item.suspension_status)
 					set_salespeople_data(result)
@@ -44,7 +44,7 @@ function SalesPersons(){
 				}
 			}else{
 				const sorted_result = data.sort((a, b) => b.first_name.localeCompare(a.first_name))
-				//console.log(sorted_result)
+				////console.log(sorted_result)
 				if (suspenstion_status === 'true'){
 					const result = sorted_result?.filter((item) => !item.suspension_status)
 					set_salespeople_data(result)
@@ -56,7 +56,7 @@ function SalesPersons(){
 				}
 			}
 		}).catch((err)=>{
-			console.log(err)
+			//console.log(err)
 			set_salespeople_data([])
 		})
 	}
@@ -67,18 +67,18 @@ function SalesPersons(){
 	},[suspenstion_status,search_query,sort])
 
 	// useEffect(()=>{
-	// 	console.log(status)
+	//// 	console.log(status)
 	// 	Get_SalesPeople().then((response)=>{
-	// 		console.log(response.data)
+	//// 		console.log(response.data)
 	// 		const data = response.data
 	// 		const result_data = data?
 	// 		if(status === 'true'){
 	// 			const result = result_data?.filter((item) => !item.suspension_status)
-	// 			console.log(result)
+	//// 			console.log(result)
 	// 			set_salespeople_data(result);
 	// 		}else{
 	// 			// const result = result_data?.filter((item) => item.suspension_status)
-	// 			console.log(result_data)
+	//// 			console.log(result_data)
 	// 			set_salespeople_data(result_data);
 	// 		}
 			
@@ -156,10 +156,6 @@ const FilterBar=({set_filter_active,set_date,set_suspenstion_status,set_region})
 						<option value={'true'} >Active</option>
 						<option value={''} >All</option>
 					</Select>
-				</Flex>
-				<Flex direction='column' gap='2'>
-					<Text>Joined date</Text>
-					<Input type='date' placeholder='expiry date' variant='filled'  color='#000'/>
 				</Flex>
 				<Button bg='#009393' borderRadius='0' color='#fff'>Filter Results</Button>
 			</Flex>
