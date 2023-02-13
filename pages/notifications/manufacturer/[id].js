@@ -152,10 +152,13 @@ function Manufacturer(){
 								<Flex key={item?._id} bg='#eee' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
 									<Flex direction='column' position='relative' p='2'>
 										{item?.sponsored ? 
-											<Flex position='absolute' top='2' right='2' bg='#009393' p='2' borderRadius='5' color='#fff'>
-												<DoneAllIcon/>
-											</Flex>
-											:null}
+												<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center'>
+													<Text fontWeight='bold' >Featured</Text>
+													<VerifiedIcon style={{color:'gold'}}/>
+												</Flex>
+												:
+												<Text fontWeight='bold' >Not Featured</Text>				
+											}
 										<Text color='#009393' fontWeight='bold' fontSize="24px">{item?.name_of_product}</Text>
 										<Flex gap='2'>
 											<Text fontWeight='bold'>Industry:</Text>
