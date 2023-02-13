@@ -10,6 +10,8 @@ import SuspendAccountModal from '../../../components/modals/suspendAccount.js';
 import Get_Manufacturer from '../../api/manufacturers/get_manufacturer.js'
 import Get_Products from '../../api/Products/get_products.js'
 import Approve_Manufacturer from '../../api/manufacturers/approve_manufacturer.js'
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function Manufacturer(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);

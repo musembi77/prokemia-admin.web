@@ -11,6 +11,8 @@ import Product from '../../../components/Product.js';
 import Get_Distributor from '../../api/distributors/get_distributor.js'
 import Approve_Distributor from '../../api/distributors/approve_distributor.js'
 import Get_Products from '../../api/Products/get_products.js'
+import VerifiedIcon from '@mui/icons-material/Verified';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 function Distributor(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
