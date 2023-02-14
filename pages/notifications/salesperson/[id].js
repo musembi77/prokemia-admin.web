@@ -58,7 +58,7 @@ function Salesperson(){
 	},[])
 	return(
 		<Flex direction='column' gap='2'>
-			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible}/>
+			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} payload={payload} acc_type='salespersons'/>
 			<Header />
 			<Flex p='1' direction='column' gap='2'>
 				<Flex justify='space-between' gap='4'>

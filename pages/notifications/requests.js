@@ -11,10 +11,10 @@ export default function Requests(){
 
 	const get_Request_Data=async()=>{
 		await Get_Requests().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.complete_request)
-			// console.log(data.filter(v => !v.verification_status))
+			//// console.log(data.filter(v => !v.verification_status))
 			set_requests_data(result)
 		})
 	}

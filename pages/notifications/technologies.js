@@ -12,10 +12,10 @@ export default function Technologies(){
 
 	const get_Technology_Data=async()=>{
 		await Get_Technologies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status)
-			console.log(data.filter(v => !v.verification_status))
+			//console.log(data.filter(v => !v.verification_status))
 			set_technologies_data(result)
 		})
 	}
@@ -75,7 +75,7 @@ const Technology_Item=({item})=>{
               isClosable: true,
             });
 		}).catch((err)=>{
-			console.log(err)
+			//console.log(err)
 			toast({
               title: '',
               description: 'could not delete this technology',

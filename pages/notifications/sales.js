@@ -14,7 +14,7 @@ export default function Sales_Inventory(){
 	const get_Orders_Data=async()=>{
 		await Get_Orders().then((response)=>{
 			let data = response.data
-			console.log(data)
+			//console.log(data)
 			const result = data.filter((item)=> !item.order_notification_status)
 			set_orders(result)
 		})

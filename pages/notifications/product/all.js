@@ -10,10 +10,10 @@ export default function Products(){
 	const [products_data,set_products]=useState([])
 	const get_Products_Data=async()=>{
 		await Get_Products().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status)
-			console.log(data.filter(v => !v.verification_status))
+			//console.log(data.filter(v => !v.verification_status))
 			set_products(result)
 		})
 	}

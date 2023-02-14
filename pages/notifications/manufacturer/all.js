@@ -13,10 +13,10 @@ export default function Manufacturers(){
 
 	const get_Manufacturers_Data=async()=>{
 		await Get_Manufacturers().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status)
-			console.log(data.filter(v => !v.verification_status))
+			//console.log(data.filter(v => !v.verification_status))
 			set_manufacturers_data(result)
 		})
 	}

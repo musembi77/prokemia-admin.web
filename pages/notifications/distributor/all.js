@@ -13,10 +13,10 @@ export default function Distributors(){
 
 	const get_Distributors_Data=async()=>{
 		await Get_Distributors().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status)
-			console.log(data.filter(v => !v.verification_status))
+			//console.log(data.filter(v => !v.verification_status))
 			set_distributors_data(result)
 		})
 	}

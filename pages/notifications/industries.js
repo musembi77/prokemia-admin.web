@@ -12,10 +12,10 @@ export default function Industries(){
 
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => !v.verification_status)
-			console.log(data.filter(v => !v.verification_status))
+			//console.log(data.filter(v => !v.verification_status))
 			set_industries_data(result)
 		})
 	}
@@ -75,7 +75,7 @@ const Industry=({item})=>{
               isClosable: true,
             });
 		}).catch((err)=>{
-			console.log(err)
+			//console.log(err)
 			toast({
               title: '',
               description: 'could not delete this industry',
