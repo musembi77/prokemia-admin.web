@@ -45,6 +45,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
     },[isaddindustryModalvisible])
 
     const [title,set_title]=useState('')
+    const [description,set_description]=useState('')
     const [image,set_image]=useState('')
     const [image_url,set_image_url]=useState('')
     const [image_uploaded,set_image_uploaded]=useState(false);
@@ -52,13 +53,19 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
     const [is_retry,set_is_retry]=useState(false);
 
     const payload = {
-      title:            title,
+      title:              title,
+      description:        description,
       cover_image:        image_url,
     }
 
     const handle_image_upload=async()=>{
       if (image.name == undefined){
-        return alert('could not process image, try again.')
+        return toast({
+          title: '',
+          description: `could not process image, try again.`,
+          status: 'info',
+          isClosable: true,
+        });
       }else{
         console.log(image.name)
         const image_documentRef = ref(storage, `industry_images/${image?.name + v4()}`);
@@ -121,6 +128,10 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
               <Flex direction='column'>
                 <Text>Industry</Text>
                 <Input type='text' placeholder='Industry' variant='filled' onChange={((e)=>{set_title(e.target.value)})}/>
+              </Flex>
+              <Flex direction='column'>
+                <Text>Description</Text>
+                <Input type='text' placeholder='describe the industry' variant='filled' onChange={((e)=>{set_description(e.target.value)})}/>
               </Flex>
               {image_uploaded?
                 <Uploaded name={image.name}/>

@@ -94,9 +94,22 @@ const Industry=({item})=>{
 		_id: item._id
 	}
 	const handle_delete_industry=()=>{
-		Delete_Industry(payload).then((response)=>{
-			alert("successfully deleted this industry")
-		})
+		Delete_Industry(payload).then(()=>{
+            toast({
+              title: '',
+              description: `${item?.title} has been deleted`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            console.log(err)
+            toast({
+                      title: '',
+                      description: 'error while deleting this industry',
+                      status: 'error',
+                      isClosable: true,
+                  })
+          })
 	}
 	return(
 		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
@@ -113,14 +126,28 @@ const Industry=({item})=>{
 }
 
 const Technology=({item})=>{
+	const toast = useToast()
 	const [is_edit_technology_Modalvisible,set_is_edit_technology_Modalvisible]=useState(false);
 	const payload = {
 		_id: item._id
 	}
 	const handle_delete_technology=()=>{
-		Delete_Technology(payload).then((response)=>{
-			alert("successfully deleted this technology")
-		})
+		Delete_Technology(payload).then(()=>{
+            toast({
+              title: '',
+              description: `${item?.title} has been deleted`,
+              status: 'info',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            console.log(err)
+            toast({
+                      title: '',
+                      description: 'error while deleting this technology',
+                      status: 'error',
+                      isClosable: true,
+                  })
+          })
 	}
 	return(
 		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
