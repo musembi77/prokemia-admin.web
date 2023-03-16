@@ -1,6 +1,7 @@
 //modules imports
 import React,{useState,useEffect}from 'react';
 import {Flex,Text,Button,Image,Grid,useToast} from '@chakra-ui/react';
+import {useRouter} from 'next/router'
 //components imports
 import Header from '../components/Header.js';
 import AddNewIndustryModal from '../components/modals/addNewIndustryModal.js';
@@ -16,6 +17,8 @@ import Delete_Industry from './api/controls/delete_industry.js';
 import Delete_Technology from './api/controls/delete_technology.js';
 import Delete_Vacancy from './api/careers/delete_vacancy.js';
 import Get_Vacancies from './api/careers/get_vacancies.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Control(){
 	const [isaddindustryModalvisible,setisaddindustryModalvisible]=useState(false);
@@ -26,6 +29,11 @@ function Control(){
 	const [Industries_data,set_Industries_data]=useState([]);
 	const [Technologies_data,set_Technologies_data]=useState([]);
 	const [Vacancies_data,set_Vacanvies_data]=useState([]);
+
+	const cookies = new Cookies();
+	const router = useRouter()
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	useEffect(()=>{
 		Get_Industries().then((response)=>{
@@ -38,13 +46,26 @@ function Control(){
 			console.log(response.data)
 			set_Vacanvies_data(response.data)
 		})
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 	//console.log(Vacancies_data)
 	return(
 		<Flex direction='column'>
-			<AddNewIndustryModal isaddindustryModalvisible={isaddindustryModalvisible} setisaddindustryModalvisible={setisaddindustryModalvisible}/>
-			<AddnewTechnology isaddtechnologyModalvisible={isaddtechnologyModalvisible} setisaddtechnologyModalvisible={setisaddtechnologyModalvisible}/>
-			<AddnewCareer isaddcareerModalvisible={isaddcareerModalvisible} setisaddcareerModalvisible={setisaddcareerModalvisible}/>
+			<AddNewIndustryModal isaddindustryModalvisible={isaddindustryModalvisible} setisaddindustryModalvisible={setisaddindustryModalvisible} auth_role={auth_role}/>
+			<AddnewTechnology isaddtechnologyModalvisible={isaddtechnologyModalvisible} setisaddtechnologyModalvisible={setisaddtechnologyModalvisible} auth_role={auth_role}/>
+			<AddnewCareer isaddcareerModalvisible={isaddcareerModalvisible} setisaddcareerModalvisible={setisaddcareerModalvisible} auth_role={auth_role}/>
 			<Header />
 			<Flex direction='column' p='2' gap='2'>
 				<Text fontSize='32px' fontWeight='bold'>Careers</Text>
@@ -64,7 +85,7 @@ function Control(){
 				<Flex wrap='Wrap' gap='2' >
 					{Industries_data?.map((item)=>{
 						return (
-							<Industry key={item._id} item={item}/>
+							<Industry key={item._id} item={item} auth_role={auth_role}/>
 						)
 					})}
 				</Flex>
@@ -75,7 +96,7 @@ function Control(){
 				<Flex wrap='Wrap' gap='2' >
 					{Technologies_data?.map((item)=>{
 						return (
-							<Technology key={item._id} item={item}/>
+							<Technology key={item._id} item={item} auth_role={auth_role}/>
 						)
 					})}
 				</Flex>
@@ -87,25 +108,30 @@ function Control(){
 
 export default Control;
 
-const Industry=({item})=>{
-	const toast = useToast()
+const Industry=({item,auth_role})=>{
+	const toast = useToast();
+	const router = useRouter()
 	const [is_edit_industry_Modalvisible,set_is_edit_industry_Modalvisible]=useState(false);
 	const payload = {
-		_id: item._id
+		_id: item._id,
+		auth_role
 	}
-	const handle_delete_industry=()=>{
-		Delete_Industry(payload).then(()=>{
+	const handle_delete_industry=async()=>{
+		await Delete_Industry(payload).then(()=>{
             toast({
               title: '',
               description: `${item?.title} has been deleted`,
               status: 'info',
               isClosable: true,
             });
+            setTimeout(()=>{
+            	router.reload()
+            },3000)
           }).catch((err)=>{
             console.log(err)
             toast({
-                      title: '',
-                      description: 'error while deleting this industry',
+                      title: 'error while deleting this industry',
+                      description: err.response?.data,
                       status: 'error',
                       isClosable: true,
                   })
@@ -120,16 +146,18 @@ const Industry=({item})=>{
 					<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_industry_Modalvisible(true)})} cursor='pointer'>Edit</Button>
 					<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_industry}>Delete</Button>
 				</Flex>
-			<Edit_Industry is_edit_industry_Modalvisible={is_edit_industry_Modalvisible} set_is_edit_industry_Modalvisible={set_is_edit_industry_Modalvisible} item={item}/>
+			<Edit_Industry is_edit_industry_Modalvisible={is_edit_industry_Modalvisible} set_is_edit_industry_Modalvisible={set_is_edit_industry_Modalvisible} item={item} auth_role={auth_role}/>
 		</Flex>
 	)
 }
 
-const Technology=({item})=>{
-	const toast = useToast()
+const Technology=({item,auth_role})=>{
+	const toast = useToast();
+	const router = useRouter()
 	const [is_edit_technology_Modalvisible,set_is_edit_technology_Modalvisible]=useState(false);
 	const payload = {
-		_id: item._id
+		_id: item._id,
+		auth_role
 	}
 	const handle_delete_technology=()=>{
 		Delete_Technology(payload).then(()=>{
@@ -139,11 +167,14 @@ const Technology=({item})=>{
               status: 'info',
               isClosable: true,
             });
+            setTimeout(()=>{
+            	router.reload()
+            },3000)
           }).catch((err)=>{
             console.log(err)
             toast({
-                      title: '',
-                      description: 'error while deleting this technology',
+                      title: 'error while deleting this technology',
+                      description: err.response?.data,
                       status: 'error',
                       isClosable: true,
                   })
@@ -158,7 +189,7 @@ const Technology=({item})=>{
 				<Button bg='#009393' color='#fff' onClick={(()=>{set_is_edit_technology_Modalvisible(true)})} cursor='pointer'>Edit</Button>
 				<Button color='red' border='1px solid red' cursor='pointer' onClick={handle_delete_technology}>Delete</Button>
 			</Flex>
-			<Edit_Technology is_edit_technology_Modalvisible={is_edit_technology_Modalvisible} set_is_edit_technology_Modalvisible={set_is_edit_technology_Modalvisible} item={item}/>
+			<Edit_Technology is_edit_technology_Modalvisible={is_edit_technology_Modalvisible} set_is_edit_technology_Modalvisible={set_is_edit_technology_Modalvisible} item={item} auth_role={auth_role}/>
 		</Flex>
 	)
 }

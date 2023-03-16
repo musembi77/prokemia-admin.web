@@ -34,7 +34,7 @@ function Dashboard(){
   	useEffect(()=>{
 	    if(token){
 	      let decoded = jwt_decode(token);
-	      ////console.log(decoded);
+	      console.log(decoded);
 	      set_user_name(decoded.user_name)
 		    Get_Clients().then((response)=>{
 		  		const data = response?.data.reverse()

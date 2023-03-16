@@ -11,24 +11,27 @@ import SuspendProductModal from '../../../components/modals/suspendProduct.js';
 import Decline_Product from '../../../components/modals/Product_Modals/Decline_Product.js';
 import Get_Product from '../../api/Products/get_product.js';
 import Approve_Product from '../../api/Products/approve_product.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Product(){
 	const router = useRouter();
 	const toast = useToast();
 	const id = router.query;
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const [issuspendproductModalvisible,setissuspendproductModalvisible]=useState(false);
 	const [isdeleteproductModalvisible,setisdeleteproductModalvisible]=useState(false);
 
-	const payload = {
-		_id : id.id
-	}
+
 	const [product_data,set_product_data]=useState('')
 
 	const get_Data=async(payload)=>{
 		await Get_Product(payload).then((response)=>{
 			set_product_data(response.data)
-			console.log(response.data)
+			//console.log(response.data)
 		})
 	}
 	useEffect(()=>{
@@ -41,10 +44,30 @@ function Product(){
             });
 			router.back()
 		}else{
-			console.log(payload)
+			//console.log(payload)
 			get_Data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //////console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
+
+	const payload = {
+		_id : id.id,
+		auth_role,
+		name_of_product:product_data?.name_of_product
+	}
+	console.log(payload)
 
 	const handle_approve_product=async()=>{
 		await Approve_Product(payload).then(()=>{
@@ -55,13 +78,20 @@ function Product(){
               isClosable: true,
             });
 			router.back()
+		}).catch((err)=>{
+			toast({
+			      title: '',
+			      description: err.response?.data,
+			      status: 'error',
+			      isClosable: true,
+			    });
 		})
 	}
 	let manufactured_date = new Date(product_data?.manufactured_date).toLocaleDateString()
 	return(
 		<Flex direction='column'>
 		<SuspendProductModal issuspendproductModalvisible={issuspendproductModalvisible} setissuspendproductModalvisible={setissuspendproductModalvisible}/>
-		<Decline_Product isdeleteproductModalvisible={isdeleteproductModalvisible} setisdeleteproductModalvisible={setisdeleteproductModalvisible} id={id} name_of_product={product_data?.name_of_product}/>
+		<Decline_Product isdeleteproductModalvisible={isdeleteproductModalvisible} setisdeleteproductModalvisible={setisdeleteproductModalvisible} id={id} payload={payload}/>
 		<Header />
 		<Flex className={styles.productbody} >
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>

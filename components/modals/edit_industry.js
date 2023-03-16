@@ -23,18 +23,20 @@ import Edit_Industry from '../../pages/api/controls/edit_industry';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
-import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
-
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Edit_Industry_Modal({
     is_edit_industry_Modalvisible,
     set_is_edit_industry_Modalvisible,
     item,
+    auth_role
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const toast = useToast();
     const cookies = new Cookies();
-    
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
@@ -67,7 +69,8 @@ function Edit_Industry_Modal({
     	_id: item?._id,
     	title:edited_title,
         description: edited_description,
-        cover_image: image_url
+        cover_image: image_url,
+        auth_role
     }
 
     const handle_image_upload=async()=>{
@@ -85,53 +88,65 @@ function Edit_Industry_Modal({
       }
     }
 
-    const Upload_File=async()=>{
-      set_is_submitting(true)
-        if (image !== '' || item?.title !== edited_title){
-            set_image_url('')
-            console.log('1')
-            await handle_image_upload().then(()=>{
-                handle_edit_industry()
-            })
-            return ;
-        }
-        if ((image == '' && edited_title !== item?.title) || (image == '' && edited_description !== item?.description)){
-            console.log('2')
-            await Edit_Industry(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
-            })
+    //edit to new changes
+    const handle_edit_Industry=async()=>{
+        set_is_submitting(true)
+        //check if inputs changed; if so exit function
+        if (edited_title == item?.title && edited_description == item?.description && image == ''){
+            alert("No changes have been made to update industry.")
             set_is_submitting(false)
-            set_is_retry(false)
-            onClose()
             return;
         }
-    }
-
-    const handle_edit_industry=async()=>{
-        if ((image !== '' && edited_title !== item?.title) || (image !== '' && edited_description !== item?.description)){
-            await Edit_Industry(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
+        //check if image has been selected: 
+        //image shows that the image file status has changed 
+        // image_url stores the return url
+        if (image !== ''){
+            //if image file input status has changed then upload the file first then edit the industry
+            await handle_image_upload().then((res)=>{
+                console.log(res)
+                if (res){
+                    //checks if the url has been updated to the payload
+                    const payload = {
+                        _id: item?._id,
+                        title:edited_title,
+                        description: edited_description,
+                        cover_image: res,
+                        auth_role
+                    }
+                    //Edit the technology
+                    Edit_Industry(payload).then(()=>{
+                        alert(`${payload.title} has been edited successfuly`)
+                    })
+                    return ;
+                }else{
+                    //fetches the url from cookies and reassigns the url to the image url
+                    set_image_url(cookies.get("ind_image_url"))
+                    set_is_retry(true)// this initiates the step to allow re-upload
+                    return ;
+                }                
             })
-            return;
-        }
-        console.log(payload)
-        if (image_url == '' ){
-            console.log('3')
-            set_image_url(cookies.get("ind_image_url"))
-            set_is_retry(true)
-            return ;
         }else{
-            console.log('4')
+            //if the image status has not changed then proceed to edit the technology
             await Edit_Industry(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
+                set_is_submitting(false)
+                return toast({
+                  title: '',
+                  description: `${payload.title} has been edited successfuly`,
+                  status: 'success',
+                  isClosable: true,
+                });
+            }).catch((err)=>{
+                toast({
+                  title: 'Error while editing an industry',
+                  description: err.response?.data,
+                  status: 'error',
+                  isClosable: true,
+                });
             })
-            set_is_submitting(false)
-            set_is_retry(false)
-            onClose()
-            return;
+            return ;
         }
+        onClose()
     }
-
     return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
@@ -164,9 +179,9 @@ function Edit_Industry_Modal({
                                         }
                                     </Flex>
                                     {is_retry?
-                                        <Button bg='#000' borderRadius='0' color='#fff' onClick={handle_edit_industry}>Complete uploading</Button>
+                                        <Button bg='#000' borderRadius='0' color='#fff' onClick={handle_edit_Industry}>Complete uploading</Button>
                                         :
-                                        <Button bg='#009393' borderRadius='0' color='#fff' onClick={Upload_File} disabled={is_submitting?true:false}>Update changes</Button>
+                                        <Button bg='#009393' borderRadius='0' color='#fff' onClick={handle_edit_Industry} disabled={is_submitting?true:false}>{is_submitting? 'uploading...':'Update changes'}</Button>
                                     }
     							</Flex>
                             :

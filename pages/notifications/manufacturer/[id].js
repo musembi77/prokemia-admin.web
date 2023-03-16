@@ -12,6 +12,8 @@ import Get_Products from '../../api/Products/get_products.js'
 import Approve_Manufacturer from '../../api/manufacturers/approve_manufacturer.js'
 import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Manufacturer(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -20,14 +22,19 @@ function Manufacturer(){
 	const toast = useToast();
 	const query = router.query
 	const id = query?.id
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const [manufacturer_data,set_manufacturer_data] = useState('')
 	const [recents,set_recents]=useState(manufacturer_data?.recents)
 	const [products,set_products]=useState([])
 
 	const payload = {
-		_id : id
+		_id : id,
+		auth_role
 	}
+
 	const get_data=async(payload)=>{
 		await Get_Manufacturer(payload).then((response)=>{
 			console.log(response)
@@ -56,6 +63,19 @@ function Manufacturer(){
 			get_data(payload)
 			get_Data()
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	    }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	    }
 	},[id])
 	const handle_approve_manufacturer=async()=>{
 		await Approve_Manufacturer(payload).then(()=>{
@@ -108,7 +128,7 @@ function Manufacturer(){
 							<Text>The User has not created a bio/description</Text>
 						</Flex>
 						:
-						<Flex m='1' h='10vh' p='2' borderRadius='5' bg='#eee'>
+						<Flex m='1' p='2' borderRadius='5' bg='#eee'>
 							<Text>{manufacturer_data?.description}</Text>
 						</Flex>
 					}
@@ -148,7 +168,7 @@ function Manufacturer(){
 						<Text w='50%' textAlign='center'>This Account has not listed any product yet</Text>
 					</Flex>
 					:
-					<Flex direction='column' p='1'>
+					<Flex direction='column' p='1' gap='2'>
 						{products?.map((item)=>{
 							return(
 								<Flex key={item?._id} bg='#eee' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>

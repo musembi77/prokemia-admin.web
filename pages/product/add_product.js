@@ -12,15 +12,33 @@ import Header from '../../components/Header';
 import UploadFile from './upload_files.js'
 //styles
 import styles from '../../styles/Home.module.css';
- 
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
+
 function Product(){
 //modules
 const toast = useToast();
 		const router = useRouter();
+		const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 	//useEffects
 	useEffect(()=>{
 		get_Industries_Data()
 		get_Technology_Data()
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 //apis
 	const get_Industries_Data=async()=>{
@@ -96,7 +114,8 @@ const toast = useToast();
 			formulation_document_url:'',
 			industry,
 			technology,
-			website_link
+			website_link,
+			auth_role
 		}
 
 	const handle_add_new_product=async()=>{

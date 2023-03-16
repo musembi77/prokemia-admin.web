@@ -27,7 +27,7 @@ import { v4 } from "uuid";
 import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
 
-function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}){
+function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,auth_role}){
     const cookies = new Cookies();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
@@ -56,6 +56,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
       title:              title,
       description:        description,
       cover_image:        image_url,
+      auth_role
     }
 
     const handle_image_upload=async()=>{
@@ -91,22 +92,19 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible}
         set_is_retry(true)
       }else{
         Add_Industry(payload).then((response)=>{
-              if (response.status === 200){
-              return toast({
-                title: '',
-                description: `Successfully added ${payload.title} to industries`,
-                status: 'success',
-                isClosable: true,
-              });
-            }
-            else{
-              return toast({
+            return toast({
+              title: '',
+              description: `Successfully added ${payload.title} to industries`,
+              status: 'success',
+              isClosable: true,
+            });
+          }).catch((err)=>{
+            toast({
                 title: 'Error while adding a new Industry',
-                description: response.data,
+                description: err.response.data,
                 status: 'error',
                 isClosable: true,
               })
-            }
           })
         set_is_retry(false)
         set_is_submitting(false)

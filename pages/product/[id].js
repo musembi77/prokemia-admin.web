@@ -12,18 +12,23 @@ import SampleModal from '../../components/modals/Sample.js';
 import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
 import Get_Product from '../api/Products/get_product.js';
 import Delete_Product from '../api/Products/delete_product.js';
+import Decline_Product from '../../components/modals/Product_Modals/Decline_Product.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Product(){
 	const router = useRouter();
 	const toast = useToast()
 	const id = router.query;
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const [isquotationModalvisible,setisquotationModalvisible]=useState(false);
 	const [issampleModalvisible,setissampleModalvisible]=useState(false);
+	const [isdeleteproductModalvisible,setisdeleteproductModalvisible]=useState(false);
 	
-	const payload = {
-		_id : id.id
-	}
+	
 	const [product_data,set_product_data]=useState('')
 
 	const get_Data=async(payload)=>{
@@ -45,7 +50,25 @@ function Product(){
 			console.log(payload)
 			get_Data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        ////console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
+	const payload = {
+		_id : id.id,
+		auth_role,
+		name_of_product:product_data?.name_of_product
+	}
 	const handle_Delete_Product=async()=>{
 		await Delete_Product(payload).then(()=>{
 			router.back()
@@ -70,6 +93,7 @@ function Product(){
 			<Header />
 			<QuotationModal isquotationModalvisible={isquotationModalvisible} setisquotationModalvisible={setisquotationModalvisible} product_data={product_data}/>
 			<SampleModal issampleModalvisible={issampleModalvisible} setissampleModalvisible={setissampleModalvisible} product_data={product_data}/>
+			<Decline_Product isdeleteproductModalvisible={isdeleteproductModalvisible} setisdeleteproductModalvisible={setisdeleteproductModalvisible} id={id} payload={payload}/>
 			<Flex className={styles.productbody}>
 			<Flex p='2' direction='column' gap='2' className={styles.productsection1} position='relative'>
 				{product_data?.sponsored?
@@ -125,7 +149,7 @@ function Product(){
 				<Text textAlign='center'>or</Text>
 				<Button bg='#eee' borderRadius='0' border='1px solid #000' p='1' onClick={(()=>{router.push(`/product/edit_config/${payload._id}`)})}>Edit Product</Button>
 				
-				<Button bg='#eee' color='red' borderRadius='0' border='1px solid red' p='1' onClick={handle_Delete_Product}>Delete Product</Button>
+				<Button bg='#eee' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setisdeleteproductModalvisible(true)})}>Delete Product</Button>
 			</Flex>
 			</Flex>
 		</Flex>

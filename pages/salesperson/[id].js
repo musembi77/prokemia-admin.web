@@ -12,6 +12,8 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 //api calls
 import Get_SalesPerson from '../api/salespeople/get_salesperson.js'
 import Get_Orders from '../api/orders/get_orders.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Salesperson(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -26,11 +28,17 @@ function Salesperson(){
 	const [sort_value,set_sort_value]=useState('')
 	const [orders_data,set_orders]=useState([]);
 	const [total,set_total]=useState(0);		
-	const [recents,set_recents]=useState(salesperson_data?.recents)
+	const [recents,set_recents]=useState(salesperson_data?.recents);
+
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const payload = {
-		_id : id
+		_id : id,
+		auth_role
 	}
+
 	const get_data=async(payload)=>{
 		await Get_SalesPerson(payload).then((response)=>{
 			//console.log(response)
@@ -68,6 +76,19 @@ function Salesperson(){
 		}else{
 			get_data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[sort_value])
 	return(
 		<Flex direction='column' gap='2'>

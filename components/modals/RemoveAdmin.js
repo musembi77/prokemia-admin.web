@@ -19,16 +19,20 @@ import {
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
 import Delete_Admin_Account from '../../pages/api/auth/delete_admin_account.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_data}){
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const toast = useToast()
+    const toast = useToast();
+    const cookies = new Cookies();
+    let token = cookies.get('admin_token');
     
-    //console.log(isaddingreviewgModalvisible);
+    ////console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
       if(isremoveModalvisible !== true){
-        //console.log('damn')
+        ////console.log('damn')
       }else{
 
         onOpen();
@@ -36,19 +40,35 @@ function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_da
       }
     }
 
+    const [auth_role,set_auth_role]=useState("")
+
     useEffect(()=>{
       HandleModalOpen();
+      if (!token){
+        toast({
+              title: '',
+              description: `You need to signed in, to have access`,
+              status: 'info',
+              isClosable: true,
+            });
+        router.push("/")
+      }else{
+        let decoded = jwt_decode(token);
+        //console.log(decoded);
+        set_auth_role(decoded?.role)
+      }
     },[isremoveModalvisible])
 
     const [confirm_name,set_confirm_name]=useState('')
     const [name,set_name]=useState();
 
     const payload = {
-        _id:admin_data?._id
+        _id:admin_data?._id,
+        auth_role
     }    
 
     const handle_delete_admin_account=async()=>{
-        console.log(payload)
+        //console.log(payload)
       if (confirm_name === admin_data?.user_name){
         await Delete_Admin_Account(payload).then(()=>{
             toast({
@@ -58,7 +78,7 @@ function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_da
               isClosable: true,
             });
           }).catch((err)=>{
-            console.log(err)
+            //console.log(err)
             toast({
                       title: '',
                       description: err.response.data,

@@ -23,6 +23,8 @@ import Suspend_Client from '../../pages/api/clients/suspend_client_account';
 import Suspend_Distributor from '../../pages/api/distributors/suspend_distributor_account';
 import Suspend_Manufacturer from '../../pages/api/manufacturers/suspend_manufacturer_account';
 import Suspend_Salesperson from '../../pages/api/salespeople/suspend_salesperson_account';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function SuspendAccountModal({
     issuspendModalvisible,
@@ -36,8 +38,7 @@ function SuspendAccountModal({
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
-    const router = useRouter();
-    
+    const cookies = new Cookies();    
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
@@ -53,16 +54,22 @@ function SuspendAccountModal({
     const [confirm_name,set_confirm_name]=useState('')
     const [name,set_name]=useState('');
 
+    const [auth_role,set_auth_role]=useState("")
+
     useEffect(()=>{
       HandleModalOpen();
-      if (acc_type === 'client')
+      if (acc_type === 'client'){
         set_name(client_data?.first_name)
-      if (acc_type === 'distributors')
+      }
+      if (acc_type === 'distributors'){
         set_name(distributor_data?.company_name)
-      if (acc_type === 'manufacturers')
+      }
+      if (acc_type === 'manufacturers'){
         set_name(manufacturer_data?.company_name)
-      if (acc_type === 'salespersons')
+      }
+      if (acc_type === 'salespersons'){
         set_name(salesperson_data?.first_name)
+      }
     },[issuspendModalvisible])
 
     
@@ -78,9 +85,10 @@ function SuspendAccountModal({
               isClosable: true,
             });
           }).catch((err)=>{
+            console.log(err)
             toast({
-                      title: '',
-                      description: err.response.data,
+                      title: 'Error while suspending account',
+                      description: '',
                       status: 'error',
                       isClosable: true,
                   })

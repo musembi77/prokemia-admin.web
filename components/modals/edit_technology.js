@@ -23,16 +23,16 @@ import Edit_Technology from '../../pages/api/controls/edit_technology';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
-import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
 
 function Edit_Technology_Modal({
     is_edit_technology_Modalvisible,
     set_is_edit_technology_Modalvisible,
     item,
+    auth_role
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const cookies = new Cookies();
+    const toast = useToast()
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
@@ -65,7 +65,8 @@ function Edit_Technology_Modal({
         _id: item?._id,
         title:edited_title,
         description: edited_description,
-        cover_image: image_url
+        cover_image: image_url,
+        auth_role
     }
 
     const handle_image_upload=async()=>{
@@ -83,66 +84,66 @@ function Edit_Technology_Modal({
       }
     }
 
-    const Upload_File=async()=>{
-      set_is_submitting(true)
-        if (image !== '' || item?.title !== edited_title){
-            set_image_url('')
-            console.log('1')
-            await handle_image_upload().then(()=>{
-                handle_edit_Technology()
-            })
-            return ;
-        }
-        if ((image == '' && edited_title !== item?.title) || (image == '' && edited_description !== item?.description)){
-            console.log('2')
-            await Edit_Technology(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
-            })
-            set_is_submitting(false)
-            set_is_retry(false)
-            onClose()
-            return;
-        }
-    }
-
+    //edit to new changes
     const handle_edit_Technology=async()=>{
-        if ((image !== '' && edited_title !== item?.title) || (image !== '' && edited_description !== item?.description)){
-            await Edit_Technology(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
-            })
+        set_is_submitting(true)
+        //check if inputs changed; if so exit function
+        if (edited_title == item?.title && edited_description == item?.description && image == ''){
+            alert("No changes have been made to update technology.")
+            set_is_submitting(false)
             return;
         }
-        console.log(payload)
-        if (image_url == '' ){
-            console.log('3')
-            set_image_url(cookies.get("tech_image_url"))
-            set_is_retry(true)
-            return ;
+        //check if image has been selected: 
+        //image shows that the image file status has changed 
+        // image_url stores the return url
+        if (image !== ''){
+            //if image file input status has changed then upload the file first then edit the technology
+            await handle_image_upload().then((res)=>{
+                console.log(res)
+                if (res){
+                    //checks if the url has been updated to the payload
+                    const payload = {
+                        _id: item?._id,
+                        title:edited_title,
+                        description: edited_description,
+                        cover_image: res,
+                        auth_role
+                    }
+                    //Edit the technology
+                    Edit_Technology(payload).then(()=>{
+                        alert(`${payload.title} has been edited successfuly`)
+                    })
+                    return ;
+                }else{
+                    //fetches the url from cookies and reassigns the url to the image url
+                    set_image_url(cookies.get("tech_image_url"))
+                    set_is_retry(true)// this initiates the step to allow re-upload
+                    return ;
+                }                
+            })
         }else{
-            console.log('4')
+            //if the image status has not changed then proceed to edit the technology
             await Edit_Technology(payload).then(()=>{
-                alert(`${payload.title} has been edited successfuly`)
+                set_is_submitting(false)
+                return toast({
+                  title: '',
+                  description: `${payload.title} has been edited successfuly`,
+                  status: 'success',
+                  isClosable: true,
+                });
+            }).catch((err)=>{
+                toast({
+                  title: 'Error ehile editing an technology',
+                  description: err.response?.data,
+                  status: 'error',
+                  isClosable: true,
+                });
             })
             set_is_submitting(false)
-            set_is_retry(false)
-            onClose()
-            return;
+            return ;
         }
+        onClose()
     }
-
-    // const handle_edit_Technology=async()=>{
-    //     if (payload.cover_image == ''){
-    //         set_image_url(cookies.get("tech_image_url"))
-    //         set_is_retry(true)
-    //     }else{
-    //           await Edit_Technology(payload).then(()=>{
-    //             alert(`${payload.title} has been edited successfuly`)
-    //           })
-    //           set_is_submitting(false)
-    //           set_is_retry(false)
-    //           onClose()
-    //     }
-    // }
     return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
@@ -165,7 +166,7 @@ function Edit_Technology_Modal({
                                         {is_change_image || item?.cover_image == ''?
                                             <>
                                             {image_uploaded?
-                                                <Uploaded name={image.name}/>
+                                                <Uploaded name={image?.name}/>
                                                 :
                                                 <Input type='file' accept='.jpeg,.jpg,.png' placeholder='Technology_image_cover' variant='filled' onChange={((e)=>{set_image(e.target.files[0])})}/>
                                             }
@@ -177,7 +178,7 @@ function Edit_Technology_Modal({
                                     {is_retry?
                                         <Button bg='#000' borderRadius='0' color='#fff' onClick={handle_edit_Technology}>Complete uploading</Button>
                                         :
-                                        <Button bg='#009393' borderRadius='0' color='#fff' onClick={Upload_File} disabled={is_submitting?true:false}>Update changes</Button>
+                                        <Button bg='#009393' borderRadius='0' color='#fff' onClick={handle_edit_Technology} disabled={is_submitting?true:false}>Update changes</Button>
                                     }
                                 </Flex>
                             :

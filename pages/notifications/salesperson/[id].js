@@ -7,6 +7,8 @@ import {useRouter} from 'next/router';
 import SuspendAccountModal from '../../../components/modals/suspendAccount.js';
 import Get_SalesPerson from '../../api/salespeople/get_salesperson.js'
 import Approve_Salesperson from '../../api/salespeople/approve_salesperson.js'
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Salesperson(){
 	const router = useRouter();
@@ -18,9 +20,13 @@ function Salesperson(){
 
 	const query = router.query
 	const id = query?.id
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const payload = {
-		_id : id
+		_id : id,
+		auth_role
 	}
 
 	const get_data=async(payload)=>{
@@ -55,6 +61,19 @@ function Salesperson(){
 		}else{
 			get_data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 	return(
 		<Flex direction='column' gap='2'>

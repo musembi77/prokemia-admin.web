@@ -26,7 +26,7 @@ import { v4 } from "uuid";
 import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
 
-function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvisible}){
+function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvisible,auth_role}){
     const cookies = new Cookies();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
@@ -55,6 +55,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
       title:              title,
       description:        description,
       cover_image:        image_url,
+      auth_role
     }
 
     const handle_image_upload=async()=>{
@@ -90,22 +91,19 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
         set_is_retry(true)
       }else{
         Add_Technology(payload).then((response)=>{
-              if (response.status === 200){
               return toast({
                 title: '',
                 description: `Successfully added ${payload.title} to technologies`,
                 status: 'success',
                 isClosable: true,
               });
-            }
-            else{
-              return toast({
+          }).catch((err)=>{
+            toast({
                 title: 'Error while adding a new Technology',
-                description: response.data,
+                description: err.response.data,
                 status: 'error',
                 isClosable: true,
               })
-            }
           })
         set_is_retry(false)
         set_is_submitting(false)
@@ -143,7 +141,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
                 {is_retry?
                   <Button bg='#000' borderRadius='0' color='#fff' onClick={handle_add_new_Technology}>Finish Uploading</Button>
                 :
-                  <Button bg='#009393' borderRadius='0' color='#fff' onClick={Upload_File} disabled={is_submitting?true:false}>Upload Industry details</Button>
+                  <Button bg='#009393' borderRadius='0' color='#fff' onClick={Upload_File} disabled={is_submitting?true:false}>Upload Technology details</Button>
                 }
             </Stack>
             </ModalBody>

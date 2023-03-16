@@ -4,9 +4,14 @@ import {useRouter} from 'next/router'
 import Get_Industries from '../api/controls/get_industries'
 import Approve_Industry from '../api/controls/approve_industry'
 import Delete_Industry from '../api/controls/delete_industry.js';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 export default function Industries(){
 	const router = useRouter();
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 	
 	const [industries_data, set_industries_data]=useState([]);
 
@@ -22,6 +27,19 @@ export default function Industries(){
 	
 	useEffect(()=>{
 		get_Industries_Data()
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 	return(
 		<Flex direction='column' gap='3' p='2' w='100%'>
@@ -34,7 +52,7 @@ export default function Industries(){
 				<Flex direction='column' overflowY='scroll' h='80vh'>
 					{industries_data?.map((item)=>{
 						return(
-							<Industry item={item} key={item._id}/>
+							<Industry item={item} key={item._id} auth_role={auth_role}/>
 						)
 					})}
 				</Flex>
@@ -43,11 +61,13 @@ export default function Industries(){
 	)
 }
 
-const Industry=({item})=>{
+const Industry=({item,auth_role})=>{
 	const router = useRouter();
 	const toast = useToast()
+
 	const payload = {
-		_id : item?._id
+		_id : item?._id,
+		auth_role
 	}
 	const handle_approve_industry=async()=>{
 		await Approve_Industry(payload).then(()=>{
@@ -59,7 +79,7 @@ const Industry=({item})=>{
             });
 		}).catch((err)=>{
 			toast({
-              title: '',
+              title: 'could not delete this industry',
               description: err.response?.data,
               status: 'error',
               isClosable: true,
@@ -77,8 +97,8 @@ const Industry=({item})=>{
 		}).catch((err)=>{
 			//console.log(err)
 			toast({
-              title: '',
-              description: 'could not delete this industry',
+              title: 'could not delete this industry',
+              description: err.response?.data,
               status: 'error',
               isClosable: true,
             });

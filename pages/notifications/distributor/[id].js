@@ -13,6 +13,8 @@ import Approve_Distributor from '../../api/distributors/approve_distributor.js'
 import Get_Products from '../../api/Products/get_products.js'
 import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Distributor(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -21,13 +23,17 @@ function Distributor(){
 	const toast = useToast()
 	const query = router.query
 	const id = query?.id
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const [distributor_data,set_distributor_data] = useState('')
 	const [recents,set_recents]=useState(distributor_data?.recents)
 	const [products,set_products]=useState([])
 
 	const payload = {
-		_id : id
+		_id : id,
+		auth_role
 	}
 	const get_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
@@ -53,6 +59,19 @@ function Distributor(){
 			get_data(payload)
 			get_Data()
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	    }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	    }
 	},[id])
 
 	const handle_approve_distributor=async()=>{

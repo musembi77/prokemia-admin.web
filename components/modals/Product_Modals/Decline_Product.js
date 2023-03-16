@@ -21,7 +21,7 @@ import { useEffect,useState } from 'react';
 import Delete_Product from '../../../pages/api/Products/delete_product.js';
 import {useRouter} from 'next/router'
 
-export default function Decline_Product({isdeleteproductModalvisible,setisdeleteproductModalvisible,id,name_of_product}){
+export default function Decline_Product({isdeleteproductModalvisible,setisdeleteproductModalvisible,id,payload}){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [name,set_name]=useState('')
     const router = useRouter();
@@ -43,19 +43,17 @@ export default function Decline_Product({isdeleteproductModalvisible,setisdelete
       HandleModalOpen();
     },[isdeleteproductModalvisible])
 
-    const [body,setBody]=useState('')
-
-    const payload = {
-		_id : id.id
-	}
+ //    const payload = {
+	// 	_id : id.id
+	// }
 
     const handle_Delete_Product=async()=>{
-        console.log(name_of_product,name)
-    	if (name_of_product === name){
+        console.log(payload?.name_of_product,name)
+    	if (payload?.name_of_product === name){
     		await Delete_Product(payload).then(()=>{
                 toast({
                   title: '',
-                  description:`${product_data.name_of_product} has been deleted`,
+                  description:`${payload?.name_of_product} has been deleted`,
                   status: 'success',
                   isClosable: true,
                 });
@@ -64,7 +62,7 @@ export default function Decline_Product({isdeleteproductModalvisible,setisdelete
                 console.log(err)
                 toast({
                   title: '',
-                  description:`could not delete this product`,
+                  description: err.response?.data,
                   status: 'error',
                   isClosable: true,
                 });
@@ -91,7 +89,7 @@ export default function Decline_Product({isdeleteproductModalvisible,setisdelete
 					<ModalBody>
 						<Stack spacing={4}>
 							<Text>By Deleting this product,the information of the product will be permanently erased.</Text>
-							<Text>Enter the name of Product below,<span style={{color:"red",padding:'5px',backgroundColor:"#eee"}}>{name_of_product}</span> to complete deletion.</Text>
+							<Text>Enter the name of Product below,<span style={{color:"red",padding:'5px',backgroundColor:"#eee"}}>{payload?.name_of_product}</span> to complete deletion.</Text>
 							<InputGroup>
 								<Input type='text' placeholder='name of product' variant='filled' onChange={((e)=>{set_name(e.target.value)})}/>
 							</InputGroup>

@@ -1,10 +1,14 @@
 import React,{useState,useEffect} from 'react'
-import {Flex, Text,Button,Stack,Divider,useToast} from '@chakra-ui/react'
+import {Flex, Text,Button,Stack,Divider,useToast,Image} from '@chakra-ui/react'
 import {Menu,Receipt,Close,Add,HorizontalRule,ArrowForward,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
 import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 import Cookies from 'universal-cookie';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import jwt_decode from "jwt-decode";
+import Get_Admin_User from '../pages/api/auth/get_admin_user.js'
+import Edit_Admin_User from '../pages/api/auth/edit_admin_user.js'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function Header(){
 	const [showmenubar,setshowmenubar]=useState(false);
@@ -12,6 +16,7 @@ export default function Header(){
 	const toast = useToast();
 	const cookies = new Cookies();
   	let token = cookies.get('admin_token');
+	const [user_data,set_user_data] = useState('')
 
   	useEffect(()=>{
 	    if (!token){
@@ -22,16 +27,52 @@ export default function Header(){
               isClosable: true,
             });
 	    	router.push("/")
-	    }
+	    }else{
+			let decoded = jwt_decode(token);
+			//console.log(decoded);
+			let id = decoded?.id
+			fetch_user_details(id)
+		}
 	},[token])
-	const handle_LogOut=()=>{
+	const handle_LogOut=async()=>{
+		const payload ={
+			_id : user_data?._id,
+			login_status : false
+		}
 		cookies.remove('admin_token', { path: '/' });
-		// router.reload()
-		router.push('/')
+		await Edit_Admin_User(payload).then(()=>{
+			alert("successfully logged out")
+		}).then(()=>{
+			router.push('/')
+		}).catch((err)=>{
+			//console.log(err)
+		})
+	}
+
+	const fetch_user_details=async(id)=>{
+		////console.log(id)
+		const payload = {
+			_id : id
+		}
+		//console.log(payload)
+		await Get_Admin_User(payload).then((res)=>{
+			//console.log(res.data)
+			set_user_data(res.data)
+		}).catch((err)=>{
+			if (err.response?.status == 500){
+				alert('You do not have access to this platform.')
+				router.push('/')
+				return ;
+			}
+			console.log(err)
+		})
 	}
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center' position='sticky' top='0px' zIndex='10'>
-			<Text onClick={(()=>{router.push('/dashboard')})} fontSize='28px' color='#000' fontWeight='bold' >Admin</Text>
+			<Flex bg='#009393' boxShadow='lg' p='2' align='center' gap='1' borderRadius='5' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
+				{user_data?.user_image == '' || !user_data?.user_image? <AccountCircleIcon/> : <Image src={user_data?.user_image} boxSize='25px' boxShadow='lg' borderRadius='40px' alt='pp'/>}
+				<Text ml='1' fontSize='14px' >{user_data?.user_name}</Text>
+			</Flex>
 			<Flex align='center' gap='3'>
 				<Widgets onClick={(()=>{router.push("/dashboard")})}/>
 				<NotificationsActiveIcon onClick={(()=>{router.push("/notifications")})}/>
@@ -43,7 +84,7 @@ export default function Header(){
 					<Menu onClick={(()=>{setshowmenubar(!showmenubar)})}/> 
 				}
 				{showmenubar ? 
-					<MenuBar setshowmenubar={setshowmenubar} />
+					<MenuBar setshowmenubar={setshowmenubar} user_data={user_data}/>
 						:
 					null 
 				}
@@ -95,14 +136,8 @@ const navigation=[
 		link:'controls',
 		logo:<Tune/>
 	},
-	{
-		id:8,
-		title:'Settings',
-		link:'settings',
-		logo:<Settings/>
-	},
 ]
-const MenuBar=()=>{
+const MenuBar=({user_data})=>{
 	const [active,setActive]=useState(false);
 	const [currentValue,setcurrentValue]=useState('');
 	const router = useRouter()
@@ -110,12 +145,22 @@ const MenuBar=()=>{
 		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
 			{navigation.map((item)=>{
 				return(
-					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/${item.link}`)})}>
+					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item?.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/${item.link}`)})}>
 						{item.logo}
 						<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
 					</Flex>
 				)
 			})}
+			<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
+				<AccountCircleIcon/>
+				<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
+			</Flex>
+			{user_data?.role === 'Manager' || user_data?.role === 'IT'?
+				<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/settings`)})}>
+					<Settings/>
+					<Text  p='2' fontSize='20px'  mb='0' >Settings</Text>
+				</Flex>
+				:null}
 		</Flex>
 	)
 }

@@ -17,6 +17,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Person2Icon from '@mui/icons-material/Person2';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Distributor(){
 		//utils
@@ -32,11 +34,16 @@ function Distributor(){
 	const [distributor_data,set_distributor_data] = useState('')
 	const [recents,set_recents]=useState(distributor_data?.recents)
 	const [products,set_products]=useState([]);
-	const [industries,set_industries]=useState([])
+	const [industries,set_industries]=useState([]);
+
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const payload = {
 		_id : id,
-		email: distributor_data?.email_of_company
+		email: distributor_data?.email_of_company,
+		auth_role
 	}
 	//useEffects
 	//functions
@@ -92,7 +99,7 @@ function Distributor(){
 			////console.log(err)
 			toast({
 				title: '',
-				description: `could not upgrade account,`,
+				description: err.response?.data,
 				status: 'error',
 				isClosable: true,
 			});
@@ -111,6 +118,19 @@ function Distributor(){
 		}else{
 			get_distributor_data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[id])
 	return(
 		<Flex direction='column' gap='2'>
@@ -143,16 +163,17 @@ function Distributor(){
 						</Flex>
 					</Flex>
 					<Flex direction='column' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
-							<Text>Name: {distributor_data?.first_name} {distributor_data?.last_name}</Text>
+							<Text fontWeight='bold' fontSize='20px'>Company Details</Text>
 							<Text>Email: {distributor_data?.email_of_company}</Text>
 							<Text>Mobile:{distributor_data?.mobile_of_company}</Text>
 							<Text>Address: {distributor_data?.address_of_company}</Text>
 					</Flex>
 					<Flex direction='column' gap='2' bg='#eee' p='2'>
-							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+							<Text fontWeight='bold' fontSize='20px'>Key Contact info</Text>
 							<Text>Name: {distributor_data?.contact_person_name}</Text>
 							<Text>Mobile: {distributor_data?.contact_mobile}</Text>
 							<Text>Email: {distributor_data?.contact_email}</Text>
+							<Text>Role: </Text>
 					</Flex>
 					<Flex direction='column'>
 						<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
@@ -220,7 +241,7 @@ function Distributor(){
 							})}
 						</Flex>
 					}
-					<Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>
+					{distributor_data?.subscription ? null : <Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>}
 					<Flex p='2' gap='2'>
 						<Button flex='1' bg='#009393' color='#fff'>
 		                    <Link href={`mailto: ${distributor_data?.email_of_company}`} isExternal>Email Distributor</Link>

@@ -10,15 +10,21 @@ import Create_Invoice_PDF from '../api/orders/create_invoice_pdf.js';
 import Reject_Order from '../api/orders/reject_order.js'
 import Approve_Order from '../api/orders/approve_order.js'
 import Delete_Order from '../api/orders/delete_order.js'
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Order(){
 	const router = useRouter();
 	const toast = useToast();
 
 	const id = router.query;
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const payload = {
-		_id : id.id
+		_id : id.id,
+		auth_role
 	}
 	const [order_data,set_order_data]=useState('')
 	const [edit,set_edit]=useState(false)
@@ -42,6 +48,19 @@ function Order(){
 			//console.log(payload)
 			get_Data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[id])
 	let today = new Date().toLocaleDateString()
 	let delivery_date = new Date(order_data?.delivery_date).toLocaleDateString()
@@ -107,7 +126,7 @@ function Order(){
 			//console.log(err)
 			toast({
 				title: '',
-				description: `${err.response.data}`,
+				description: `${err.response?.data}`,
 				status: 'error',
 				isClosable: true,
 			});
@@ -136,15 +155,16 @@ function Order(){
 		await Delete_Order(payload).then(()=>{
 			toast({
 				title: '',
-				description: `Order has been delted`,
+				description: `Order has been deleted`,
 				status: 'success',
 				isClosable: true,
 			});
+			router.push('/orders')
 		}).catch((err)=>{
 			//console.log(err)
 			toast({
 				title: '',
-				description: `${err.response.data}`,
+				description: err.response?.data,
 				status: 'error',
 				isClosable: true,
 			});
@@ -154,7 +174,7 @@ function Order(){
 		<Flex direction='column' gap='2'>
 			<Header />
 			{edit?
-				<Edit_Order_Item order_data={order_data} set_edit={set_edit}/>
+				<Edit_Order_Item order_data={order_data} set_edit={set_edit} auth_role={auth_role}/>
 			:
 				<Flex p='4' direction='column' gap='2'>
 					<Flex boxShadow='lg' p='2' bg='#eee' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393' gap='2'>
@@ -223,7 +243,7 @@ function Order(){
 
 export default Order;
 
-const Edit_Order_Item=({order_data,set_edit})=>{
+const Edit_Order_Item=({order_data,set_edit,auth_role})=>{
     //client_information
     const [name_of_client,set_name_of_client]=useState(order_data?.name_of_client);
     const [company_name_of_client,set_company_name_of_client]=useState(order_data?.company_name_of_client);
@@ -255,7 +275,8 @@ const Edit_Order_Item=({order_data,set_edit})=>{
 		//payment&delivery
 		delivery_date,
 		delivery_terms,
-		payment_terms
+		payment_terms,
+		auth_role
     }
 
 	const handle_edit=async()=>{

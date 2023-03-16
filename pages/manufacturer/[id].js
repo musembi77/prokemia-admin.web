@@ -17,6 +17,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Get_Manufacturer from '../api/manufacturers/get_manufacturer.js'
 import Get_Products from '../api/Products/get_products.js'
 import Subscribe_Account from '../api/manufacturers/subscribe_account.js'
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 export default function Manufacturer(){
 	//utils
@@ -36,9 +38,14 @@ export default function Manufacturer(){
 	const [products,set_products]=useState([]);
 	const [industries,set_industries]=useState([])
 
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
+
 	const payload = {
 		_id : id,
-		email: manufacturer_data?.email_of_company
+		email: manufacturer_data?.email_of_company,
+		auth_role
 	}
 	//useEffects
 	//functions
@@ -92,7 +99,7 @@ export default function Manufacturer(){
 			////console.log(err)
 			toast({
 				title: '',
-				description: `could not upgrade account,`,
+				description: err.response?.data,
 				status: 'error',
 				isClosable: true,
 			});
@@ -111,6 +118,19 @@ export default function Manufacturer(){
 		}else{
 			get_manufacturer_data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[id])
 	return(
 		<Flex direction='column' gap='2'>
@@ -142,17 +162,18 @@ export default function Manufacturer(){
 					</Flex>
 				</Flex>
 				<Flex direction='column' bg='#eee' p='2' borderRadius='5' boxShadow='lg' gap='2'>
-						<Text>Name: {manufacturer_data?.first_name} {manufacturer_data?.last_name}</Text>
+						<Text fontWeight='bold' fontSize='20px'>Company Details</Text>
 						<Text>Email: {manufacturer_data?.email_of_company}</Text>
 						<Text>Mobile:{manufacturer_data?.mobile_of_company}</Text>
 						<Text>Address: {manufacturer_data?.address_of_company}</Text>
 				</Flex>
 				<Flex direction='column' gap='2' bg='#eee' p='2'>
-							<Text fontWeight='bold' fontSize='20px'>Coorporate details</Text>
+							<Text fontWeight='bold' fontSize='20px'>Key Contact info</Text>
 							<Text>Name: {manufacturer_data?.contact_person_name}</Text>
 							<Text>Mobile: {manufacturer_data?.contact_mobile}</Text>
 							<Text>Email: {manufacturer_data?.contact_email}</Text>
-					</Flex>
+							<Text>Role: </Text>
+				</Flex>
 				<Flex direction='column'>
 					<Text fontSize='20px' fontWeight='bold' borderBottom='1px solid #000'>Description</Text>
 					{manufacturer_data?.description === ''? 
@@ -243,7 +264,7 @@ export default function Manufacturer(){
 					</Flex>
 					}
 				</Flex>
-				<Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>
+				{manufacturer_data?.subscription ? null : <Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>}
 				<Flex p='2' gap='2'>
 					<Button flex='1' bg='#009393' color='#fff'>
 	                    <Link href={`mailto: ${manufacturer_data?.email_of_company}`} isExternal>Email Manufacturer</Link>

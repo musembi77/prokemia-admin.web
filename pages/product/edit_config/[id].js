@@ -16,13 +16,17 @@ import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
 //styles
 import styles from '../../../styles/Home.module.css';
- 
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 
 function Product(){
 	//modules
 	const router = useRouter();
 	const toast = useToast();
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 	//utils
 	const [product_data,set_product_data]=useState('');
 	const [industries_data, set_industries_data]=useState([]);
@@ -37,24 +41,24 @@ function Product(){
 	const get_Data=async(payload)=>{
 		await Get_Product(payload).then((response)=>{
 			set_product_data(response.data)
-			console.log(response.data)
+			//console.log(response.data)
 		})
 	}
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_industries_data(result)
 		})
 	}
 	const get_Technology_Data=async()=>{
 		await Get_Technologies().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			console.log(data.filter(v => v.verification_status))
+			//console.log(data.filter(v => v.verification_status))
 			set_technologies_data(result)
 		})
 	}
@@ -67,11 +71,24 @@ function Product(){
 			alert("missing info could not fetch data")
 			//router.reload()
 		}else{
-			console.log(payload)
+			//console.log(payload)
 			get_Data(payload)
 			get_Industries_Data()
 			get_Technology_Data()
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        ////console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 	
 	const [name_of_product,set_name_of_product]=useState(product_data?.name_of_product);
@@ -112,57 +129,9 @@ function Product(){
 		packaging_of_product,
 		storage_of_product,
 		industry,
-		technology
+		technology,
+		auth_role
 	}
-
-	// const handle_data_sheet_file_upload=async()=>{
-	// 	if (data_sheet == ''){
-	// 		return alert('err')
-	// 	}
-	// 	const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet.name + v4()}`);
-	// 	await uploadBytes(data_sheet_documentRef,data_sheet).then(snapshot => {
-	// 		getDownloadURL(snapshot.ref).then((url) => {
-	// 			console.log(url)
-	// 			set_data_sheet_url(url)
-	// 		});
-	// 	})
-	// }
-
-	// const handle_safety_sheet_file_upload=async()=>{
-	// 	if (safety_data_sheet == ''){
-	// 		return alert('err')
-	// 	}
-	// 	const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet.name + v4()}`);
-	// 	await uploadBytes(safety_data_sheet_documentRef,safety_data_sheet).then(snapshot => {
-	// 		getDownloadURL(snapshot.ref).then((url) => {
-	// 			console.log(url)
-	// 			set_safety_data_sheet_url(url)
-	// 		});
-	// 	})
-	// }
-
-	// const handle_formulation_document_file_upload=async()=>{
-	// 	if (formulation_document == ''){
-	// 		return alert('err')
-	// 	}
-	// 	const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document.name + v4()}`);
-	// 	await uploadBytes(formulation_document_documentRef,formulation_document).then(snapshot => {
-	//       getDownloadURL(snapshot.ref).then((url) => {
-	//       		console.log(url)
-	// 			set_formulation_document_url(url)
-	// 		});
-	//     })
-	// }
-
-
-	// const handle_File_Upload=async()=>{
-	// 	await handle_data_sheet_file_upload()
-	// 	await handle_safety_sheet_file_upload()
-	// 	await handle_formulation_document_file_upload()
-	// 	console.log(data_sheet_url,safety_data_sheet_url,formulation_document_url)
-	// 	console.log(edit_payload)
-	// }
-
 	const handle_edit_product=async()=>{
 		await Edit_Product(edit_payload).then(()=>{
 			toast({
@@ -172,33 +141,14 @@ function Product(){
               isClosable: true,
             });
 			router.back()
+		}).catch((err)=>{
+			toast({
+			      title: '',
+			      description: err.response?.data,
+			      status: 'error',
+			      isClosable: true,
+			    });
 		})
-		console.log(edit_payload)
-		// if(data_sheet === data_sheet_url || safety_data_sheet == safety_data_sheet_url || formulation_document == formulation_document_url){
-		// 	await Edit_Product(edit_payload).then(()=>{
-		// 			alert("successfully edited product")
-		// 			router.back()
-		// 		})
-		// 	console.log(edit_payload)
-		// }else{
-		// 	handle_File_Upload()
-		// 	if(data_sheet_url === '' || safety_data_sheet_url === '' || formulation_document_url === ''){
-		// 		handle_File_Upload()
-		// 	}else{
-		// 		setTimeout(()=>{
-		// 			Edit_Product(edit_payload).then(()=>{
-		// 					toast({
-		// 		              title: '',
-		// 		              description: `${edit_payload.name_of_product} has been edited successfully`,
-		// 		              status: 'success',
-		// 		              isClosable: true,
-		// 		            });
-		// 					router.back()
-		// 				})
-		// 			console.log(edit_payload)
-		// 		},10000)
-		// 	}
-		// }
 	}
 
 	return(
@@ -211,39 +161,39 @@ function Product(){
 					<Text fontSize='32px' fontWeight='bold'>Edit Product</Text>
 					<Flex direction='column'>
 						<Text>Name/Title of product</Text>
-						<Input type='text' placeholder={product_data.name_of_product} variant='filled' onChange={((e)=>{set_name_of_product(e.target.value)})}/>
+						<Input type='text' placeholder={product_data?.name_of_product} variant='filled' onChange={((e)=>{set_name_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Brand Name</Text>
-						<Input type='text' placeholder={product_data.brand} variant='filled' onChange={((e)=>{set_brand(e.target.value)})}/>
+						<Input type='text' placeholder={product_data?.brand} variant='filled' onChange={((e)=>{set_brand(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Chemical Family</Text>
-						<Input type='text' placeholder={product_data.chemical_name} variant='filled' onChange={((e)=>{set_chemical_name(e.target.value)})}/>
+						<Input type='text' placeholder={product_data?.chemical_name} variant='filled' onChange={((e)=>{set_chemical_name(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Description</Text>
-						<Textarea type='text' placeholder={product_data.description_of_product} variant='filled' onChange={((e)=>{set_description_of_product(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.description_of_product} variant='filled' onChange={((e)=>{set_description_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex gap='2'>
 						<Flex direction='column' flex='1'>
 							<Text>Manufactured by:</Text>
-							<Input type='text' placeholder={product_data.manufactured_by} variant='filled' onChange={((e)=>{set_manufactured_by(e.target.value)})}/>
+							<Input type='text' placeholder={product_data?.manufactured_by} variant='filled' onChange={((e)=>{set_manufactured_by(e.target.value)})}/>
 						</Flex>
 						<Flex direction='column' flex='1'>
 							<Text>Distributed by</Text>
-							<Input type='text' placeholder={product_data.distributed_by} variant='filled' onChange={((e)=>{set_distributed_by(e.target.value)})}/>
+							<Input type='text' placeholder={product_data?.distributed_by} variant='filled' onChange={((e)=>{set_distributed_by(e.target.value)})}/>
 						</Flex>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Contact Email</Text>
-						<Input type='email' placeholder={product_data.email_of_lister} variant='filled' onChange={((e)=>{set_email_of_lister(e.target.value)})}/>
+						<Input type='email' placeholder={product_data?.email_of_lister} variant='filled' onChange={((e)=>{set_email_of_lister(e.target.value)})}/>
 					</Flex>
 					<Flex gap='1'>
-						<Flex direction='column' gap='2' flex='1'>
-							<Text fontFamily='ClearSans-Bold'>Industry</Text>
-							<Select variant='filled' placeholder='Select Industry' onChange={((e)=>{set_industry(e.target.value)})}>
-								{industries_data?.map((item)=>{
+						<Flex direction='column' gap='3' flex='1'>
+							<Text fontFamily='ClearSans-Bold'>Industry(`{product_data?.industry}`)</Text>
+							<Select variant='filled' placeholder='Select industry' onChange={((e)=>{set_industry(e.target.value)})}>
+								{industries_data?.sort((a, b) => a.title.localeCompare(b.title)).map((item)=>{
 										return(
 											<option key={item?._id} value={item?.title}>{item?.title}</option>
 
@@ -252,9 +202,9 @@ function Product(){
 					        </Select>
 						</Flex>
 						<Flex direction='column' gap='3' flex='1'>
-							<Text fontFamily='ClearSans-Bold'>Technology</Text>
+							<Text fontFamily='ClearSans-Bold'>Technology(`{product_data?.technology}`)</Text>
 							<Select variant='filled' placeholder='Select Technology' onChange={((e)=>{set_technology(e.target.value)})}>
-								{technologies_data?.map((item)=>{
+								{technologies_data?.sort((a, b) => a.title.localeCompare(b.title)).map((item)=>{
 									return(
 										<option key={item?._id} value={item?.title}>{item?.title}</option>
 
@@ -265,27 +215,27 @@ function Product(){
 					</Flex>
 					<Flex direction='column'>
 						<Text>Function</Text>
-						<Textarea type='text' placeholder={product_data.function} variant='filled' onChange={((e)=>{set_product_function(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.function} variant='filled' onChange={((e)=>{set_product_function(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Features & Benefits</Text>
-						<Textarea type='text' placeholder={product_data.features_of_product} variant='filled' onChange={((e)=>{set_features_of_product(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.features_of_product} variant='filled' onChange={((e)=>{set_features_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Application</Text>
-						<Textarea type='text' placeholder={product_data.application_of_product} variant='filled' onChange={((e)=>{set_application_of_product(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.application_of_product} variant='filled' onChange={((e)=>{set_application_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Packaging</Text>
-						<Textarea type='text' placeholder={product_data.packaging_of_product} variant='filled' onChange={((e)=>{set_packaging_of_product(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.packaging_of_product} variant='filled' onChange={((e)=>{set_packaging_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>Storage & Handling</Text>
-						<Textarea type='text' placeholder={product_data.storage_of_product} variant='filled' onChange={((e)=>{set_storage_of_product(e.target.value)})}/>
+						<Textarea type='text' placeholder={product_data?.storage_of_product} variant='filled' onChange={((e)=>{set_storage_of_product(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column'>
 						<Text>website_link</Text>
-						<Input type='text' placeholder={product_data.website_link_to_Seller} variant='filled' onChange={((e)=>{set_website_link_to_Seller(e.target.value)})}/>
+						<Input type='text' placeholder={product_data?.website_link_to_Seller} variant='filled' onChange={((e)=>{set_website_link_to_Seller(e.target.value)})}/>
 					</Flex>
 					<Flex direction='column' gap='3' flex='1'>
 						<Text fontFamily='ClearSans-Bold'>Short on Expiry</Text>

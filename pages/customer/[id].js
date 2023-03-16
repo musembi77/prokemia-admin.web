@@ -11,7 +11,8 @@ import Get_Client from '../api/clients/get_client.js';
 import Suspend_Client from '../api/clients/suspend_client_account.js'
 //icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
+import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 function Customer(){
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
@@ -22,10 +23,15 @@ function Customer(){
 	const id = query?.id
 
 	const [client_data,set_client_data] = useState('')
-	const [recents,set_recents]=useState(client_data?.recents)
+	const [recents,set_recents]=useState(client_data?.recents);
+
+	const cookies = new Cookies();
+    let token = cookies.get('admin_token');
+    const [auth_role,set_auth_role]=useState("")
 
 	const payload = {
-		_id : id
+		_id : id,
+		auth_role
 	}
 	//console.log(payload)
 
@@ -47,6 +53,19 @@ function Customer(){
 		}else{
 			get_data(payload)
 		}
+		if (!token){
+	        toast({
+	              title: '',
+	              description: `You need to signed in, to have access`,
+	              status: 'info',
+	              isClosable: true,
+	            });
+	        router.push("/")
+	      }else{
+	        let decoded = jwt_decode(token);
+	        //console.log(decoded);
+	        set_auth_role(decoded?.role)
+	      }
 	},[])
 	return(
 		<Flex direction='column' gap='2'>
