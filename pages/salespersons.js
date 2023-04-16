@@ -87,7 +87,7 @@ function SalesPersons(){
 	return(
 		<Flex direction='column'>
 			<Header />
-			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >SalesPersons</Text>
+			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Salespersons</Text>
 			{filter_active? 
 				<FilterBar set_filter_active={set_filter_active} set_suspenstion_status={set_suspenstion_status}/>
 				: null
@@ -100,7 +100,7 @@ function SalesPersons(){
 				</Select>
 			</Flex>
 			<Flex gap='2' p='2'>
-				<Input placeholder='search customers' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
+				<Input placeholder='search salespeople' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 			</Flex>
 			<Flex gap='2' w='' direction='column' bg='#eee' borderRadius='5' m='2' p='2' h=''>

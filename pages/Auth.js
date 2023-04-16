@@ -6,7 +6,11 @@ import {useRouter} from 'next/router'
 import SignIn from './api/auth/signin.js'
 import Cookies from 'universal-cookie';
 
-export default function ClientSignUp(){
+export default function AuthHandler(){
+	/**
+	 * Handles user sign in
+	 * 
+	 */
 	const [show, setShow] = useState(false);
   	const handleClick = () => setShow(!show);
   	const router = useRouter();
@@ -16,14 +20,24 @@ export default function ClientSignUp(){
 	const [user_name,setuser_name]=useState('');
 	const cookies = new Cookies();
   	let token = cookies.get('admin_token');
-	let route = '';
 
 	const payload = {
 		user_name,
 		user_password
 	}
 
-  	const handleSignIn=(event)=>{
+  	const handleSignIn=async (event)=>{
+		/**
+		 * Handles user sign in.
+		 * 
+		 * user_password (any): password for the user.
+		 * user_name (String): name for user.
+		 * paylaod (obj): user credentials. 
+		 * 
+		 * Return:
+		 *  	redirects to dashboard on success else
+		 * 			alerts an error.
+		 */
 		//console.log(payload)
 		event.preventDefault();
   		if(user_password === '' || user_name === '')
@@ -33,17 +47,16 @@ export default function ClientSignUp(){
 				status: 'info',
 				isClosable: true,
 			});
-  			//router.push(`/dashboard`)
-		SignIn(payload).then((response)=>{
-			console.log(response)
+		await SignIn(payload).then((response)=>{
+			//console.log(response)
 			if (response.status === 200){
-				router.push("/dashboard")
-				return toast({
+				toast({
 		              title: '',
 		              description: 'Successfully Logged in',
 		              status: 'success',
 		              isClosable: true,
 		            });
+				return (router.push("/dashboard"));
 			}
 			else{
 				return toast({
@@ -89,10 +102,3 @@ export default function ClientSignUp(){
 		</Flex>
 	)
 }
-
-const passwords=[
-	{
-		acc:'admin',
-		password:'admin'
-	},
-]

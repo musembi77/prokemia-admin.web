@@ -39,13 +39,24 @@ export default function Header(){
 			_id : user_data?._id,
 			login_status : false
 		}
-		cookies.remove('admin_token', { path: '/' });
 		await Edit_Admin_User(payload).then(()=>{
-			alert("successfully logged out")
+			cookies.remove('admin_token', { path: '/' });
+			toast({
+              title: 'successfully logged out',
+              description: ``,
+              status: 'success',
+              isClosable: true,
+            });
 		}).then(()=>{
 			router.push('/')
 		}).catch((err)=>{
-			//console.log(err)
+			toast({
+              title: 'error while logging out',
+              description: ``,
+              status: 'error',
+              isClosable: true,
+            });
+			console.log(err);
 		})
 	}
 
@@ -133,7 +144,7 @@ const navigation=[
 	{
 		id:7,
 		title:'Control',
-		link:'controls',
+		link:'/util_controls',
 		logo:<Tune/>
 	},
 ]

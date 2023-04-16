@@ -98,6 +98,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
                 isClosable: true,
               });
           }).catch((err)=>{
+            console.log(err)
             toast({
                 title: 'Error while adding a new Technology',
                 description: err.response.data,

@@ -82,7 +82,7 @@ function Control(){
 			</Flex>
 			<Flex direction='column' gap='2' p='2'>
 				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Industry</Text>
-				<Flex wrap='Wrap' gap='2' >
+				<Flex wrap='Wrap' gap='2' justify='space-between'>
 					{Industries_data?.map((item)=>{
 						return (
 							<Industry key={item._id} item={item} auth_role={auth_role}/>
@@ -93,7 +93,7 @@ function Control(){
 			</Flex>
 			<Flex direction='column' gap='2' p='2'>
 				<Text borderBottom='1px solid #009393' fontSize='20px' fontWeight='bold'>Technology</Text>
-				<Flex wrap='Wrap' gap='2' >
+				<Flex wrap='Wrap' gap='2' justify='space-between'>
 					{Technologies_data?.map((item)=>{
 						return (
 							<Technology key={item._id} item={item} auth_role={auth_role}/>
@@ -138,7 +138,7 @@ const Industry=({item,auth_role})=>{
           })
 	}
 	return(
-		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
+		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='175px' boxShadow={'lg'} justify='space-between'>
 			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
 			<Text p='2' fontSize='20px' fontWeight='bold'>{item?.title}</Text>
 			<Text p='2'>{item?.description}</Text>
@@ -181,7 +181,7 @@ const Technology=({item,auth_role})=>{
           })
 	}
 	return(
-		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='180px' boxShadow={'lg'} justify='space-between'>
+		<Flex key={item._id} borderRadius='5' bg='#eee' gap='1' direction='column' w='150px' boxShadow={'lg'} justify='space-between'>
 			<Image src={item.cover_image} alt='industry photo' h='150px' borderRadius='5'/>
 			<Text p='2' fontSize='20px' fontWeight='bold'>{item.title}</Text>
 			<Text p='2'>{item?.description}</Text>

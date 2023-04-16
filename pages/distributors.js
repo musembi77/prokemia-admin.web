@@ -112,7 +112,7 @@ export default function Distributors(){
 				</Select>
 			</Flex>
 			<Flex gap='2' p='2'>
-				<Input placeholder='search Manufacturers' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
+				<Input placeholder='search Distributors' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 			</Flex>
 			{distributors_data.length == 0?

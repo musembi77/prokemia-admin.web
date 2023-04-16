@@ -93,12 +93,15 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,
       }else{
         Add_Industry(payload).then((response)=>{
             return toast({
-              title: '',
-              description: `Successfully added ${payload.title} to industries`,
-              status: 'success',
-              isClosable: true,
-            });
+                title: '',
+                description: `Successfully added ${payload.title} to industries`,
+                status: 'success',
+                isClosable: true,
+              });
+          }).then(()=>{
+            cookies.remove('ind_image_url', { path: '/' });
           }).catch((err)=>{
+            console.log(err)
             toast({
                 title: 'Error while adding a new Industry',
                 description: err.response.data,
@@ -107,7 +110,8 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,
               })
           })
         set_is_retry(false)
-        set_is_submitting(false)
+        set_is_submitting(false);
+        set_image_uploaded(false);
         onClose()
       }
     }

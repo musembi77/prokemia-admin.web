@@ -22,11 +22,11 @@ function Customers(){
 		suspension_status : status
 	}
 	//|| {status? item?.suspension_status() : !item?.suspension_status}
-	console.log(status)
+	//console.log(status)
 	useEffect(()=>{
-		console.log(status)
+		//console.log(status)
 		Get_Clients().then((response)=>{
-			console.log(response.data)
+			//console.log(response.data)
 			const data = response.data
 			if (sort == 'desc'){
 				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
@@ -34,11 +34,11 @@ function Customers(){
 																	item?.first_name.toLowerCase().includes(search_query.toLowerCase()))
 				if(status === 'true'){
 					const result = result_data?.filter((item) => item.suspension_status)
-					console.log(result)
+					//console.log(result)
 					set_clients_data(result);
 				}else{
 					const result = result_data?.filter((item) => !item.suspension_status)
-					console.log(result)
+					//console.log(result)
 					set_clients_data(result_data);
 				}
 			}else{
@@ -47,11 +47,11 @@ function Customers(){
 																	item?.first_name.toLowerCase().includes(search_query.toLowerCase()))
 				if(status === 'true'){
 					const result = result_data?.filter((item) => item.suspension_status)
-					console.log(result)
+					//console.log(result)
 					set_clients_data(result);
 				}else{
 					const result = result_data?.filter((item) => !item.suspension_status)
-					console.log(result)
+					//console.log(result)
 					set_clients_data(result_data);
 				}
 			}

@@ -115,7 +115,12 @@ function Edit_Industry_Modal({
                     }
                     //Edit the technology
                     Edit_Industry(payload).then(()=>{
-                        alert(`${payload.title} has been edited successfuly`)
+                        toast({
+                          title: '',
+                          description: `${payload.title} has been edited successfuly`,
+                          status: 'success',
+                          isClosable: true,
+                        });
                     })
                     return ;
                 }else{

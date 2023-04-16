@@ -84,46 +84,46 @@ function View_Vacancy({is_view_vacancy_Modalvisible,set_is_view_vacancy_Modalvis
     return (
 		<>
 			<Modal isOpen={isOpen} onClose={onClose}>
-			<ModalOverlay />
-			<ModalContent>
-			<ModalHeader>
-			<Text>View Career</Text>
-			</ModalHeader>
-			<ModalCloseButton />
-			<ModalBody>
-			<Stack spacing={4}>
-			<Flex direction='column'>
-			  <Text>Title</Text>
-			  <Input type='text' placeholder={item?.title} variant='filled' onChange={((e)=>{set_title(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>Description</Text>
-			  <Textarea type='text' placeholder={item?.description} variant='filled' onChange={((e)=>{set_description(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>Requirements</Text>
-			  <Textarea type='text' placeholder={item?.requirements} variant='filled' onChange={((e)=>{set_requirements(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>Link to company</Text>
-			  <Textarea type='text' placeholder={item?.link} variant='filled' onChange={((e)=>{setlink(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>Name of company</Text>
-			  <Textarea type='text' placeholder={item?.company} variant='filled' onChange={((e)=>{setcompany(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>Status of the career</Text>
-			  <Textarea type='text' placeholder={item?.status} variant='filled' onChange={((e)=>{setstatus(e.target.value)})}/>
-			</Flex>
-			<Flex direction='column'>
-			  <Text>post is valid till</Text>
-			  <Input type='date' placeholder={item?.valid_till} variant='filled' onChange={((e)=>{setvalid_till(e.target.value)})}/>
-			</Flex>
-			<Button bg='#009393' borderRadius='0' color='#fff' onClick={Handle_edit_vacancy}>Edit Career</Button>
-			</Stack>
-			</ModalBody>
-			</ModalContent>
+  			<ModalOverlay />
+  			<ModalContent>
+    			<ModalHeader>
+    			 <Text>Edit Career</Text>
+    			</ModalHeader>
+    			<ModalCloseButton />
+    			<ModalBody>
+      			<Stack spacing={4}>
+        			<Flex direction='column'>
+        			  <Text>Title</Text>
+        			  <Input type='text' value={title} placeholder={item?.title} variant='filled' onChange={((e)=>{set_title(e.target.value)})}/>
+        			</Flex>
+              <Flex direction='column'>
+                <Text>Name of company</Text>
+                <Textarea type='text' value={company} placeholder={item?.company} variant='filled' onChange={((e)=>{setcompany(e.target.value)})}/>
+              </Flex>
+        			<Flex direction='column'>
+        			  <Text>Description</Text>
+        			  <Textarea type='text' value={description} placeholder={item?.description} variant='filled' onChange={((e)=>{set_description(e.target.value)})}/>
+        			</Flex>
+        			<Flex direction='column'>
+        			  <Text>Requirements</Text>
+        			  <Textarea type='text' value={requirements} placeholder={item?.requirements} variant='filled' onChange={((e)=>{set_requirements(e.target.value)})}/>
+        			</Flex>
+        			<Flex direction='column'>
+        			  <Text>Link to company</Text>
+        			  <Textarea type='text' value={link} placeholder={item?.link} variant='filled' onChange={((e)=>{setlink(e.target.value)})}/>
+        			</Flex>
+        			<Flex direction='column'>
+        			  <Text>Status of the career</Text>
+        			  <Textarea type='text' value={status} placeholder={item?.status} variant='filled' onChange={((e)=>{setstatus(e.target.value)})}/>
+        			</Flex>
+        			<Flex direction='column'>
+        			  <Text>post is valid till</Text>
+        			  <Input type='date' value={valid_till} placeholder={item?.valid_till} variant='filled' onChange={((e)=>{setvalid_till(e.target.value)})}/>
+        			</Flex>
+        			<Button bg='#009393' borderRadius='0' color='#fff' onClick={Handle_edit_vacancy}>Edit Career</Button>
+    			</Stack>
+    			</ModalBody>
+  			</ModalContent>
 			</Modal>
 		</>
 	)
