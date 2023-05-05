@@ -223,7 +223,7 @@ export default function Upload_Edited_Files_Test({set_iseditfiles,product_data,a
 				setTimeout(()=>{
 					set_iseditfiles(false);
 					router.back()
-					//Clean_input_data();
+					Clean_input_data();
 				},2000);
 			}).catch((err)=>{
 				console.log(err)
@@ -231,7 +231,7 @@ export default function Upload_Edited_Files_Test({set_iseditfiles,product_data,a
 					position: 'top-left',
 					variant:"subtle",
 					title: 'Error while uploading files',
-					description: 'your product has been been saved and files could be edited later from inventory',
+					description: 'your files could not be edited, contact support',
 					status: 'error',
 					isClosable: true,
 				})
