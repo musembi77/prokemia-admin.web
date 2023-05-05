@@ -151,13 +151,13 @@ const FilterBar=({set_filter_active,set_date,set_suspenstion_status,set_region})
 				</Flex>
 				<Flex direction='column' >
 					<Text>Suspension status</Text>
-					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspenstion_status(e.target.value)})}>
+					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspenstion_status(e.target.value);set_filter_active(false)})}>
 						<option value={'false'} >Suspended</option>
 						<option value={'true'} >Active</option>
 						<option value={''} >All</option>
 					</Select>
 				</Flex>
-				<Button bg='#009393' borderRadius='0' color='#fff'>Filter Results</Button>
+				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>
 			</Flex>
 	)
 }

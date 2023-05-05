@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import {Flex, Text,Button,Stack,Divider,useToast,Image} from '@chakra-ui/react'
-import {Menu,Receipt,Close,Add,HorizontalRule,ArrowForward,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
+import {Menu,Receipt,Close,Add,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
 import {useRouter} from 'next/router'
 import styles from '../styles/Home.module.css'
 import Cookies from 'universal-cookie';
@@ -85,9 +85,10 @@ export default function Header(){
 				<Text ml='1' fontSize='14px' >{user_data?.user_name}</Text>
 			</Flex>
 			<Flex align='center' gap='3'>
-				<Widgets onClick={(()=>{router.push("/dashboard")})}/>
-				<NotificationsActiveIcon onClick={(()=>{router.push("/notifications")})}/>
-				<Chat onClick={(()=>{router.push("/hub")})}/>
+				<Button w='120%' p='3' fontSize='14px' bg='#009393' color='#fff' onClick={(()=>{router.push(`/product/add_product`)})}>
+					<Add style={{fontSize:'18px'}}/>
+					Add Product
+				</Button>
 				<Button w='100%' bg='#000' color='#fff' onClick={handle_LogOut}>Log-out</Button>
 				{showmenubar ? 
 					<Close onClick={(()=>{setshowmenubar(!showmenubar)})}/>
@@ -95,7 +96,7 @@ export default function Header(){
 					<Menu onClick={(()=>{setshowmenubar(!showmenubar)})}/> 
 				}
 				{showmenubar ? 
-					<MenuBar setshowmenubar={setshowmenubar} user_data={user_data}/>
+					<MenuBar setshowmenubar={setshowmenubar} showmenubar={showmenubar} user_data={user_data}/>
 						:
 					null 
 				}
@@ -144,34 +145,44 @@ const navigation=[
 	{
 		id:7,
 		title:'Control',
-		link:'/util_controls',
+		link:'util_controls',
 		logo:<Tune/>
 	},
 ]
-const MenuBar=({user_data})=>{
-	const [active,setActive]=useState(false);
-	const [currentValue,setcurrentValue]=useState('');
+const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 	const router = useRouter()
 	return(
-		<Flex className={styles.HeaderNav} direction='column' gap='3' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
-			{navigation.map((item)=>{
-				return(
-					<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} key={item?.id} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/${item.link}`)})}>
-						{item.logo}
-						<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
-					</Flex>
-				)
-			})}
-			<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
-				<AccountCircleIcon/>
-				<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
-			</Flex>
-			{user_data?.role === 'Manager' || user_data?.role === 'IT'?
-				<Flex p='1' _hover={{transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000"}} align='center' borderBottom='1px solid #fff' color='#fff' borderRadius='5' onClick={(()=>{router.push(`/settings`)})}>
-					<Settings/>
-					<Text  p='2' fontSize='20px'  mb='0' >Settings</Text>
+		<Flex className={styles.HeaderNav} direction='column' gap='2' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
+			<Flex gap='2' borderBottom='1px solid #fff' pb='3'>
+				<Flex direction='column' flex='1' align='center' p='2' bg='#fff' borderRadius='5' onClick={(()=>{router.push("/dashboard");setshowmenubar(!showmenubar)})}>
+					<Widgets />
+					<Text fontSize='14px'  mb='0' >Dashboard</Text>
 				</Flex>
-				:null}
+				<Flex direction='column' flex='1' align='center' p='2' bg='#fff' borderRadius='5' onClick={(()=>{router.push("/notifications");setshowmenubar(!showmenubar)})}>
+					<NotificationsActiveIcon />
+					<Text fontSize='14px'  mb='0' >Notifications</Text>
+				</Flex>
+			</Flex>
+			<Flex className={styles.HeaderNav_items} direction='column' h='90%' overflowY='scroll' w='100%' p='2'>
+				{navigation.map((item)=>{
+					return(
+						<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
+							{item.logo}
+							<Text  p='2' fontSize='18px'  mb='0' >{item.title}</Text>
+						</Flex>
+					)
+				})}
+				<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`);setshowmenubar(!showmenubar)})}>
+					<AccountCircleIcon/>
+					<Text  p='2' fontSize='18px'  mb='0' >Profile</Text>
+				</Flex>
+				{user_data?.role === 'Manager' || user_data?.role === 'IT'?
+					<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/settings`);setshowmenubar(!showmenubar)})}>
+						<Settings/>
+						<Text  p='2' fontSize='18px'  mb='0' >Settings</Text>
+					</Flex>
+					:null}
+			</Flex>
 		</Flex>
 	)
 }

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,7 +16,7 @@
     "@mui/material": "^5.10.9",
     "antd": "^4.23.5",
     "axios": "^1.1.2",
-    "easyinvoice": "^2.3.3",
+    "easyinvoice": "^3.0.15",
     "firebase": "^9.15.0",
     "jwt-decode": "^3.1.2",
     "next": "12.3.1",

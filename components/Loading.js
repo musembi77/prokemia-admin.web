@@ -1,14 +1,20 @@
-import React from 'react';
-import styles from '../styles/Home.module.css'
+import {Flex} from '@chakra-ui/react';
+import Script from 'next/script';
 
-export default function Loading(){
+export default function Loading({width,height,color}){
     return(
-        <div styles={{height: '100vh', width:'100vw',backgroundColor:'blue',display:'flex',justifyContent:'center',alignItems:'center'}}>
-            <div className={styles.loading}>
-                <div className={styles.div}></div>
-                <div className={styles.div}></div>
-                <div className={styles.div}></div>
-            </div>
-        </div>
+        <Flex>
+            <Script  src="https://cdn.lordicon.com/bhenfmcm.js"></Script>
+            <lord-icon 
+                src="https://cdn.lordicon.com/xjovhxra.json" 
+                trigger="loop" 
+                colors={`primary:${color},secondary:#ffffff`} 
+                stroke="40" 
+                style={{width:width,height:height,}} 
+            >
+            </lord-icon>
+        </Flex>
     )
 }
+
+        

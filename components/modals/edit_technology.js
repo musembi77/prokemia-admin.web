@@ -24,6 +24,7 @@ import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
 import { v4 } from "uuid";
 import DoneIcon from '@mui/icons-material/Done';
+import Cookies from 'universal-cookie';
 
 function Edit_Technology_Modal({
     is_edit_technology_Modalvisible,
@@ -33,6 +34,7 @@ function Edit_Technology_Modal({
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast()
+    const cookies = new Cookies();
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
@@ -71,7 +73,14 @@ function Edit_Technology_Modal({
 
     const handle_image_upload=async()=>{
       if (image.name == undefined){
-        return alert('could not process image, try again.')
+        return toast({
+            title: '',
+            position: 'top-left',
+            variant:"subtle",
+            description: `Could not process image, try again.`,
+            status: 'info',
+            isClosable: true,
+        });
       }else{
         console.log(image.name)
         const image_documentRef = ref(storage, `technology_images/${image?.name + v4()}`);
@@ -89,7 +98,14 @@ function Edit_Technology_Modal({
         set_is_submitting(true)
         //check if inputs changed; if so exit function
         if (edited_title == item?.title && edited_description == item?.description && image == ''){
-            alert("No changes have been made to update technology.")
+            toast({
+              title: '',
+              position: 'top-left',
+              variant:"subtle",
+              description: `No changes have been made to update technology.`,
+              status: 'info',
+              isClosable: true,
+          });
             set_is_submitting(false)
             return;
         }
@@ -111,7 +127,14 @@ function Edit_Technology_Modal({
                     }
                     //Edit the technology
                     Edit_Technology(payload).then(()=>{
-                        alert(`${payload.title} has been edited successfuly`)
+                      toast({
+                          title: '',
+                          position: 'top-left',
+                          variant:"subtle",
+                          description: `${payload.title} has been edited successfuly`,
+                          status: 'success',
+                          isClosable: true,
+                      });
                     })
                     return ;
                 }else{
@@ -127,17 +150,21 @@ function Edit_Technology_Modal({
                 set_is_submitting(false)
                 return toast({
                   title: '',
+                  position: 'top-left',
+                  variant:"subtle",
                   description: `${payload.title} has been edited successfuly`,
                   status: 'success',
                   isClosable: true,
-                });
+              });
             }).catch((err)=>{
-                toast({
-                  title: 'Error ehile editing an technology',
-                  description: err.response?.data,
-                  status: 'error',
-                  isClosable: true,
-                });
+              toast({
+                title: 'Error ehile editing an technology',
+                position: 'top-left',
+                variant:"subtle",
+                description: err.response?.data,
+                status: 'error',
+                isClosable: true,
+            });
             })
             set_is_submitting(false)
             return ;

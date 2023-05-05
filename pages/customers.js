@@ -108,9 +108,9 @@ const Customer=({client_data})=>{
 	return(
 		<Flex boxShadow='lg' gap='1' bg='#fff' borderRadius='5'>
 			<Image boxSize='150px' src={client_data?.profile_photo_url == '' || !client_data?.profile_photo_url ? './Pro.png' : client_data?.profile_photo_url} bg='grey' alt='photo' objectFit='cover' border='1px solid #eee' borderRadius='5'/>
-			<Flex p='2' direction='column' flex='1' gap='2' justify='space-between'>
+			<Flex p='2' direction='column' flex='1' gap='2' justify='space-between' position='relative'>
 				<Flex direction='column' gap='2'>
-					<Text fontWeight='bold' fontSize='20px'>{client_data?.first_name} {client_data?.last_name}</Text>
+					<Text fontWeight='bold' fontSize='20px'>{client_data?.first_name} {client_data?.last_name} {client_data?.suspension_status?<span style={{color:'red',fontSize:'14px'}}>suspended</span>:null}</Text>
 					<Text fontSize='14px'>Mobile: {client_data?.mobile_of_company}</Text>
 					<Text fontSize='14px'>Email: {client_data?.email_of_company}</Text>					
 				</Flex>
@@ -131,7 +131,7 @@ const FilterBar=({set_filter_active,set_status})=>{
 				</Flex>
 				<Flex direction='column' >
 					<Text>Suspension status</Text>
-					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_status(e.target.value)})}>
+					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_status(e.target.value);set_filter_active(false)})}>
 						<option value={'false'} >Active</option>
 						<option value={'true'} >Suspended</option>
 						<option value={''} >All</option>

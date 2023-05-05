@@ -5,6 +5,7 @@ import {Room,Visibility,VisibilityOff} from '@mui/icons-material'
 import {useRouter} from 'next/router'
 import SignIn from './api/auth/signin.js'
 import Cookies from 'universal-cookie';
+import Loading from '../components/Loading'
 
 export default function AuthHandler(){
 	/**
@@ -18,6 +19,8 @@ export default function AuthHandler(){
 
 	const [user_password,set_user_password]=useState('');
 	const [user_name,setuser_name]=useState('');
+	const [window,setwindow]=useState(null);
+	const [is_loading,set_is_loading]=useState(false);
 	const cookies = new Cookies();
   	let token = cookies.get('admin_token');
 
@@ -26,13 +29,29 @@ export default function AuthHandler(){
 		user_password
 	}
 
-  	const handleSignIn=async (event)=>{
+	useEffect(()=>{
+		const client = {
+			width: document.documentElement.clientWidth,
+			height: document.documentElement.clientHeight
+		}
+		//console.log(client.width)
+		if (client.width > 500){
+			setwindow(true)
+		}
+		if(token){
+			router.push('/dashboard');
+			return ;
+		}
+	},[token])
+  	const handleSignIn=async(event)=>{
+		set_is_loading(true);
 		/**
 		 * Handles user sign in.
 		 * 
 		 * user_password (any): password for the user.
 		 * user_name (String): name for user.
 		 * paylaod (obj): user credentials. 
+		 * token (string): jwt user token.
 		 * 
 		 * Return:
 		 *  	redirects to dashboard on success else
@@ -40,43 +59,59 @@ export default function AuthHandler(){
 		 */
 		//console.log(payload)
 		event.preventDefault();
-  		if(user_password === '' || user_name === '')
+  		if(user_password === '' || user_name === ''){
 			toast({
 				title: '',
 				description: 'All inputs are required',
 				status: 'info',
 				isClosable: true,
 			});
-		await SignIn(payload).then((response)=>{
-			//console.log(response)
-			if (response.status === 200){
-				toast({
-		              title: '',
-		              description: 'Successfully Logged in',
-		              status: 'success',
-		              isClosable: true,
-		            });
-				return (router.push("/dashboard"));
-			}
-			else{
+		}else {
+			await SignIn(payload).then((response)=>{
+				//console.log(response)
+				if (response.status === 200){
+					toast({
+						  title: '',
+						  description: 'Successfully Logged in',
+						  status: 'success',
+						  isClosable: true,
+						});
+					setTimeout(()=>{
+					},6000)
+					router.push("/dashboard");
+					return ;
+				}
+				else{
+					return toast({
+								title: 'Error logging in',
+								description: response.data,
+								status: 'error',
+								isClosable: true,
+							  })
+				}
+			}).catch((err)=>{
 				return toast({
-		                    title: 'Error logging in',
-		                    description: response.data,
-		                    status: 'error',
-		                    isClosable: true,
-		                  })
-			}
-		})
+					title: 'Error logging in',
+					description: '',
+					status: 'error',
+					isClosable: true,
+				  })
+			}).finally(()=>{
+				setTimeout(()=>{
+					set_is_loading(false)					
+				},3000)
+			})
+		}
   	}
 
 	return(
 		<Flex h='100vh' className={styles.SigninBody}>
 			<Flex className={styles.authSection} gap='2' p='8'>
-				<Text w='40vw'  fontSize='4rem' color='#fff' fontFamily='ClearSans-bold'>Welcome Back!</Text>
+				{window?<Text w='40vw'  fontSize='4rem' color='#fff' fontFamily='ClearSans-bold'>Welcome Back!</Text>: null}
 			</Flex>
 				<Flex className={styles.authForm} gap='2' direction='column'>
-					<Text fontSize='2.5rem' fontFamily='ClearSans-bold'><span style={{borderBottom:"4px solid #009393",borderRadius:"3px"}}>Sign</span> In</Text>
-					<Text color='grey'>Welcome back, Please sign in to your account.</Text>
+					<Text fontSize='2.5rem' fontFamily='ClearSans-bold'><span style={{borderRadius:"3px"}}>Sign</span> In</Text>
+					 <Text color='grey'>Welcome back, Please sign in to your account.</Text> 
 					<Flex direction='column' gap='2'>
 						<Text fontWeight='bold'>Username</Text>
 						<Input required type='text' placeholder='Username' variant='filled' onChange={((e)=>{setuser_name(e.target.value)})}/>
@@ -97,7 +132,17 @@ export default function AuthHandler(){
 							</Button>
 						</InputRightElement>
 					</InputGroup>
-					<Button type="submit" onClick={handleSignIn} bg='#009393' color='#fff'>Sign In</Button>
+					<Button 
+						type="submit" 
+						onClick={handleSignIn} 
+						bg='#009393' 
+						color='#fff' 
+						disabled={is_loading? true : false}
+						align='center'
+					>
+							{is_loading? <Loading width='40px' height='40px' color='#ffffff'/> : null}
+							{is_loading? 'signing in...' : 'Sign in'}
+					</Button>
 				</Flex>
 		</Flex>
 	)

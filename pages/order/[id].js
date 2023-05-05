@@ -1,26 +1,27 @@
 import React,{useState,useEffect}from 'react';
 import {Flex,Text,Button,Image,Input,useToast} from '@chakra-ui/react';
 import Header from '../../components/Header.js'
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import {useRouter} from 'next/router';
 import Get_Order from '../api/orders/get_order.js';
 import Edit_Order from '../api/orders/edit_order.js';
 import Create_Invoice_PDF from '../api/orders/create_invoice_pdf.js';
-//import Create_Invoice from '../api/orders/create_invoice.js';
+import createInvoice from '../api/orders/create_invoice.js'
 import Reject_Order from '../api/orders/reject_order.js'
 import Approve_Order from '../api/orders/approve_order.js'
 import Delete_Order from '../api/orders/delete_order.js'
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import Loading from '../../components/Loading.js';
 
-function Order(){
+export default function Order(){
 	const router = useRouter();
 	const toast = useToast();
 
 	const id = router.query;
 	const cookies = new Cookies();
     let token = cookies.get('admin_token');
-    const [auth_role,set_auth_role]=useState("")
+    const [auth_role,set_auth_role]=useState("");
+	const [is_submitting,set_is_submitting]=useState(false);
 
 	const payload = {
 		_id : id.id,
@@ -32,13 +33,15 @@ function Order(){
 	const get_Data=async(payload)=>{
 		await Get_Order(payload).then((response)=>{
 			set_order_data(response.data)
-			console.log(response.data)
+			//console.log(response.data)
 		})
 	}
 	useEffect(()=>{
 		if (!payload || id === undefined){
 			toast({
 				title: '',
+				position: 'top-left',
+				variant:"subtle",
 				description: `...broken link, redirecting you`,
 				status: 'info',
 				isClosable: true,
@@ -49,19 +52,21 @@ function Order(){
 			get_Data(payload)
 		}
 		if (!token){
-	        toast({
-	              title: '',
-	              description: `You need to signed in, to have access`,
-	              status: 'info',
-	              isClosable: true,
-	            });
+			toast({
+				title: '',
+				position: 'top-left',
+				variant:"subtle",
+				description: `You need to signed in, to have access`,
+				status: 'info',
+				isClosable: true,
+			});
 	        router.push("/")
 	      }else{
 	        let decoded = jwt_decode(token);
 	        //console.log(decoded);
 	        set_auth_role(decoded?.role)
 	      }
-	},[id])
+	},[id,is_submitting])
 	let today = new Date().toLocaleDateString()
 	let delivery_date = new Date(order_data?.delivery_date).toLocaleDateString()
 
@@ -87,87 +92,105 @@ function Order(){
     }
 		Create_Invoice_PDF(order_payload)
 		await Approve_Order(payload).then(()=>{
-			router.refresh()
+			router.reload()
 		})
 	}
 
 	const handle_download_invoice=()=>{
 		const order_payload = {
-		_id: order_data?._id,
-		//client-info
-		name_of_client: order_data?.name_of_client,
-		company_name_of_client: order_data?.company_name_of_client,
-		mobile_of_client: order_data?.mobile_of_client,
-		email_of_client: order_data?.email_of_client,
-		location_of_client: order_data?.location_of_client,
-		//product info
-		name_of_product: order_data?.name_of_product,
-		volume_of_items: order_data?.volume_of_items,
-		unit_price: order_data?.unit_price,
-		total: order_data?.volume_of_items * order_data?.unit_price,
-		//payment&delivery
-		createdAt:today,
-		delivery_date: delivery_date,
-		delivery_terms: order_data?.delivery_terms,
-		payment_terms: order_data?.payment_terms
-    }
+			_id: order_data?._id,
+			//client-info
+			name_of_client: order_data?.name_of_client,
+			company_name_of_client: order_data?.company_name_of_client,
+			mobile_of_client: order_data?.mobile_of_client,
+			email_of_client: order_data?.email_of_client,
+			location_of_client: order_data?.location_of_client,
+			//product info
+			name_of_product: order_data?.name_of_product,
+			volume_of_items: order_data?.volume_of_items,
+			unit_price: order_data?.unit_price,
+			total: order_data?.volume_of_items * order_data?.unit_price,
+			//payment&delivery
+			createdAt:today,
+			delivery_date: delivery_date,
+			delivery_terms: order_data?.delivery_terms,
+			payment_terms: order_data?.payment_terms
+		}
 		Create_Invoice_PDF(order_payload)
 	}
 
 	const Handle_Reject_Order=async()=>{
+		set_is_submitting(true)
 		await Reject_Order(payload).then(()=>{
 			toast({
 				title: '',
-				description: `Order has been rejected`,
+				position: 'top-left',
+				variant:"subtle",
+				description: `${payload?.name_of_product} has successfully been rejected`,
 				status: 'success',
 				isClosable: true,
 			});
 		}).catch((err)=>{
-			//console.log(err)
 			toast({
 				title: '',
-				description: `${err.response?.data}`,
+				position: 'top-left',
+				variant:"subtle",
+				description: err.response.data,
 				status: 'error',
 				isClosable: true,
 			});
+		}).finally(()=>{
+			set_is_submitting(false)
 		})
 	}
 
 	const Handle_Approve_Order=async()=>{
+		set_is_submitting(true)
 		await Approve_Order(payload).then(()=>{
 			toast({
 				title: '',
-				description: `Order has been approved`,
+				position: 'top-left',
+				variant:"subtle",
+				description: `${payload?.name_of_product} has successfully been approved`,
 				status: 'success',
 				isClosable: true,
 			});
 		}).catch((err)=>{
-			//console.log(err)
 			toast({
 				title: '',
-				description: `${err.response.data}`,
+				position: 'top-left',
+				variant:"subtle",
+				description: err.response.data,
 				status: 'error',
 				isClosable: true,
 			});
+		}).finally(()=>{
+			set_is_submitting(false)
 		})
 	}
 	const Handle_Delete_Order=async()=>{
+		set_is_submitting(true)
 		await Delete_Order(payload).then(()=>{
 			toast({
 				title: '',
-				description: `Order has been deleted`,
+				position: 'top-left',
+				variant:"subtle",
+				description: `${payload?.name_of_product} has successfully been deleted`,
 				status: 'success',
 				isClosable: true,
 			});
 			router.push('/orders')
 		}).catch((err)=>{
-			//console.log(err)
 			toast({
 				title: '',
-				description: err.response?.data,
+				position: 'top-left',
+				variant:"subtle",
+				description: err.response.data,
 				status: 'error',
 				isClosable: true,
 			});
+		}).finally(()=>{
+			set_is_submitting(false)
 		})
 	}
 	return(
@@ -177,25 +200,28 @@ function Order(){
 				<Edit_Order_Item order_data={order_data} set_edit={set_edit} auth_role={auth_role}/>
 			:
 				<Flex p='4' direction='column' gap='2'>
-					<Flex boxShadow='lg' p='2' bg='#eee' borderRadius='5px' direction='column' position='relative' border='2px dashed #009393' gap='2'>
+					<Flex boxShadow='lg' p='2' bg='#eee' borderRadius='5px' direction='column' position='relative' gap='2'>
 						<Text fontSize='28px' fontWeight='bold'>{order_data?.name_of_product}</Text>
 						<Text fontSize='18px'>Order Id: {order_data?._id}</Text>						
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
-							<Text>SalesPerson Name: {order_data?.creator_name}</Text>
-							<Text>SalesPerson Email: {order_data?.email_of_creator}</Text>
-							<Text>SalesPerson Mobile: {order_data?.mobile_of_creator}</Text>
+							<Text fontWeight='bold'>Sales details</Text>
+							<Text>Name: <span style={{color:'#009393',textDecoration:'underline',cursor:'pointer'}} onClick={(()=>{router.push(`/salesperson/${order_data?._id}`)})}>{order_data?.creator_name}</span></Text>
+							<Text>Email: {order_data?.email_of_creator}</Text>
+							<Text>Mobile: {order_data?.mobile_of_creator}</Text>
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
-							<Text>Name of Client: {order_data?.name_of_client}</Text>
-							<Text>Compamy Name of Client: {order_data?.company_name_of_client}</Text>
-							<Text>Email of Client: {order_data?.email_of_client}</Text>
-							<Text>Mobile of Client: {order_data?.mobile_of_client}</Text>
-							<Text>Company_location of Client: {order_data?.location_of_client}</Text>
+							<Text fontWeight='bold'>Client details</Text>
+							<Text>Name: {order_data?.name_of_client}</Text>
+							<Text>Compamy Name: {order_data?.company_name_of_client}</Text>
+							<Text>Email: {order_data?.email_of_client}</Text>
+							<Text>Mobile: {order_data?.mobile_of_client}</Text>
+							<Text>Company_location: {order_data?.location_of_client}</Text>
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
-							<Text>Volume of Product: {order_data?.volume_of_items}</Text>
+							<Text fontWeight='bold'>Product details</Text>
+							<Text>Volume: {order_data?.volume_of_items}</Text>
 							<Text>Unit Price: {order_data?.unit_price}</Text>
-							<Text>Total: {order_data?.total}</Text>
+							<Text>Total: KSH {order_data?.total}</Text>
 						</Flex>
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
 							<Text>Delivery_terms: {order_data?.delivery_terms}</Text>
@@ -211,27 +237,46 @@ function Order(){
 						</Flex>
 					</Flex>
 					{order_data?.order_status === 'completed'?
-						<Flex justify='center' gap='2' align='center' m='2'>
-							<Button bg='#009393' color='#fff' flex='1' onClick={handle_download_invoice}>Download Invoice</Button>
-							<Button bg='#eee' color='green'>Order has been Completed</Button>
-						</Flex>
+						<>
+							<Flex justify='center' gap='2' align='center' m='2'>
+								<Button bg='#009393' color='#fff' flex='1' onClick={handle_download_invoice}>Download Invoice</Button>
+								<Button bg='#eee' color='green'>Order has been Completed</Button>
+							</Flex>
+							<Button m='2' mt='0' h='40px' border='1px solid #000' color='#000'  onClick={(()=>{router.back()})}>Go back to orders</Button>
+						</>
 					:
 						<Flex direction='column' gap='2'>
-							{order_data.order_status === 'rejected'?
-								null
-							:
-								<Flex justify='center' gap='2'>
-									<Button bg='#009393' color='#fff' flex='1' onClick={handle_create_invoice}>Create Invoice</Button>
-									<Button bg='#000' color='#fff' flex='1' onClick={(()=>{set_edit(true)})}>Edit Order</Button>
-								</Flex>
-							}
-							{order_data.order_status === 'rejected'?
-								<Flex gap='2'>
-									<Button flex='1' bg='#fff' border='1px solid #000' onClick={Handle_Approve_Order}>Approve Order</Button>
-									<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={Handle_Delete_Order}>Delete Order</Button>
-								</Flex>
-							:
-								<Button bg='#fff' color='red' border='1px solid red' onClick={Handle_Reject_Order}>Reject Order</Button>	
+							{is_submitting? 
+								<Button
+									bg='#009393'
+									borderRadius='0' 
+									flex='1'
+									color='#fff'
+									align='center'
+								>
+									<Loading width='40px' height='40px' color='#ffffff'/>
+									saving order...
+								</Button>
+								:
+									<>
+										{order_data.order_status === 'rejected'?
+											null
+										:
+											<Flex justify='center' gap='2'>
+												<Button bg='#009393' color='#fff' flex='1' onClick={handle_create_invoice}>Create Invoice</Button>
+												<Button bg='#000' color='#fff' flex='1' onClick={(()=>{set_edit(true)})}>Edit Order</Button>
+											</Flex>
+										}
+										{order_data.order_status === 'rejected'?
+											<Flex gap='2'>
+												<Button flex='1' bg='#009393' color='#fff' onClick={Handle_Approve_Order}>Approve Order</Button>
+												<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={Handle_Delete_Order}>Delete Order</Button>
+											</Flex>
+										:
+											<Button bg='#fff' color='red' border='1px solid red' onClick={Handle_Reject_Order}>Reject Order</Button>	
+										}
+										<Button mt='0' h='40px' border='1px solid #000' color='#000'  onClick={(()=>{router.back()})}>Go back to orders</Button>
+									</>							
 							}
 						</Flex>
 					}
@@ -241,9 +286,8 @@ function Order(){
 	)
 }
 
-export default Order;
-
 const Edit_Order_Item=({order_data,set_edit,auth_role})=>{
+	const toast= useToast()
     //client_information
     const [name_of_client,set_name_of_client]=useState(order_data?.name_of_client);
     const [company_name_of_client,set_company_name_of_client]=useState(order_data?.company_name_of_client);
@@ -280,10 +324,27 @@ const Edit_Order_Item=({order_data,set_edit,auth_role})=>{
     }
 
 	const handle_edit=async()=>{
-		console.log(payload)
+		//console.log(payload)
 		await Edit_Order(payload).then(()=>{
-			alert('success')
+			toast({
+				title: '',
+				position: 'top-left',
+				variant:"subtle",
+				description: `${payload?.name_of_product} has been edited successfully`,
+				status: 'success',
+				isClosable: true,
+			});
 			set_edit(false)
+		}).catch((err)=>{
+			//console.log(err)
+			toast({
+				position: 'top-left',
+				variant:"subtle",
+				title: 'Error while editing order',
+				description: err.response.data,
+				status: 'error',
+				isClosable: true,
+			})
 		})		
 	}
 	return(

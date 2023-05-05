@@ -142,7 +142,7 @@ const Technology_Item=({item,auth_role})=>{
 			<Image src={item.cover_image} alt='industry photo' boxSize='100px' objectFit='cover' borderRadius='5'/>
 			<Flex direction='column' flex='1' p='2' gap='2' h='100px'>
 				<Text fontWeight='bold' color='#009393'>{item?.title}</Text>
-				<Text h='60%' Overflow='hidden'>{item?.description}</Text>
+				<Text h='60%' overflow='hidden'>{item?.description}</Text>
 			</Flex>
 			<Flex gap='2' justify='space-between' direction='column' p='2'>
 				<Text p='1' borderRadius='5px' border='1px solid #000' onClick={(()=>{set_is_edit_technology_Modalvisible(true)})} cursor='pointer'>Edit</Text>

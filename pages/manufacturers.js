@@ -25,13 +25,19 @@ export default function Manufacturers(){
 	const [technologies_data, set_technologies_data]=useState([]);
 
 	const [filter_active, set_filter_active] = useState(false);
-	const [suspenstion_status,set_suspenstion_status] = useState('true');
+	const [suspension_status,set_suspension_status] = useState('true');
 	const [subscription_status,set_subscription_status] = useState('');
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
 	const [technology,set_technology] = useState('');
 
 	const [sort,set_sort]=useState('desc');
+
+	const Clear_Filter_Options=()=>{
+		set_sort('desc');
+		set_search_query('');
+		set_suspension_status('false')
+	}
 	//api
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
@@ -64,11 +70,13 @@ export default function Manufacturers(){
 			if (sort === 'desc'){
 				const sorted_result = data.sort((a, b) => a.company_name.localeCompare(b.company_name))
 				//console.log(sorted_result)
-				if (suspenstion_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
+				if (suspension_status === 'true'){
+					const result = sorted_result?.filter((item) => item.suspension_status)
+					console.log(result);
 					set_manufacturers_data(result)
-				}else if(suspenstion_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
+				}else if(suspension_status === 'false'){
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
+					console.log(result);
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)
@@ -76,11 +84,13 @@ export default function Manufacturers(){
 			}else{
 				const sorted_result = data.sort((a, b) => b.company_name.localeCompare(a.company_name))
 				//console.log(sorted_result)
-				if (suspenstion_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
+				if (suspension_status === 'true'){
+					const result = sorted_result?.filter((item) => item.suspension_status)
+					console.log(result);
 					set_manufacturers_data(result)
-				}else if(suspenstion_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
+				}else if(suspension_status === 'false'){
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
+					console.log(result);
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)
@@ -93,17 +103,17 @@ export default function Manufacturers(){
 	//functions
 	//useEffect
 	useEffect(()=>{
-		get_Industries_Data()
-		get_Technology_Data()
+		// get_Industries_Data()
+		// get_Technology_Data()
 		handle_get_manufacturers()
-	},[suspenstion_status,subscription_status,search_query,sort])
+	},[suspension_status,subscription_status,search_query,sort])
 
 	return(
 		<Flex direction='column'>
 			<Header />
 			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px'>Manufacturers</Text>
 			{filter_active? 
-				<FilterBar industries_data={industries_data} technologies_data={technologies_data} set_filter_active={set_filter_active} set_suspenstion_status={set_suspenstion_status} set_subscription_status={set_subscription_status} set_industry={set_industry} set_technology={set_technology}/>
+				<FilterBar set_filter_active={set_filter_active} set_suspension_status={set_suspension_status}/>
 				: null
 			}
 			<Flex gap='2' p='2' align='center'>
@@ -112,6 +122,10 @@ export default function Manufacturers(){
 					<option value='desc'>A - Z</option>
 					<option value='asc'>Z - A</option>
 				</Select>
+				{search_query !== '' || suspension_status !== 'false' || sort !== 'desc'? 
+					<Text color='grey' onClick={Clear_Filter_Options} ml='3' cursor='pointer'>Clear Filter</Text> : 
+					null
+				}
 			</Flex>
 			<Flex gap='2' p='2'>
 				<Input placeholder='search Manufacturers' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
@@ -147,8 +161,10 @@ const Manufacturer=({manufacturer_data})=>{
 	return(
 		<Flex boxShadow='lg' gap='1' bg='#fff' borderRadius='5'>
 			<Image boxSize='150px' src={manufacturer_data?.profile_photo_url == '' || !manufacturer_data?.profile_photo_url ? './Pro.png' : manufacturer_data?.profile_photo_url} bg='grey' alt='photo' objectFit='cover' border='1px solid #eee' borderRadius='5'/>
-			<Flex p='2' direction='column' flex='1' gap='2'>
+			<Flex p='2' direction='column' flex='1' gap='2'  position='relative'>
 				<Text fontWeight='bold' fontSize='20px'>{manufacturer_data?.company_name}</Text>
+				{manufacturer_data?.suspension_status? <Text position='absolute' top='5' right='2' fontSize='14px' fontWeight='bold' color='red'>suspended</Text>:null}
+				{manufacturer_data?.subscription? <Text position='absolute' top='10' right='2' fontSize='14px' fontWeight='bold' color='#009393'>subscribed</Text>:null}
 				<Text fontSize='14px'>{manufacturer_data?.mobile_of_company}</Text>
 				<Text fontSize='14px'>{manufacturer_data?.email_of_company}</Text>
 				<Button onClick={(()=>{router.push(`/manufacturer/${manufacturer_data?._id}`)})} bg='#009393' color='#fff'>View</Button>
@@ -157,7 +173,7 @@ const Manufacturer=({manufacturer_data})=>{
 	)
 }
 
-const FilterBar=({set_filter_active,set_subscription_status,set_suspenstion_status,set_technology,set_industry,industries_data,technologies_data})=>{
+const FilterBar=({set_filter_active,set_suspension_status})=>{
 	return(
 			<Flex color='#fff' direction='column' gap='3' p='4' w='50vw' h='90vh' bg='#090F14' position='absolute' top='75px' left='0px' zIndex='2' boxShadow='dark-lg'>
 				<Flex justify='space-between' p='2'>
@@ -166,31 +182,10 @@ const FilterBar=({set_filter_active,set_subscription_status,set_suspenstion_stat
 				</Flex>
 				<Flex direction='column' >
 					<Text>Suspension status</Text>
-					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspenstion_status(e.target.value)})}>
-						<option value={'false'} >Suspended</option>
-						<option value={'true'} >Active</option>
+					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspension_status(e.target.value);set_filter_active(false)})}>
+						<option value={'true'} >Suspended</option>
+						<option value={'false'} >Active</option>
 						<option value={''} >All</option>
-					</Select>
-				</Flex>
-				<Flex direction='column' >
-					<Text>Industry</Text>
-					<Select placeholder='Industry' bg='#fff' color='#000' onChange={((e)=>{set_industry(e.target.value)})}>
-						{industries_data?.map((item)=>{
-								return(
-									<option key={item._id} value={item.title}>{item.title}</option>
-
-								)
-							})}
-					</Select>
-				</Flex>
-				<Flex direction='column' >
-					<Text>Technology</Text>
-					<Select placeholder='Technology' bg='#fff' color='#000' onChange={((e)=>{set_technology(e.target.value)})}>
-						{technologies_data?.map((item)=>{
-							return(
-								<option key={item._id} value={item.title}>{item.title}</option>
-							)
-						})}
 					</Select>
 				</Flex>
 				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>

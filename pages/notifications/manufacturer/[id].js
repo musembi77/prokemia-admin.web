@@ -150,7 +150,7 @@ function Manufacturer(){
 					{manufacturer_data?.experts?.map((item)=>{
 						return(
 							<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
-								<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
+								<Person2Icon style={{fontSize:'80px'}}/>
 								<Flex direction='column'>
 									<Text fontWeight='bold'>Email: {item?.email}</Text>
 									<Text>Mobile: {item?.mobile}</Text>
@@ -260,7 +260,7 @@ const Distributor=({item})=>{
 	const router = useRouter()
 	return(
 		<Flex key={item?._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer' _hover={{boxShadow:"dark-lg",transform:"scale(1.03)",transition:'ease-out 0.9s all',backgroundColor:"#009393",color:"#fff"}}>
-			<FactoryIcon style={{fontSize:'70px',textAlign:'center'}}/>
+			<FactoryIcon style={{fontSize:'70px'}}/>
 			<Flex direction='column' ml='2'>
 				<Text fontWeight='bold'>Email: {item?.email}</Text>
 				<Text>Mobile: {item?.mobile}</Text>

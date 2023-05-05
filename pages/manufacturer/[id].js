@@ -194,9 +194,9 @@ export default function Manufacturer(){
 							</Flex>
 							:
 							<Flex direction='column'> 
-							{industries?.map((item)=>{
+							{industries?.map((item,index)=>{
 								return(
-									<Industry key={item._id} item={item}/>
+									<Industry key={index} item={item}/>
 								)
 							})}
 						</Flex>
@@ -210,9 +210,9 @@ export default function Manufacturer(){
 						</Flex>
 					:
 					<Flex m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column' boxShadow='lg'> 
-						{manufacturer_data?.experts?.map((item)=>{
+						{manufacturer_data?.experts?.map((item,index)=>{
 							return(
-								<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+								<Flex key={index} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 									<Flex direction='column'>
 										<Text fontWeight='bold'>Name: {item.name}</Text>
 										<Text >Email: {item.email}</Text>
@@ -256,9 +256,9 @@ export default function Manufacturer(){
 						</Flex>
 						:
 						<Flex m='1' p='2' borderRadius='5' bg='#eee' gap='2' direction='column'> 
-						{manufacturer_data?.distributors?.map((item)=>{
+						{manufacturer_data?.distributors?.map((item,index)=>{
 							return(
-								<Distributor key={item._id} item={item}/>
+								<Distributor item={item} key={index}/>
 							)
 						})}
 					</Flex>

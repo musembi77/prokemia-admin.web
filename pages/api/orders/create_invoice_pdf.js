@@ -59,10 +59,10 @@ const create_invoice=(payload)=>{
 	            "description": payload?.name_of_product,
 	            "tax-rate": 16,
 	            "price": payload?.unit_price
-	        },
+	        }
 	    ],
 	    // The message you would like to display on the bottom of your invoice
-	    "bottom-notice": `Terms:${payload.delivery_terms}. Payment_Terms: ${payload.payment_terms}. Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch`,
+	    "bottom-notice": `Terms:${payload?.delivery_terms}. Payment_Terms: ${payload?.payment_terms}. Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch`,
 	    // "bottom-notice": "Cash with Order.",
 	    // "bottom-notice": "Make Payments to Innovation Core LTD, SBM BANK KENYA, ACC No.0082102124001, Riverside Branch",
 	    // Settings to customize your invoice
@@ -94,11 +94,11 @@ const create_invoice=(payload)=>{
 	    },
 	};
 	try{
+		console.log(data)
 		easyinvoice.createInvoice(data, function (result) {
-		   easyinvoice.download(`${payload?.company_name_of_client}.pdf`, result.pdf);
+			//console.log(result);
+			easyinvoice.download(`${payload?.company_name_of_client}.pdf`, result.pdf);
 		});
-		
-		
 	}catch(err){
 		console.log(err)
 	}

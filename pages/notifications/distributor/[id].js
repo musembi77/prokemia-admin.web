@@ -183,7 +183,7 @@ function Distributor(){
 							{distributor_data?.experts?.map((item)=>{
 								return(
 									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
-										<Person2Icon style={{fontSize:'80px',textAlign:'center'}}/>
+										<Person2Icon style={{fontSize:'80px',}}/>
 										<Flex direction='column'>
 											<Text fontWeight='bold'>Email: {item.email}</Text>
 											<Text>Mobile: {item.mobile}</Text>
