@@ -153,7 +153,7 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 	const router = useRouter()
 	return(
 		<Flex className={styles.HeaderNav} direction='column' gap='2' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
-			<Flex gap='2' borderBottom='1px solid #fff' pb='3'>
+			<Flex gap='2'>
 				<Flex direction='column' flex='1' align='center' p='2' bg='#fff' borderRadius='5' onClick={(()=>{router.push("/dashboard");setshowmenubar(!showmenubar)})}>
 					<Widgets />
 					<Text fontSize='14px'  mb='0' >Dashboard</Text>
@@ -166,20 +166,20 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 			<Flex className={styles.HeaderNav_items} direction='column' h='90%' overflowY='scroll' w='100%' p='2'>
 				{navigation.map((item)=>{
 					return(
-						<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
+						<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
 							{item.logo}
-							<Text  p='2' fontSize='18px'  mb='0' >{item.title}</Text>
+							<Text  p='2' fontSize='20px'  mb='0' >{item.title}</Text>
 						</Flex>
 					)
 				})}
-				<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`);setshowmenubar(!showmenubar)})}>
+				<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`);setshowmenubar(!showmenubar)})}>
 					<AccountCircleIcon/>
-					<Text  p='2' fontSize='18px'  mb='0' >Profile</Text>
+					<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
 				</Flex>
 				{user_data?.role === 'Manager' || user_data?.role === 'IT'?
-					<Flex p='1' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/settings`);setshowmenubar(!showmenubar)})}>
+					<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/settings`);setshowmenubar(!showmenubar)})}>
 						<Settings/>
-						<Text  p='2' fontSize='18px'  mb='0' >Settings</Text>
+						<Text  p='2' fontSize='20px'  mb='0' >Settings</Text>
 					</Flex>
 					:null}
 			</Flex>

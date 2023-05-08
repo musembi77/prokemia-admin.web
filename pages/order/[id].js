@@ -205,7 +205,7 @@ export default function Order(){
 						<Text fontSize='18px'>Order Id: {order_data?._id}</Text>						
 						<Flex bg='#fff' p='1' borderRadius='5' direction='column' gap='1' boxShadow='lg'>
 							<Text fontWeight='bold'>Sales details</Text>
-							<Text>Name: <span style={{color:'#009393',textDecoration:'underline',cursor:'pointer'}} onClick={(()=>{router.push(`/salesperson/${order_data?._id}`)})}>{order_data?.creator_name}</span></Text>
+							<Text>Name: <span style={{color:'#009393',textDecoration:'underline',cursor:'pointer'}} onClick={(()=>{router.push(`/salesperson/${order_data?.creator_id}`)})}>{order_data?.creator_name}</span></Text>
 							<Text>Email: {order_data?.email_of_creator}</Text>
 							<Text>Mobile: {order_data?.mobile_of_creator}</Text>
 						</Flex>

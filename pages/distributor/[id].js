@@ -271,16 +271,14 @@ const Industry=({item})=>{
 const Product_Item=({product})=>{
 	const router = useRouter()
 	return(
-		<Flex borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#fff' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1'>
-			<Flex direction='column' position='relative' p='2'>
-				<Text color='#009393' fontWeight='bold' fontSize="24px">{product?.name_of_product}</Text>
-				<Flex gap='2'>
-					<Text fontWeight='bold'>Industry:</Text>
-					<Text>{product?.industry}</Text>
-				</Flex>
-				<Flex gap='2'>
-					<Text fontWeight='bold'>Technology:</Text>
-					<Text>{product?.technology}</Text>
+		<Flex borderRight={product?.sponsored === true ?'4px solid gold': null} bg='#fff' borderRadius='5px' boxShadow='lg' justify='space-between' flex='1' position='relative'>
+			{product?.suspension_status? <Flex bg={product?.suspension_status? 'red': '#fff'} zIndex='' h='100%' w='100%' position='absolute' top='0' right='0' opacity='0.3' onClick={(()=>{router.push(`product/${product?._id}`)})}/>: null}
+			<Flex direction='column' p='2'>
+				<Text fontSize='16px' fontFamily='ClearSans-Bold' color='#009393'>{product.name_of_product}</Text>
+				<Text fontSize='14px'>{product.distributed_by}</Text>
+				<Flex gap='2' fontSize='10px' color='grey' align='center'>
+					<Text color='grey' p='1'>{product.industry? product.industry : '-'}</Text>
+					<Text borderLeft='1px solid grey' paddingLeft='2' color='grey' p='1'>{product.technology? product.technology : '-'}</Text>
 				</Flex>
 			</Flex>
 			<Flex direction='column' justify='space-around' p='2' textAlign='center'>
@@ -290,9 +288,9 @@ const Product_Item=({product})=>{
 						<VerifiedIcon style={{color:'gold'}}/>
 					</Flex>
 					:
-					<Text fontWeight='bold' >Not Featured</Text>					
+					<Text fontWeight='bold' >Not Featured</Text>				
 				}
-				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`/product/${product?._id}`)})}>View</Text>
+				<Text fontWeight='bold' color='#fff' bg='#009393' p='1' borderRadius='5' boxShadow='lg' cursor='pointer' onClick={(()=>{router.push(`product/${product?._id}`)})}>View</Text>
 			</Flex>
 		</Flex>
 	)

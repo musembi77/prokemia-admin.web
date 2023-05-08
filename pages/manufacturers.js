@@ -71,12 +71,12 @@ export default function Manufacturers(){
 				const sorted_result = data.sort((a, b) => a.company_name.localeCompare(b.company_name))
 				//console.log(sorted_result)
 				if (suspension_status === 'true'){
-					const result = sorted_result?.filter((item) => item.suspension_status)
-					console.log(result);
+					const result = sorted_result?.filter((item) => !item.suspension_status)
+					//console.log(result);
 					set_manufacturers_data(result)
 				}else if(suspension_status === 'false'){
-					const result = sorted_result?.filter((item) => !item?.suspension_status)
-					console.log(result);
+					const result = sorted_result?.filter((item) => item?.suspension_status)
+					//console.log(result);
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)
@@ -85,12 +85,12 @@ export default function Manufacturers(){
 				const sorted_result = data.sort((a, b) => b.company_name.localeCompare(a.company_name))
 				//console.log(sorted_result)
 				if (suspension_status === 'true'){
-					const result = sorted_result?.filter((item) => item.suspension_status)
-					console.log(result);
+					const result = sorted_result?.filter((item) => !item.suspension_status)
+					//console.log(result);
 					set_manufacturers_data(result)
 				}else if(suspension_status === 'false'){
-					const result = sorted_result?.filter((item) => !item?.suspension_status)
-					console.log(result);
+					const result = sorted_result?.filter((item) => item?.suspension_status)
+					//console.log(result);
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)

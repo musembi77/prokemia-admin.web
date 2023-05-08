@@ -41,7 +41,7 @@ function Salesperson(){
 
 	const get_data=async(payload)=>{
 		await Get_SalesPerson(payload).then((response)=>{
-			//console.log(response)
+			//console.log(response.data)
 			const email = response.data?.email_of_salesperson
 			set_salesperson_data(response.data)
 			fetch_orders(email)
