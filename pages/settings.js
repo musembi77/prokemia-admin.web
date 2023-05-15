@@ -20,7 +20,7 @@ export default function Settings(){
 	useEffect(()=>{
 		let token = cookies.get('admin_token');
   	let decoded = jwt_decode(token);
-  	console.log(decoded)		
+  	//console.log(decoded)		
 		Get_Admin_Users().then((response)=>{
 			set_users(response.data)
 		}).catch((err)=>{

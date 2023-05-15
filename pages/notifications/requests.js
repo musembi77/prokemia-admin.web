@@ -1,11 +1,12 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
+import {Flex,Image,Text,Input,Button,Select,Circle,useToast} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 import Get_Requests from '../api/manufacturers/get_requests'
 import Complete_Requests from '../api/manufacturers/complete_requests'
 
 export default function Requests(){
 	const router = useRouter();
+	const toast = useToast()
 	
 	const [requests_data, set_requests_data]=useState([]);
 
@@ -43,12 +44,20 @@ export default function Requests(){
 }
 
 const Requests_Item=({item})=>{
+	const toast = useToast()
 	const payload = {
 		_id : item._id
 	}
 	const handle_complete_request=async()=>{
 		await Complete_Requests(payload).then(()=>{
-			alert("success")
+			toast({
+				title: '',
+				position: 'top-left',
+				variant:"subtle",
+				description: `Request completed successfully`,
+				status: 'success',
+				isClosable: true,
+			});
 		})
 	}
 	return(

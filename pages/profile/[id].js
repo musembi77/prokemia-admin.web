@@ -24,7 +24,7 @@ export default function Profile(){
     const cookies = new Cookies();
 	
     const id = router.query
-    console.log(id)
+    //console.log(id)
     
     const payload = {
         _id : id.id
@@ -36,19 +36,19 @@ export default function Profile(){
 
 	const fetch_admin_user_data=async()=>{
         await Get_Admin_User(payload).then((res)=>{
-            console.log(res.data)
+            //console.log(res.data)
             set_user_data(res.data)
         }).catch((err)=>{
-            console.log(err)
+            //console.log(err)
         })
     }
 
     
     useEffect(()=>{
-        console.log(id)
+        //console.log(id)
         if (id.id === 'undefined' || !id.id ){
-            alert("Broken link..., redirecting")
-            console.log("Broken link..., redirecting")
+            //alert("Broken link..., redirecting")
+            //console.log("Broken link..., redirecting")
             return;
         }else{
             fetch_admin_user_data()

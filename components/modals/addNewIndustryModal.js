@@ -51,6 +51,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,
     const [image_uploaded,set_image_uploaded]=useState(false);
     const [is_submitting,set_is_submitting]=useState(false);
     const [is_retry,set_is_retry]=useState(false);
+    const [pasted_image_link,set_pasted_image_link]=useState('')
 
     const payload = {
       title:              title,
@@ -59,29 +60,29 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,
       auth_role
     }
 
-    const handle_image_upload=async()=>{
-      if (image.name == undefined){
-        return toast({
-          title: '',
-          description: `could not process image, try again.`,
-          status: 'info',
-          isClosable: true,
-        });
+    const image_file_upload_to_firebase_storage=async()=>{
+      if (image?.name == undefined){
+          toast({
+              position: 'top-left',
+              variant:"subtle",
+              title: '',
+              description: 'could not find image file, try re-uploading it.',
+              status: 'error',
+              isClosable: true,
+          })
+        return ;
       }else{
-        console.log(image.name)
         const image_documentRef = ref(storage, `industry_images/${image?.name + v4()}`);
         const snapshot= await uploadBytes(image_documentRef,image)
-        set_image_uploaded(true)
         const file_url = await getDownloadURL(snapshot.ref)
         cookies.set('ind_image_url', file_url, { path: '/' });
-        set_image_url(file_url)
-        return file_url
+        return file_url;
       }
     }
 
     const Upload_File=async()=>{
-      set_is_submitting(true)
-      await handle_image_upload().then(()=>{
+      set_is_submitting(true);
+      await image_file_upload_to_firebase_storage().then(()=>{
         handle_add_new_Industry()
       })
     }

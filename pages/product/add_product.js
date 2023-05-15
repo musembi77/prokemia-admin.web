@@ -153,12 +153,12 @@ export default function Add_Product(){
 					Returns a alert modal to show the error.
 				*/
 				return toast({
-				title: '',
-				position: 'top-left',
-				variant:"subtle",
-				description: `Ensure all inputs are filled`,
-				status: 'info',
-				isClosable: true,
+					title: '',
+					position: 'top-left',
+					variant:"subtle",
+					description: `Ensure all inputs are filled`,
+					status: 'info',
+					isClosable: true,
 				});
 			}
 			if(name_of_product && industry && technology && manufactured_by && distributed_by){

@@ -10,6 +10,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TuneIcon from '@mui/icons-material/Tune';
 import Person2Icon from '@mui/icons-material/Person2';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CloseIcon from '@mui/icons-material/Close';
 //api-calls imports
 import Get_SalesPeople from '../pages/api/salespeople/get_salespeople.js';
 
@@ -21,7 +22,7 @@ function SalesPersons(){
 	const [technologies_data, set_technologies_data]=useState([]);
 
 	const [filter_active, set_filter_active] = useState(false);
-	const [suspenstion_status,set_suspenstion_status] = useState('true');
+	const [suspension_status,set_suspension_status] = useState('false');
 	const [search_query,set_search_query] = useState('');
 
 	const [sort,set_sort]=useState('desc');
@@ -33,11 +34,11 @@ function SalesPersons(){
 			if (sort === 'desc'){
 				const sorted_result = data.sort((a, b) => a.first_name.localeCompare(b.first_name))
 				//console.log(sorted_result)
-				if (suspenstion_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
+				if (suspension_status === 'true'){
+					const result = sorted_result?.filter((item) => item.suspension_status)
 					set_salespeople_data(result)
-				}else if(suspenstion_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
+				}else if(suspension_status === 'false'){
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
 					set_salespeople_data(result)
 				}else{
 					set_salespeople_data(sorted_result)
@@ -45,11 +46,11 @@ function SalesPersons(){
 			}else{
 				const sorted_result = data.sort((a, b) => b.first_name.localeCompare(a.first_name))
 				////console.log(sorted_result)
-				if (suspenstion_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
+				if (suspension_status === 'true'){
+					const result = sorted_result?.filter((item) => item.suspension_status)
 					set_salespeople_data(result)
-				}else if(suspenstion_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
+				}else if(suspension_status === 'false'){
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
 					set_salespeople_data(result)
 				}else{
 					set_salespeople_data(sorted_result)
@@ -64,32 +65,13 @@ function SalesPersons(){
 	//useEffect
 	useEffect(()=>{
 		handle_get_salespeople()
-	},[suspenstion_status,search_query,sort])
-
-	// useEffect(()=>{
-	//// 	console.log(status)
-	// 	Get_SalesPeople().then((response)=>{
-	//// 		console.log(response.data)
-	// 		const data = response.data
-	// 		const result_data = data?
-	// 		if(status === 'true'){
-	// 			const result = result_data?.filter((item) => !item.suspension_status)
-	//// 			console.log(result)
-	// 			set_salespeople_data(result);
-	// 		}else{
-	// 			// const result = result_data?.filter((item) => item.suspension_status)
-	//// 			console.log(result_data)
-	// 			set_salespeople_data(result_data);
-	// 		}
-			
-	// 	})
-	// },[status,search_query])
+	},[suspension_status,search_query,sort])
 	return(
 		<Flex direction='column'>
 			<Header />
 			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Salespersons</Text>
 			{filter_active? 
-				<FilterBar set_filter_active={set_filter_active} set_suspenstion_status={set_suspenstion_status}/>
+				<FilterBar set_filter_active={set_filter_active} set_suspension_status={set_suspension_status}/>
 				: null
 			}
 			<Flex gap='2' p='2' align='center'>
@@ -98,6 +80,24 @@ function SalesPersons(){
 					<option value='desc'>A - Z</option>
 					<option value='asc'>Z - A</option>
 				</Select>
+			</Flex>
+			<Flex p='2' m='0' gap='2'>
+				{suspension_status === 'true'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_suspension_status('false')})}>
+						<Text align='center' >suspended</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
+					null
+				}
+				{sort !== 'desc'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
+						<Text align='center' >ascending</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
+					null
+				}
 			</Flex>
 			<Flex gap='2' p='2'>
 				<Input placeholder='search salespeople' bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
@@ -142,7 +142,7 @@ const SalesPerson=({salesperson_data})=>{
 	)
 }
 
-const FilterBar=({set_filter_active,set_date,set_suspenstion_status,set_region})=>{
+const FilterBar=({set_filter_active,set_date,set_suspension_status,set_region})=>{
 	return(
 			<Flex color='#fff' direction='column' gap='3' p='4' w='50vw' h='90vh' bg='#090F14' position='absolute' top='75px' left='0px' zIndex='2' boxShadow='dark-lg'>
 				<Flex justify='space-between' p='2'>
@@ -151,10 +151,9 @@ const FilterBar=({set_filter_active,set_date,set_suspenstion_status,set_region})
 				</Flex>
 				<Flex direction='column' >
 					<Text>Suspension status</Text>
-					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspenstion_status(e.target.value);set_filter_active(false)})}>
-						<option value={'false'} >Suspended</option>
-						<option value={'true'} >Active</option>
-						<option value={''} >All</option>
+					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspension_status(e.target.value);set_filter_active(false)})}>
+						<option value={'true'} >Suspended</option>
+						<option value={'false'} >Active</option>
 					</Select>
 				</Flex>
 				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>

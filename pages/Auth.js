@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
-import {Flex,Center,Text,Button,Input,InputGroup,InputRightElement,useToast} from '@chakra-ui/react'
-import styles from '../styles/Home.module.css'
+import {Flex,Heading,Text,Button,Input,InputGroup,InputRightElement,useToast} from '@chakra-ui/react'
+import styles from '../styles/Auth.module.css'
 import {Room,Visibility,VisibilityOff} from '@mui/icons-material'
 import {useRouter} from 'next/router'
 import SignIn from './api/auth/signin.js'
@@ -42,7 +42,7 @@ export default function AuthHandler(){
 			router.push('/dashboard');
 			return ;
 		}
-	},[token])
+	},[token]) 
   	const handleSignIn=async(event)=>{
 		set_is_loading(true);
 		/**
@@ -105,13 +105,12 @@ export default function AuthHandler(){
   	}
 
 	return(
-		<Flex h='100vh' className={styles.SigninBody}>
-			<Flex className={styles.authSection} gap='2' p='8'>
-				{window?<Text w='40vw'  fontSize='4rem' color='#fff' fontFamily='ClearSans-bold'>Welcome Back!</Text>: null}
-			</Flex>
-				<Flex className={styles.authForm} gap='2' direction='column'>
-					<Text fontSize='2.5rem' fontFamily='ClearSans-bold'><span style={{borderRadius:"3px"}}>Sign</span> In</Text>
-					 <Text color='grey'>Welcome back, Please sign in to your account.</Text> 
+		<Flex className={styles.AuthBody}>
+			<div className={styles.Auth_Image}/>
+			<Flex className={styles.Form_Body}>
+				<Flex className={styles.Form} gap='3' direction='column'>
+					<Heading as='h2' mb='0' onClick={(()=>{router.push('/')})} fontSize='28px' color='#00e0c6'>Pro<span style={{color:"#000"}}>Kemia</span><span style={{fontSize:'16px',color:'grey',marginTop:'17px'}}>.admin</span></Heading>
+					<Heading as='h6' fontWeight={'bold'}>SignIn </Heading>
 					<Flex direction='column' gap='2'>
 						<Text fontWeight='bold'>Username</Text>
 						<Input required type='text' placeholder='Username' variant='filled' onChange={((e)=>{setuser_name(e.target.value)})}/>
@@ -144,6 +143,7 @@ export default function AuthHandler(){
 							{is_loading? 'signing in...' : 'Sign in'}
 					</Button>
 				</Flex>
+			</Flex>
 		</Flex>
 	)
 }

@@ -1,0 +1,89 @@
+    .AuthBody{
+        height: 100vh;
+        width: 100%;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+    }
+    .Auth_Image{
+        background-image: url("/Auth_Prokemia_Img.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+        width: 50%;
+        position: relative;
+    }
+    .Back_Icon{
+        background-color: #fff;
+        position: absolute;
+        top:5vh;
+        left:20px;
+        border-radius: 20px;
+        padding: 5px;
+        width: 85px;
+        height: 35px;
+        cursor: pointer;
+        color: #009393;
+    }
+    .Auth_Links{
+        position: absolute;
+        bottom: 10vh;
+        left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+    .Auth_Links p{
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .Auth_Links p:hover{
+        scale: 1.1;
+        color: #009393;
+        transition: all 1s ease-out;
+    }
+    .Form_Body{
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        background-color: #fff;
+        height: 100%;
+    }
+    .Form{
+        width: 50%;
+        margin: auto;
+    }
+    .Form h2{
+        display: none;
+    }
+    .Form h6{
+        font-size: 32px;
+        color: #009393;
+    }
+ @media screen and (max-width: 48em) {
+    .AuthBody{
+       flex-direction: column;
+    }
+    .Auth_Image{
+        display: none;
+    }
+    .Form_Body{
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        background-color: #fff;
+        height: 100%;
+    }
+    .Form{
+        width: 80%;
+        margin: auto;
+    }
+    .Form h2{
+        display: flex;
+        text-align: center;
+        margin: auto;
+        font-size: 32px;
+    }
+    .Form h6{
+        font-size: large;
+    }
+ }

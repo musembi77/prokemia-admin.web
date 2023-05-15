@@ -7,7 +7,7 @@ import {useRouter} from 'next/router';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import TuneIcon from '@mui/icons-material/Tune';
-
+import CloseIcon from '@mui/icons-material/Close';
 //api
 import Get_Manufacturers from '../pages/api/manufacturers/get_manufacturers.js';
 import Get_Industries from '../pages/api/controls/get_industries';
@@ -25,7 +25,7 @@ export default function Manufacturers(){
 	const [technologies_data, set_technologies_data]=useState([]);
 
 	const [filter_active, set_filter_active] = useState(false);
-	const [suspension_status,set_suspension_status] = useState('true');
+	const [suspension_status,set_suspension_status] = useState('false');
 	const [subscription_status,set_subscription_status] = useState('');
 	const [search_query,set_search_query] = useState('');
 	const [industry,set_industry] = useState('');
@@ -68,29 +68,25 @@ export default function Manufacturers(){
 			//console.log(response.data)
 			const data = response.data
 			if (sort === 'desc'){
-				const sorted_result = data.sort((a, b) => a.company_name.localeCompare(b.company_name))
+				const sorted_result = data.filter(v => v.verification_status).sort((a, b) => a.company_name.localeCompare(b.company_name))
 				//console.log(sorted_result)
 				if (suspension_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
-					//console.log(result);
+					const result = sorted_result?.filter((item) => item.suspension_status)
 					set_manufacturers_data(result)
 				}else if(suspension_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
-					//console.log(result);
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)
 				}
 			}else{
-				const sorted_result = data.sort((a, b) => b.company_name.localeCompare(a.company_name))
+				const sorted_result = data.filter(v => v.verification_status).sort((a, b) => b.company_name.localeCompare(a.company_name))
 				//console.log(sorted_result)
 				if (suspension_status === 'true'){
-					const result = sorted_result?.filter((item) => !item.suspension_status)
-					//console.log(result);
+					const result = sorted_result?.filter((item) => item.suspension_status)
 					set_manufacturers_data(result)
 				}else if(suspension_status === 'false'){
-					const result = sorted_result?.filter((item) => item?.suspension_status)
-					//console.log(result);
+					const result = sorted_result?.filter((item) => !item?.suspension_status)
 					set_manufacturers_data(result)
 				}else{
 					set_manufacturers_data(sorted_result)
@@ -124,6 +120,24 @@ export default function Manufacturers(){
 				</Select>
 				{search_query !== '' || suspension_status !== 'false' || sort !== 'desc'? 
 					<Text color='grey' onClick={Clear_Filter_Options} ml='3' cursor='pointer'>Clear Filter</Text> : 
+					null
+				}
+			</Flex>
+			<Flex p='2' m='0' gap='2'>
+				{suspension_status === 'true'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_suspension_status('false')})}>
+						<Text align='center' >suspended</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
+					null
+				}
+				{sort !== 'desc'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
+						<Text align='center' >ascending</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
 					null
 				}
 			</Flex>
@@ -185,7 +199,6 @@ const FilterBar=({set_filter_active,set_suspension_status})=>{
 					<Select placeholder='Suspension status' bg='#fff' color='#000' onChange={((e)=>{set_suspension_status(e.target.value);set_filter_active(false)})}>
 						<option value={'true'} >Suspended</option>
 						<option value={'false'} >Active</option>
-						<option value={''} >All</option>
 					</Select>
 				</Flex>
 				<Button bg='#009393' borderRadius='0' color='#fff' onClick={(()=>{set_filter_active(false)})}>Filter Results</Button>

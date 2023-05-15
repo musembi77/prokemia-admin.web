@@ -7,6 +7,7 @@ import FilterProductModal from '../components/modals/filterProduct.js';
 import OrderItemModal from '../components/modals/OrderItemModal.js';
 import {useRouter} from 'next/router';
 import Get_Orders from './api/orders/get_orders.js';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Orders(){
 	/**
@@ -18,7 +19,7 @@ export default function Orders(){
 	const [orders_data,set_orders]=useState([]);
 	const [sort_value,set_sort_value]=useState('desc')
 	const [search_query,set_search_query] = useState('');
-	const [status_query,set_status_query] = useState('completed');
+	const [status_query,set_status_query] = useState('');
 
 	useEffect(()=>{
 		Get_Orders().then((response)=>{
@@ -66,8 +67,26 @@ export default function Orders(){
 					<option value='completed'>Completed</option>
 					<option value='rejected'>Rejected</option>
 				</Select>
-				{search_query !== '' || sort_value !== 'desc' || status_query !== 'completed'? 
+				{search_query !== '' || sort_value !== 'desc' || status_query !== ''? 
 					<Text color='grey' onClick={Clear_Filter_Options} ml='3' cursor='pointer'>Clear Filter</Text> : 
+					null
+				}
+			</Flex>
+			<Flex gap='2' p='2'>
+				{status_query !== ''? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_status_query('')})}>
+						<Text align='center' >{status_query}</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
+					null
+				}
+				{sort_value !== 'desc'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort_value('desc')})}>
+						<Text align='center' >ascending</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
 					null
 				}
 			</Flex>

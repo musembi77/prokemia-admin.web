@@ -6,6 +6,7 @@ import {useRouter} from 'next/router'
 import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import VerifiedIcon from '@mui/icons-material/Verified';
 //components imports
 import Header from '../components/Header.js'
@@ -110,17 +111,35 @@ export default function Inventory(){
 					: null
 				}
 				<Flex gap='2' p='2' align='center'>
-				<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
-				<Select placeholder='sort' value={sort} w='120px' onChange={((e)=>{set_sort(e.target.value)})}> 
-					<option value='desc'>A - Z</option>
-					<option value='asc'>Z - A</option>
-					<option value='featured'>Featured</option>
-					<option value='un_featured'>Un-Featured</option>
-				</Select>
-				{search_query !== '' || industry !== '' || technology !== '' || sort !== 'desc'? 
-					<Text color='grey' onClick={Clear_Filter_Options} ml='3' cursor='pointer'>Clear Filter</Text> : 
-					null
-				}
+					<Button bg='#eee' p='4' onClick={(()=>{set_filter_active(true)})}>Filter<TuneIcon/></Button>
+					<Select placeholder='sort' value={sort} w='120px' onChange={((e)=>{set_sort(e.target.value)})}> 
+						<option value='desc'>A - Z</option>
+						<option value='asc'>Z - A</option>
+						<option value='featured'>Featured</option>
+						<option value='un_featured'>Un-Featured</option>
+					</Select>
+					{search_query !== '' || industry !== '' || technology !== '' || sort !== 'desc'? 
+						<Text color='grey' onClick={Clear_Filter_Options} ml='3' cursor='pointer'>Clear Filter</Text> : 
+						null
+					}
+				</Flex>
+				<Flex gap='2' p='2'>
+					{search_query !== ''? 
+						<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_search_query('')})}>
+							<Text align='center' >{search_query}</Text>
+							<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+						</Flex>
+						: 
+						null
+					}
+					{sort !== 'desc'? 
+						<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
+							<Text align='center' >{sort}</Text>
+							<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+						</Flex>
+						: 
+						null
+					}
 				</Flex>
 				<Flex gap='2' p='2'>
 					<Input placeholder='search Products by Name, Industry, Technology...' value={search_query} bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>

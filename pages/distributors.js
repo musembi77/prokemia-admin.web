@@ -65,77 +65,6 @@ export default function Distributors(){
 		await Get_Distributors().then((response)=>{
 			//console.log(response.data)
 			const data = response.data
-			// if (subscription_status == 'true'){
-			// 	const filtered_subscribed_users = data.filter((item)=>item.subscription);
-			// 	if (suspension_status == 'true'){
-			// 		const filtered_suspended_users = filtered_subscribed_users.filter((item)=>item.suspension_status);
-			// 		const filtered_users_on_search_query = filtered_suspended_users.filter((item)=> item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_mobile.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_person_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.email_of_company.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_email.toLowerCase().includes(search_query.toLowerCase()));
-			// 		if (sort == 'desc'){
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => a.company_name.localeCompare(b.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}else{
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => b.company_name.localeCompare(a.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}
-			// 	}else{
-			// 		const filtered_suspended_users = filtered_subscribed_users.filter((item)=>!item.suspension_status);
-			// 		const filtered_users_on_search_query = filtered_suspended_users.filter((item)=> item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_mobile.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_person_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.email_of_company.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_email.toLowerCase().includes(search_query.toLowerCase()));
-			// 		if (sort == 'desc'){
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => a.company_name.localeCompare(b.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}else{
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => b.company_name.localeCompare(a.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}
-			// 	}
-			// }else{
-			// 	const filtered_subscribed_users = data.filter((item)=>!item.subscription)
-			// 	if (suspension_status == 'true'){
-			// 		const filtered_suspended_users = filtered_subscribed_users.filter((item)=>item.suspension_status);
-			// 		const filtered_users_on_search_query = filtered_suspended_users.filter((item)=> item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_mobile.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_person_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.email_of_company.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_email.toLowerCase().includes(search_query.toLowerCase()));
-			// 		if (sort == 'desc'){
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => a.company_name.localeCompare(b.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}else{
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => b.company_name.localeCompare(a.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}
-			// 	}else{
-			// 		const filtered_suspended_users = filtered_subscribed_users.filter((item)=>!item.suspension_status);
-			// 		const filtered_users_on_search_query = filtered_suspended_users.filter((item)=> item?.company_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_mobile.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_person_name.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.email_of_company.toLowerCase().includes(search_query.toLowerCase()) ||
-			// 																						item?.contact_email.toLowerCase().includes(search_query.toLowerCase()));
-			// 		if (sort == 'desc'){
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => a.company_name.localeCompare(b.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}else{
-			// 			const sorted_result = filtered_users_on_search_query.sort((a, b) => b.company_name.localeCompare(a.company_name))
-			// 			console.log(sorted_result)
-			// 			set_distributors_data(sorted_result)
-			// 		}
-			// 	}
-			// }
 			if (sort === 'desc'){
 				const sorted_result = data.filter(v => v.verification_status).sort((a, b) => a.company_name.localeCompare(b.company_name))
 				//console.log(sorted_result)
@@ -200,8 +129,16 @@ export default function Distributors(){
 					: 
 					null
 				}
+				{sort !== 'desc'? 
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_sort('desc')})}>
+						<Text align='center' >ascending</Text>
+						<CloseIcon style={{fontSize:'16px',paddingTop:'3px'}}/>
+					</Flex>
+					: 
+					null
+				}
 				{subscription_status === 'false'? 
-				<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_subscription_status('true')})}>
+					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_subscription_status('true')})}>
 						<Text >Not subscribed</Text>
 						<CloseIcon style={{fontSize:'14px',paddingTop:'3px'}}/>
 					</Flex>

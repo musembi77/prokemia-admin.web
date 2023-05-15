@@ -19,6 +19,7 @@ import { RWebShare } from "react-web-share";
 function Dashboard(){
 	const [isaddnewproductModalvisible,setisaddnewProductModalvisible]=useState(false);
 	const [isaddnewmanufacturerModalvisible,setisaddnewmanufacturerModalvisible]=useState(false);
+	
 	const [clients_data, set_clients_data] = useState([]);
 	const [distributors_data, set_distributors_data]=useState([]);
 	const [manufacturers_data, set_manufacturers_data]=useState([]);
@@ -26,7 +27,7 @@ function Dashboard(){
 	const [orders_data,set_orders]=useState([]);
 	const [products,set_products]=useState([]);
 
-	const [user_name,set_user_name] = useState("admin")
+	const [user_name,set_user_name] = useState("")
 	const router = useRouter();
 	const cookies = new Cookies();
   	let token = cookies.get('admin_token');
@@ -34,38 +35,38 @@ function Dashboard(){
   	useEffect(()=>{
 	    if(token){
 	      let decoded = jwt_decode(token);
-	      console.log(decoded);
+	      //console.log(decoded);
 	      set_user_name(decoded.user_name)
 		    Get_Clients().then((response)=>{
 		  		const data = response?.data.reverse()
-		  		set_clients_data(data)
+		  		set_clients_data(data.filter(v => v.valid_email_status))
 			})
 			Get_Distributors().then((response)=>{
 		  		const data = response?.data.reverse()
-		  		set_distributors_data(data)
+		  		set_distributors_data(data.filter(v => v.verification_status))
 		  		//console.log(data)
 		  		
 			})
 			Get_Manufacturers().then((response)=>{
 		  		const data = response?.data.reverse()
-		  		set_manufacturers_data(data)
+		  		set_manufacturers_data(data.filter(v => v.verification_status))
 		  		
 			})
 			Get_SalesPeople().then((response)=>{
 		  		const data = response?.data.reverse()
-		  		set_salespeople_data(data)
+		  		set_salespeople_data(data.filter(v => v.verification_status))
 		  		//console.log(data)
 		  		
 			})
 			Get_Orders().then((response)=>{
 		  		const data = response?.data
-		  		set_orders(data)
+		  		set_orders(data.filter(v => v.order_notification_status))
 		  		//console.log(data)
 		  		
 			})
 			Get_Products().then((response)=>{
 		  		const data = response?.data
-		  		set_products(data)
+		  		set_products(data.filter(v => v.verification_status))
 		  		
 			})
 			

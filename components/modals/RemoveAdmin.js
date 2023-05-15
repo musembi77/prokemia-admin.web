@@ -8,12 +8,8 @@ import {
     useDisclosure,
     Button,
     Text,
-    Flex,
-    Center,
-    Textarea,
     Input,
-    Select,
-    InputGroup,Heading,
+    InputGroup,
     Stack,
     useToast
   } from '@chakra-ui/react';
@@ -21,9 +17,11 @@ import { useEffect,useState } from 'react';
 import Delete_Admin_Account from '../../pages/api/auth/delete_admin_account.js';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import {useRouter} from 'next/router'
 
 function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_data}){
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const router = useRouter();
     const toast = useToast();
     const cookies = new Cookies();
     let token = cookies.get('admin_token');
@@ -77,8 +75,9 @@ function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_da
               status: 'info',
               isClosable: true,
             });
+            router.reload()
           }).catch((err)=>{
-            //console.log(err)
+            console.log(err)
             toast({
                       title: '',
                       description: err.response.data,

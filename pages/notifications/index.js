@@ -5,7 +5,7 @@ import {Flex,Text,Button,Input} from '@chakra-ui/react';
 import styles from '../../styles/Home.module.css';
 import Header from '../../components/Header.js';
 //icon imports
-
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 /*page sections*/
 import Products from './product/all.js'
 import Distributors from './distributor/all.js'
@@ -18,7 +18,7 @@ import Technologies from './technologies.js'
 
  
 export default function Page_Handler(){
-	const [currentvalue,setCurrentValue] = useState('products')
+	const [currentvalue,setCurrentValue] = useState('products');
 	
 	if (currentvalue == 'products')
 	{   
@@ -27,7 +27,7 @@ export default function Page_Handler(){
 					<Header/>
 					<Flex className={styles.consolebody} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
-						<Products/>
+						<Products />
 					</Flex>
 				</Flex>
 			)
@@ -163,7 +163,9 @@ const navItems = [
  }
  ]
 
-const Navbar=({setCurrentValue,currentvalue,setActive})=>{
+const Navbar=({
+		setCurrentValue,currentvalue,})=>{
+
 	return(
 		<Flex p='2' gap='3' className={styles.consoleNavigation} cursor='pointer'>
 			{navItems.map((content)=>{
