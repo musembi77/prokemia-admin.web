@@ -49,12 +49,6 @@ function Manufacturer(){
 			console.log(result)
 		})
 	}
-	
-	// const handle_suspension=async()=>{
-	// 	await Suspend_Client(payload).then(()=>{
-	// 		alert("account suspended")
-	// 	})
-	// }
 	useEffect(()=>{
 		if (!payload || id === undefined){
 			alert("missing info could not fetch data")
@@ -215,7 +209,7 @@ function Manufacturer(){
 				</Flex>
 				<Flex p='2' gap='2' direction='column'>
 					<Button color='#fff' borderRadius='0' bg='#009393' onClick={handle_approve_manufacturer}>Approve Manufacturer</Button>
-					<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Manufacturer</Button>
+					<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Manufacturer</Button>
 				</Flex>
 			</Flex>
 		</Flex>

@@ -174,7 +174,7 @@ export default function Order(){
 				title: '',
 				position: 'top-left',
 				variant:"subtle",
-				description: `${payload?.name_of_product} has successfully been deleted`,
+				description: `${order_data?.name_of_product} has successfully been deleted`,
 				status: 'success',
 				isClosable: true,
 			});
@@ -239,8 +239,9 @@ export default function Order(){
 						<>
 							<Flex justify='center' gap='2' align='center' m='2'>
 								<Button bg='#009393' color='#fff' flex='1' onClick={handle_download_invoice}>Download Invoice</Button>
-								<Button bg='#eee' color='green'>Order has been Completed</Button>
+								<Button bg='#eee' color='green' flex='1' >Order Completed</Button>
 							</Flex>
+							<Button m='2' mt='0' bg='red' color='#fff' border='1px solid red' onClick={Handle_Delete_Order}>Delete Order</Button>
 							<Button m='2' mt='0' h='40px' border='1px solid #000' color='#000'  onClick={(()=>{router.back()})}>Go back to orders</Button>
 						</>
 					:

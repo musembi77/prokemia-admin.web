@@ -6,6 +6,7 @@ import {useRouter} from 'next/router';
 import Header from '../../components/Header.js'
 import SuspendAccountModal from '../../components/modals/suspendAccount.js';
 import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.js';
+import Delete_Account_Modal from '../../components/modals/delete_account.js'
 //icons imports
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
@@ -16,6 +17,7 @@ import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 
 function Salesperson(){
+	const [is_delete_Modalvisible,set_is_delete_Modal_visible]=useState(false);
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
 
@@ -92,6 +94,7 @@ function Salesperson(){
 	},[sort_value])
 	return(
 		<Flex direction='column' gap='2'>
+			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
 			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} salesperson_data={salesperson_data} acc_type={"salespersons"} payload={payload}/>
 			<Header />
@@ -167,7 +170,7 @@ function Salesperson(){
 						})}
 					</Flex>
  				}
- 				<Flex p='2' gap='2'>
+ 				<Flex gap='2'>
 					<Button flex='1' bg='#009393' color='#fff'>
 	                    <Link href={`mailto: ${salesperson_data?.email_of_salesperson}`} isExternal>Email Salesperson</Link>
 	                </Button>
@@ -176,7 +179,8 @@ function Salesperson(){
 						: 
 						<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
 					}
-				</Flex>
+					</Flex>
+					<Button bg='red' color='#fff' onClick={(()=>{set_is_delete_Modal_visible(true)})}>Delete account</Button>
 			</Flex>
 		</Flex>
 	)

@@ -22,7 +22,6 @@ import { useEffect,useState } from 'react';
 import Add_Technology from '../../pages/api/controls/add_new_technology.js';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-import { v4 } from "uuid";
 import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
 
@@ -68,7 +67,7 @@ function AddnewTechnology({isaddtechnologyModalvisible,setisaddtechnologyModalvi
         });
       }else{
         console.log(image.name)
-        const image_documentRef = ref(storage, `technology_images/${image?.name + v4()}`);
+        const image_documentRef = ref(storage, `technology_images/${image?.name}`);
         const snapshot= await uploadBytes(image_documentRef,image)
         set_image_uploaded(true)
         const file_url = await getDownloadURL(snapshot.ref)

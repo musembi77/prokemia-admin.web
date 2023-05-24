@@ -10,7 +10,7 @@ import {ArrowBack,DeleteOutline,Done,Description,DriveFileRenameOutline,Close,Po
 import Cookies from 'universal-cookie';
 import {storage} from '../../../components/firebase.js';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-import { v4 } from "uuid";
+//import { v4 } from "uuid";
 //components
 import Loading from '../../../components/Loading.js';
 
@@ -74,7 +74,7 @@ export default function Upload_Edited_Files_Test({set_iseditfiles,product_data,a
             })
 			return ;
 		}else{
-			const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet?.name + v4()}`);
+			const data_sheet_documentRef = ref(storage, `data_sheet/${data_sheet?.name}`);
 			const snapshot= await uploadBytes(data_sheet_documentRef,data_sheet);
 			const file_url = await getDownloadURL(snapshot.ref);
 			cookies.set('data_sheet_url', file_url, { path: '/' });
@@ -93,7 +93,7 @@ export default function Upload_Edited_Files_Test({set_iseditfiles,product_data,a
             });
 			return ;
 		}else{
-			const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet?.name + v4()}`);
+			const safety_data_sheet_documentRef = ref(storage, `safety_data_sheet/${safety_data_sheet?.name}`);
 			const snapshot= await uploadBytes(safety_data_sheet_documentRef,safety_data_sheet);
 			const file_url = await getDownloadURL(snapshot.ref);
 			cookies.set('safety_data_sheet_url', file_url, { path: '/' });
@@ -112,7 +112,7 @@ export default function Upload_Edited_Files_Test({set_iseditfiles,product_data,a
             });
             return ;
 		}else{
-			const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document?.name + v4()}`);
+			const formulation_document_documentRef = ref(storage, `formulation_document/${formulation_document?.name}`);
 			const snapshot= await uploadBytes(formulation_document_documentRef,formulation_document);
 			const file_url = await getDownloadURL(snapshot.ref);;
 			cookies.set('formulation_document_url', file_url, { path: '/' });

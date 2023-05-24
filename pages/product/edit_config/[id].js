@@ -4,7 +4,7 @@ import {Flex,Text,Button,Input,Textarea,Select,useToast} from '@chakra-ui/react'
 import {useRouter} from 'next/router';
 //components import
 import Header from '../../../components/Header';
-import Edit_Files from './edit_files.js';
+//import Edit_Files from './edit_files.js';
 import Loading from '../../../components/Loading';
 //api calls
 import Get_Product from '../../api/Products/get_product.js';

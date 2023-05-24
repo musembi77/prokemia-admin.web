@@ -6,10 +6,11 @@ import {useRouter} from 'next/router'
 import Header from '../../components/Header.js'
 import SuspendAccountModal from '../../components/modals/suspendAccount.js';
 import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.js';
-import Product from '../../components/Product.js';
+import Delete_Account_Modal from '../../components/modals/delete_account.js'
 //api calls
 import Get_Distributor from '../api/distributors/get_distributor.js'
 import Subscribe_Account from '../api/distributors/subscribe_account.js'
+import Un_Subscribe_Account from '../api/distributors/un_subscribe_account.js';
 import Get_Products from '../api/Products/get_products.js'
 //icons
 import LocationCityIcon from '@mui/icons-material/LocationCity';
@@ -27,7 +28,8 @@ function Distributor(){
 	const id = query?.id
 
 	const toast = useToast();
-	//states
+	//modal states
+	const [is_delete_Modalvisible,set_is_delete_Modal_visible]=useState(false);
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
 
@@ -105,6 +107,24 @@ function Distributor(){
 			});
 		})
 	}
+	const handle_un_subscribe_account=async()=>{
+		await Un_Subscribe_Account(payload).then(()=>{
+			toast({
+				title: '',
+				description: `${distributor_data?.company_name} account has been unsubscribed.`,
+				status: 'info',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			////console.log(err)
+			toast({
+				title: '',
+				description: err.response?.data,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
 
 	useEffect(()=>{
 		if (!payload || id === undefined){
@@ -135,6 +155,7 @@ function Distributor(){
 	return(
 		<Flex direction='column' gap='2'>
 			<Header />
+			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} distributor_data={distributor_data} acc_type={"distributors"} payload={payload}/>
 			<Flex direction='column' p='2'>
@@ -195,9 +216,9 @@ function Distributor(){
 								</Flex>
 								:
 								<Flex direction='column'> 
-								{industries?.map((item)=>{
+								{industries?.map((item,index)=>{
 									return(
-										<Industry key={item._id} item={item}/>
+										<Industry key={index} item={item}/>
 									)
 								})}
 							</Flex>
@@ -211,9 +232,9 @@ function Distributor(){
 							</Flex>
 						:
 						<Flex overflowY='scroll' h='40vh' m='1' p='2' borderRadius='5' bg='#eee' gap='3' direction='column' boxShadow='lg'> 
-							{distributor_data?.experts?.map((item)=>{
+							{distributor_data?.experts?.map((item,index)=>{
 								return(
-									<Flex key={item._id} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
+									<Flex key={index} direction='' bg='#fff' p='2' borderRadius='5' boxShadow='lg' cursor='pointer'>
 										<Flex direction='column'>
 											<Text fontWeight='bold'>Name: {item.name}</Text>
 											<Text >Email: {item.email}</Text>
@@ -241,17 +262,22 @@ function Distributor(){
 							})}
 						</Flex>
 					}
-					{distributor_data?.subscription ? null : <Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>}
-					<Flex p='2' gap='2'>
-						<Button flex='1' bg='#009393' color='#fff'>
+					{distributor_data?.subscription ? 
+						<Button bg='#fff' border='1px solid #000' onClick={handle_un_subscribe_account}>Un Subscribe account</Button>
+						 : 
+						<Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Subscribe account</Button>
+					}
+					<Flex gap='2' direction='column'>
+						<Button bg='#009393' color='#fff'>
 		                    <Link href={`mailto: ${distributor_data?.email_of_company}`} isExternal>Email Distributor</Link>
 		                </Button>
 						{distributor_data?.suspension_status? 
-							<Button flex='1' bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
+							<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
 							: 
-							<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
+							<Button bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
 						}
 					</Flex>
+					<Button bg='red' color='#fff' onClick={(()=>{set_is_delete_Modal_visible(true)})}>Delete account</Button>				
 				</Flex>
 			</Flex>
 		</Flex>

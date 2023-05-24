@@ -22,7 +22,6 @@ import { useEffect,useState } from 'react';
 import Edit_Technology from '../../pages/api/controls/edit_technology';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-import { v4 } from "uuid";
 import DoneIcon from '@mui/icons-material/Done';
 import Cookies from 'universal-cookie';
 
@@ -83,7 +82,7 @@ function Edit_Technology_Modal({
         });
       }else{
         console.log(image.name)
-        const image_documentRef = ref(storage, `technology_images/${image?.name + v4()}`);
+        const image_documentRef = ref(storage, `technology_images/${image?.name}`);
         const snapshot= await uploadBytes(image_documentRef,image)
         set_image_uploaded(true)
         const file_url = await getDownloadURL(snapshot.ref)
@@ -158,7 +157,7 @@ function Edit_Technology_Modal({
               });
             }).catch((err)=>{
               toast({
-                title: 'Error ehile editing an technology',
+                title: 'Error while editing an technology',
                 position: 'top-left',
                 variant:"subtle",
                 description: err.response?.data,

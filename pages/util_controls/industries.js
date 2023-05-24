@@ -99,7 +99,8 @@ export default function Industry(){
 
 const Industry_Item=({item,auth_role})=>{
 	const toast = useToast();
-	const router = useRouter()
+	const router = useRouter();
+	const cookies = new Cookies();
 	const [is_edit_industry_Modalvisible,set_is_edit_industry_Modalvisible]=useState(false);
 	const payload = {
 		_id: item._id,

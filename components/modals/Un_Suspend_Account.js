@@ -133,8 +133,12 @@ function Un_Suspend_Account_Modal({
                   })
           })
       }else{
-        alert("Wrong input")
-        onClose()
+        toast({
+            title: '',
+            description: 'the name of the accounts do not match,try again',
+            status: 'info',
+            isClosable: true,
+        })
       }
       onClose()
     }

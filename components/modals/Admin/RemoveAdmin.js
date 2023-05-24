@@ -14,7 +14,7 @@ import {
     useToast
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
-import Delete_Admin_Account from '../../pages/api/auth/delete_admin_account.js';
+import Delete_Admin_Account from '../../../pages/api/auth/delete_admin_account.js';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import {useRouter} from 'next/router'
@@ -108,7 +108,7 @@ function RemoveAdminModal({isremoveModalvisible,setisremoveModalvisible,admin_da
 					<ModalBody>
 						<Stack spacing={4}>
 							<Text>By removing this account, the user will not have access to use the service and the platform.</Text>
-							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>{admin_data?.user_name}</span> below, to complete suspension.</Text>
+							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>{admin_data?.user_name}</span> below, to complete deletion.</Text>
 							<InputGroup>
 								<Input type='text' placeholder='name of user' variant='filled' onChange={((e)=>{set_confirm_name(e.target.value)})}/>
 							</InputGroup>

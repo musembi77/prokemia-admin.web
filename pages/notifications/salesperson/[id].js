@@ -31,7 +31,7 @@ function Salesperson(){
 
 	const get_data=async(payload)=>{
 		await Get_SalesPerson(payload).then((response)=>{
-			console.log(response)
+			//console.log(response)
 			return set_salesperson_data(response.data)
 		})
 	}
@@ -96,10 +96,6 @@ function Salesperson(){
 							<Text><span style={{fontWeight:"bold"}}>Address:</span> {salesperson_data?.address}</Text>
 							<Text><span style={{fontWeight:"bold"}}>Company:</span>  {salesperson_data?.company_name}</Text>
 							<Text><span style={{fontWeight:"bold"}}>Joined in:</span> {salesperson_data?.joined_in}</Text>
-							<Flex align='center' color='#009393'>
-								<DoneAllIcon/>
-								<Text fontWeight='bold' >Open for Cosultancy</Text>
-							</Flex>
 					</Flex>
  				</Flex>
 				<Button bg='#009393' color='#fff' onClick={handle_approve_salesperson}>Approve Salesperson Account</Button>

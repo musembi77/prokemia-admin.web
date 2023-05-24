@@ -22,7 +22,6 @@ import { useEffect,useState } from 'react';
 import Edit_Industry from '../../pages/api/controls/edit_industry';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-import { v4 } from "uuid";
 import DoneIcon from '@mui/icons-material/Done';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
@@ -78,7 +77,7 @@ function Edit_Industry_Modal({
         return alert('could not process image, try again.')
       }else{
         console.log(image.name)
-        const image_documentRef = ref(storage, `industry_images/${image?.name + v4()}`);
+        const image_documentRef = ref(storage, `industry_images/${image?.name}`);
         const snapshot= await uploadBytes(image_documentRef,image)
         set_image_uploaded(true)
         const file_url = await getDownloadURL(snapshot.ref)

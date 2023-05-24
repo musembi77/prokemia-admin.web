@@ -14,6 +14,8 @@ import Loading from '../../components/Loading';
 import Get_Product from '../api/Products/get_product.js';
 import Feature_Product from '../api/Products/feature_product';
 import Un_Feature_Product from '../api/Products/un_feature_product';
+import Decline_Product from '../api/Products/decline_product';
+import Approve_Product from '../api/Products/approve_product';
 //utils
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
@@ -91,7 +93,7 @@ export default function Product(){
 			toast({
 				position: 'top-left',
 				variant:"subtle",
-				title: 'Error while featuring product',
+				title: 'Error while featuring this product',
 				description: err.response.data,
 				status: 'error',
 				isClosable: true,
@@ -116,7 +118,57 @@ export default function Product(){
 			toast({
 				position: 'top-left',
 				variant:"subtle",
-				title: 'Error while un-featuring product',
+				title: 'Error while un-featuring this product',
+				description: err.response.data,
+				status: 'error',
+				isClosable: true,
+			});
+			console.log(err.response.data)
+		}).finally(()=>{
+			setTimeout(()=>{set_is_submitting(false)},1000)
+		})
+	}
+	const Handle_Suspend_Product=async()=>{
+		set_is_submitting(true)
+		await Decline_Product(payload).then((res)=>{
+			toast({
+				position: 'top-left',
+				variant:"subtle",
+				title: '',
+				description: `Successfully suspended ${product_data?.name_of_product}`,
+				status: 'success',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			toast({
+				position: 'top-left',
+				variant:"subtle",
+				title: 'Error while suspending this product',
+				description: err.response.data,
+				status: 'error',
+				isClosable: true,
+			});
+			console.log(err.response.data)
+		}).finally(()=>{
+			setTimeout(()=>{set_is_submitting(false)},1000)
+		})
+	}
+	const Handle_approve_Product=async()=>{
+		set_is_submitting(true)
+		await Approve_Product(payload).then((res)=>{
+			toast({
+				position: 'top-left',
+				variant:"subtle",
+				title: '',
+				description: `Successfully approved ${product_data?.name_of_product}`,
+				status: 'success',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			toast({
+				position: 'top-left',
+				variant:"subtle",
+				title: 'Error while approving this product',
 				description: err.response.data,
 				status: 'error',
 				isClosable: true,
@@ -141,6 +193,12 @@ export default function Product(){
 					</Flex>
 					:
 					null
+				}
+				{!product_data?.verification_status?
+					<Flex bg='#fff' p='1' borderRadius='5' cursor='pointer' boxShadow='lg' align='center' position='absolute' top='50px' right='15px'>
+						<Text fontWeight='bold' color='red'>Suspended</Text>
+					</Flex>
+					:null
 				}
 				<Flex gap='2' fontSize={'14px'} color='grey'>
 					<Flex direction={'column'}>
@@ -206,16 +264,23 @@ export default function Product(){
                 </Button>
                 :
 					<Flex p='2' gap='2' direction='column' w='100%'>
-						<Flex gap='2'>
-							<Button flex='1' color='#fff' borderRadius='0' bg='#009393' onClick={(()=>{router.push(`/product/edit_config/${product_data?._id}`)})}>Edit Product</Button>
+						<Flex gap='2' direction='column'>
+							<Button  color='#fff' borderRadius='5' bg='#009393' onClick={(()=>{router.push(`/product/edit_config/${product_data?._id}`)})}>Edit Product</Button>
 							{product_data?.sponsored?
-								<Button flex='1' color='#fff' bg='#000' onClick={Handle_Un_Feature_Product}>Un Feature Product</Button>
+								<Button  color='#fff' bg='#000' onClick={Handle_Un_Feature_Product}>Un Feature Product</Button>
 								:
-								<Button flex='1' color='gold' bg='#000' onClick={Handle_Feature_Product}>Feature Product</Button>
+								<Button  color='#000' bg='gold' onClick={Handle_Feature_Product}>Feature Product</Button>
 							}
 						</Flex>
-						<Button color='red' borderRadius='0' bg='#fff' border='1px solid red' onClick={(()=>{set_is_delete_product_Modalvisible(true)})}>Delete Product</Button>
-						<Button color='#000' borderRadius='0' bg='#fff' border='1px solid #000' onClick={(()=>{router.back()})}>Go back</Button>
+						<Flex gap='2' direction='column'>
+							{product_data?.verification_status?
+								<Button  color='#fff' borderRadius='5' bg='#000' border='1px solid red' onClick={Handle_Suspend_Product}>Suspend Product</Button>
+								:
+								<Button  color='#fff' borderRadius='5' bg='#000' border='1px solid red' onClick={Handle_approve_Product}>Approve Product</Button>
+							}
+							<Button  color='red' borderRadius='5' bg='#fff' border='1px solid red' onClick={(()=>{set_is_delete_product_Modalvisible(true)})}>Delete Product</Button>
+						</Flex>
+						<Button color='#000' borderRadius='5' bg='#eee' border='1px solid #000' onClick={(()=>{router.back()})}>Go back</Button>
 					</Flex>						
             }
 			</Flex>

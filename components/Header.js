@@ -2,13 +2,18 @@ import React,{useState,useEffect} from 'react'
 import {Flex, Text,Button,Stack,Divider,useToast,Image} from '@chakra-ui/react'
 import {Menu,Receipt,Close,Add,Settings,Groups,Tune,Widgets,FactCheck,Inventory,Chat} from '@mui/icons-material';
 import {useRouter} from 'next/router'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Header.module.css'
 import Cookies from 'universal-cookie';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import jwt_decode from "jwt-decode";
 import Get_Admin_User from '../pages/api/auth/get_admin_user.js'
 import Edit_Admin_User from '../pages/api/auth/edit_admin_user.js'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import CircleIcon from '@mui/icons-material/Circle';
 
 export default function Header(){
 	const [showmenubar,setshowmenubar]=useState(false);
@@ -27,13 +32,15 @@ export default function Header(){
               isClosable: true,
             });
 	    	router.push("/")
+			return;
 	    }else{
 			let decoded = jwt_decode(token);
 			//console.log(decoded);
 			let id = decoded?.id
 			fetch_user_details(id)
 		}
-	},[token])
+	},[]);
+
 	const handle_LogOut=async()=>{
 		const payload ={
 			_id : user_data?._id,
@@ -68,10 +75,27 @@ export default function Header(){
 		//console.log(payload)
 		await Get_Admin_User(payload).then((res)=>{
 			//console.log(res.data)
-			set_user_data(res.data)
+			if (res.data?.login_status){
+				set_user_data(res.data);
+			}else{
+				router.push('/');
+				cookies.remove('admin_token', { path: '/' });
+				toast({
+					title: 'You have been signed out.',
+					description: `For any issues contact support or the administrator.`,
+					status: 'success',
+					isClosable: true,
+				});
+				return ;
+			}
 		}).catch((err)=>{
 			if (err.response?.status == 500){
-				alert('You do not have access to this platform.')
+				toast({
+					title: 'You have been signed out.',
+					description: `You do not have access to this platform.`,
+					status: 'success',
+					isClosable: true,
+				});
 				router.push('/')
 				return ;
 			}
@@ -80,9 +104,8 @@ export default function Header(){
 	}
 	return(
 		<Flex cursor='pointer' bg='#fff' fontFamily='ClearSans-Bold' h='70px' p='2' justify='space-between' align='center' position='sticky' top='0px' zIndex='10'>
-			<Flex bg='#009393' boxShadow='lg' p='2' align='center' gap='1' borderRadius='5' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
-				{user_data?.user_image == '' || !user_data?.user_image? <AccountCircleIcon/> : <Image src={user_data?.user_image} boxSize='25px' boxShadow='lg' borderRadius='40px' alt='pp'/>}
-				<Text ml='1' fontSize='14px' >{user_data?.user_name}</Text>
+			<Flex p='2' align='center' gap='1' borderRadius='5' color='#fff' onClick={(()=>{router.push(`/profile/${user_data?._id}`)})}>
+				{user_data?.user_image == '' || !user_data?.user_image? <AccountCircleIcon style={{color:'grey',fontSize:'35px'}}/> : <Image src={user_data?.user_image} boxSize='35px' boxShadow='lg' borderRadius='40px' alt='pp'/>}
 			</Flex>
 			<Flex align='center' gap='3'>
 				<Button w='120%' p='3' fontSize='14px' bg='#009393' color='#fff' onClick={(()=>{router.push(`/product/add_product`)})}>
@@ -150,9 +173,10 @@ const navigation=[
 	},
 ]
 const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
-	const router = useRouter()
+	const router = useRouter();
+	const [handle_persmission_sub_menu,set_handle_persmission_sub_menu]=useState(false);
 	return(
-		<Flex className={styles.HeaderNav} direction='column' gap='2' p='4' w='65vw' h='90vh' bg='#090F14' position='absolute' top='70px' right='0px' zIndex='2' overflowY='scroll'>
+		<Flex className={styles.Menu_Bar_Body} gap='2' p='4'>
 			<Flex gap='2'>
 				<Flex direction='column' flex='1' align='center' p='2' bg='#fff' borderRadius='5' onClick={(()=>{router.push("/dashboard");setshowmenubar(!showmenubar)})}>
 					<Widgets />
@@ -163,7 +187,7 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 					<Text fontSize='14px'  mb='0' >Notifications</Text>
 				</Flex>
 			</Flex>
-			<Flex className={styles.HeaderNav_items} direction='column' h='90%' overflowY='scroll' w='100%' p='2'>
+			<Flex className={styles.Menu_items_container} direction='column' h='90%' overflowY='scroll' w='100%' p='2'>
 				{navigation.map((item)=>{
 					return(
 						<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} key={item?.id} align='center' color='#fff' onClick={(()=>{router.push(`/${item.link}`);setshowmenubar(!showmenubar)})}>
@@ -177,11 +201,40 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 					<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
 				</Flex>
 				{user_data?.role === 'Manager' || user_data?.role === 'IT'?
-					<Flex borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{router.push(`/settings`);setshowmenubar(!showmenubar)})}>
-						<Settings/>
-						<Text  p='2' fontSize='20px'  mb='0' >Settings</Text>
-					</Flex>
+					<>
+						<Flex justify='space-between' borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{set_handle_persmission_sub_menu(!handle_persmission_sub_menu)})}>
+							<Flex align='center'>
+								<ManageAccountsIcon/>
+								<Text  p='2' fontSize='20px'  mb='0' >Permissions&Accounts</Text>
+							</Flex>
+							{handle_persmission_sub_menu?
+								<KeyboardArrowUpIcon/>
+								:<KeyboardArrowDownIcon/>
+							}
+						</Flex>
+						{handle_persmission_sub_menu?
+							<Permission_accounts_controllers setshowmenubar={setshowmenubar} showmenubar={showmenubar}/>
+							:null
+						}
+					</>
 					:null}
+			</Flex>
+		</Flex>
+	)
+}
+
+const Permission_accounts_controllers=({setshowmenubar,showmenubar})=>{
+	const router = useRouter()
+	return(
+		<Flex direction='column' ml='5%' color='#fff' gap='2' mt='2'>
+			<Flex align='center' gap=''>
+				<CircleIcon style={{fontSize:'10px'}}/>
+				<Text  p='2' fontSize=''  mb='0' onClick={(()=>{router.push(`/Permissions&Accounts/User_Management`);setshowmenubar(!showmenubar)})}>User Management</Text>
+			</Flex>
+			<Divider/>
+			<Flex align='center' gap=''>
+				<CircleIcon style={{fontSize:'10px'}}/>
+				<Text  p='2' fontSize=''  mb='0' onClick={(()=>{router.push(`/Permissions&Accounts/Role_Management`);setshowmenubar(!showmenubar)})}>Role Management</Text>
 			</Flex>
 		</Flex>
 	)

@@ -23,7 +23,6 @@ import { useEffect,useState } from 'react';
 import Add_Industry from '../../pages/api/controls/add_new_industry.js';
 import {storage} from '../firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-import { v4 } from "uuid";
 import Cookies from 'universal-cookie';
 import DoneIcon from '@mui/icons-material/Done';
 
@@ -72,7 +71,7 @@ function AddnewIndustry({isaddindustryModalvisible,setisaddindustryModalvisible,
           })
         return ;
       }else{
-        const image_documentRef = ref(storage, `industry_images/${image?.name + v4()}`);
+        const image_documentRef = ref(storage, `industry_images/${image?.name}`);
         const snapshot= await uploadBytes(image_documentRef,image)
         const file_url = await getDownloadURL(snapshot.ref)
         cookies.set('ind_image_url', file_url, { path: '/' });

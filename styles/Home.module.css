@@ -121,12 +121,6 @@ background: linear-gradient(to left, #6dd5ed, #2193b0); /* W3C, IE 10+/ Edge, Fi
     0px 0px 80px rgba(0, 0, 0, 0.24)
   ;
 }
-.HeaderNav::-webkit-scrollbar{
-      display: none; 
-}
-.HeaderNav_items::-webkit-scrollbar{
-  display: none; 
-}
 @media screen and (max-width: 60em) {
   .authSection{
     display: none;

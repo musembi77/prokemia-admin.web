@@ -44,12 +44,9 @@ export default function Salespeople(){
 const Salesperson_Item=({item})=>{
 	const router = useRouter()
 	return(
-		<Flex direction='column' m='1' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='175px' p='1' justify='space-between'>
-			<Flex p='2' direction='column'>
-				<Text fontWeight='bold' fontSize='20px'>Name: {item?.first_name} {item?.last_name}</Text>
-				<Text>Email: {item?.email_of_salesperson}</Text>
-				<Text>Mobile: {item?.mobile_of_salesperson}</Text>
-			</Flex>
+		<Flex direction='column' m='1' gap='1' bg='#eee' borderRadius='5' boxShadow='lg' h='' p='1' >
+			<Text fontWeight='bold' fontSize='20px'>{item?.first_name} {item?.last_name}</Text>
+			<Text>Email: {item?.email_of_salesperson}</Text>
 			<Button onClick={(()=>{router.push(`/notifications/salesperson/${item?._id}`)})} bg='#000' color='#fff'>View</Button>
 		</Flex>
 	)

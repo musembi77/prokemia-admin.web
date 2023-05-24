@@ -13,6 +13,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CloseIcon from '@mui/icons-material/Close';
 //api-calls imports
 import Get_SalesPeople from '../pages/api/salespeople/get_salespeople.js';
+import { RWebShare } from "react-web-share";
 
 function SalesPersons(){
 	const router = useRouter();
@@ -81,6 +82,14 @@ function SalesPersons(){
 					<option value='asc'>Z - A</option>
 				</Select>
 			</Flex>
+			<RWebShare
+				data={{
+					text: "Account Sign Up Link.",
+					url: "https://prokemia.com/signup/sales",
+					title: "Signup Link",
+				}}>
+				<Button w='150px' bg='#009393' ml='2' color='#fff'>signup link 🔗</Button>
+			</RWebShare>
 			<Flex p='2' m='0' gap='2'>
 				{suspension_status === 'true'? 
 					<Flex align='center'bg='#eee' p='1' boxShadow='md' cursor='pointer' onClick={(()=>{set_suspension_status('false')})}>
@@ -130,8 +139,9 @@ const SalesPerson=({salesperson_data})=>{
 			:
 				<Image boxSize='150px' src={salesperson_data?.profile_photo_url} bg='grey' alt='photo' objectFit='cover' border='1px solid #eee' borderRadius='5'/>
 			}
-			<Flex p='2' direction='column' flex='1' gap='2' justify='space-between'>
+			<Flex p='2' direction='column' flex='1' gap='2' justify='space-between' position='relative'>
 				<Flex direction='column' gap='2'>
+				{salesperson_data?.suspension_status? <Text position='absolute' top='5' right='2' fontSize='14px' fontWeight='bold' color='red'>suspended</Text>:null}
 					<Text fontWeight='bold' fontSize='20px'>{salesperson_data?.first_name} {salesperson_data?.last_name}</Text>
 					<Text fontSize='14px'>{salesperson_data?.email_of_salesperson}</Text>
 					<Text fontSize='14px'>{salesperson_data?.mobile_of_salesperson}</Text>					

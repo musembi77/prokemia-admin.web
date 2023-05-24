@@ -1,0 +1,31 @@
+.Menu_Bar_Body{
+    flex-direction:column;
+    width: 50%;
+    height: 100vh;
+    background-color: #090F14;
+    position:fixed;
+    top: 70px;
+    right: 0px;
+    z-index: 2;
+    overflow-y: scroll;
+}
+.Menu_Bar_Body::-webkit-scrollbar{
+   display: none;
+}
+.Menu_items_container{
+    height:90%;
+    padding: 5px;
+}
+.Menu_items_container::-webkit-scrollbar{
+    width: 2px;
+}
+.Menu_items_container::-webkit-scrollbar-thumb{
+    background: #009393;
+    border-radius: 20px;
+}
+@media screen and (max-width: 48em) {
+    .Menu_Bar_Body{
+        width: 100%;
+        top: 60px;
+    }
+}

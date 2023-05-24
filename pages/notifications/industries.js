@@ -79,7 +79,7 @@ const Industry=({item,auth_role})=>{
             });
 		}).catch((err)=>{
 			toast({
-              title: 'could not delete this industry',
+              title: 'could not approve this industry',
               description: err.response?.data,
               status: 'error',
               isClosable: true,

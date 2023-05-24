@@ -102,7 +102,7 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{clients_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/customer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
-					<Text color='#009393' onClick={(()=>{router.push('/customers')})}>view all</Text>					
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/customers')})}>view all</Text>					
 				</Flex>
 			</Flex>
 			<Flex>
@@ -112,7 +112,7 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{manufacturers_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/manufacturer/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
-					<Text color='#009393' onClick={(()=>{router.push('/manufacturers')})}>view all</Text>						
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/manufacturers')})}>view all</Text>						
 				</Flex>
 			</Flex>
 			<Flex>
@@ -122,7 +122,7 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{salespeople_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/salesperson/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.first_name} {item?.last_name}</Text>)})}
-					<Text color='#009393' onClick={(()=>{router.push('/salespersons')})}>view all</Text>						
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/salespersons')})}>view all</Text>						
 				</Flex>
 			</Flex>
 			<Flex>
@@ -132,16 +132,16 @@ function Dashboard(){
 				</Flex>
 				<Flex flex='1' direction='column' bg='#fff' borderRadius='10' boxShadow='lg' m='2' p='2' gap='1' justify='space-between'>
 					{distributors_data?.slice(0,2).map((item)=>{return(<Text key={item?._id} boxShadow='lg' onClick={(()=>{router.push(`/distributor/${item._id}`)})} bg='#eee' p='2' borderRadius='5' cursor='pointer'>{item?.company_name}</Text>)})}
-					<Text color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
+					<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/distributors')})}>view all</Text>						
 				</Flex>
 			</Flex>
 			<RWebShare
 		        data={{
 		          text: "Account Sign Up Link.",
-		          url: "https://prokemia-client-web.vercel.app/signup/sales",
+		          url: "https://prokemia.com/signup/sales",
 		          title: "Signup Link",
 		        }}>
-		        <Button bg='#009393' m='2' color='#fff'>Share Salesperson Account Signup link 🔗</Button>
+		        <Button bg='#009393' m='2' color='#fff'>Salesperson account signup link 🔗</Button>
 			</RWebShare>
 		</Flex>
 	)}
@@ -166,7 +166,7 @@ const Revenue_Tag=({orders_data})=>{
 	return(
 		<Flex flex='1' margin='2' color={'#fff'} borderRadius='5' boxShadow='lg' p='2' direction='column' gap='' h='150px' bg={'#009393'} justify='space-between'>
 			<Text fontSize='38px' fontWeight='bold'>KES {total}</Text>
-			<Text fontWeight='bold'>sales-completed:  {completed_orders?.length}</Text>
+			<Text fontWeight='bold'>completed-sales:  {completed_orders?.length}</Text>
 		</Flex>
 	)
 }

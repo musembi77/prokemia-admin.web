@@ -6,7 +6,7 @@ import {useRouter} from 'next/router';
 import SuspendAccountModal from '../../components/modals/suspendAccount.js';
 import Un_Suspend_AccountModal from '../../components/modals/Un_Suspend_Account.js';
 import Header from '../../components/Header.js';
-import Product from '../../components/Product.js';
+import Delete_Account_Modal from '../../components/modals/delete_account.js'
 //icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Person2Icon from '@mui/icons-material/Person2';
@@ -17,6 +17,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import Get_Manufacturer from '../api/manufacturers/get_manufacturer.js'
 import Get_Products from '../api/Products/get_products.js'
 import Subscribe_Account from '../api/manufacturers/subscribe_account.js'
+import Un_Subscribe_Account from '../api/manufacturers/un_subscribe_manufacturer_account.js'
+//util
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 
@@ -29,7 +31,8 @@ export default function Manufacturer(){
 
 
 	const toast = useToast();
-	//states
+	//modal states
+	const [is_delete_Modalvisible,set_is_delete_Modal_visible]=useState(false);
 	const [issuspendModalvisible,setissuspendModalvisible]=useState(false);
 	const [is_un_suspend_Modal_visible,set_is_un_suspend_Modal_visible]=useState(false);
 
@@ -105,6 +108,24 @@ export default function Manufacturer(){
 			});
 		})
 	}
+	const handle_un_subscribe_account=async()=>{
+		await Un_Subscribe_Account(payload).then(()=>{
+			toast({
+				title: '',
+				description: `${manufacturer_data?.company_name} account has been unsubscribed.`,
+				status: 'info',
+				isClosable: true,
+			});
+		}).catch((err)=>{
+			////console.log(err)
+			toast({
+				title: '',
+				description: err.response?.data,
+				status: 'error',
+				isClosable: true,
+			});
+		})
+	}
 
 	useEffect(()=>{
 		if (!payload || id === undefined){
@@ -134,6 +155,7 @@ export default function Manufacturer(){
 	},[id])
 	return(
 		<Flex direction='column' gap='2'>
+			<Delete_Account_Modal is_delete_Modalvisible={is_delete_Modalvisible} set_is_delete_Modal_visible={set_is_delete_Modal_visible} manufacturer_data={manufacturer_data} acc_type={"manufacturers"} payload={payload}/>
 			<SuspendAccountModal issuspendModalvisible={issuspendModalvisible} setissuspendModalvisible={setissuspendModalvisible} manufacturer_data={manufacturer_data} acc_type={"manufacturers"} payload={payload}/>
 			<Un_Suspend_AccountModal is_un_suspend_Modal_visible={is_un_suspend_Modal_visible} set_is_un_suspend_Modal_visible={set_is_un_suspend_Modal_visible} manufacturer_data={manufacturer_data} acc_type={"manufacturers"} payload={payload}/>
 			<Header />
@@ -264,18 +286,22 @@ export default function Manufacturer(){
 					</Flex>
 					}
 				</Flex>
-				{manufacturer_data?.subscription ? null : <Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Upgrade Account</Button>}
-				<Flex p='2' gap='2'>
-					<Button flex='1' bg='#009393' color='#fff'>
+				{manufacturer_data?.subscription ? 
+					<Button bg='#fff' border='1px solid #000' onClick={handle_un_subscribe_account}>Un Subscribe account</Button>
+					 : 
+					<Button bg='#fff' border='1px solid #000' onClick={handle_subscribe_account}>Subscribe account</Button>
+				}
+				<Flex gap='2' direction='column'>
+					<Button bg='#009393' color='#fff'>
 	                    <Link href={`mailto: ${manufacturer_data?.email_of_company}`} isExternal>Email Manufacturer</Link>
 	                </Button>
 					{manufacturer_data?.suspension_status? 
-						<Button flex='1' bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
+						<Button bg='#fff' color='green' border='1px solid green' onClick={(()=>{set_is_un_suspend_Modal_visible(true)})}>Un-Suspend Account</Button>
 						: 
-						<Button flex='1' bg='#fff' color='red' border='1px solid red' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
+						<Button bg='#fff' color='red' border='1px solid #000' onClick={(()=>{setissuspendModalvisible(true)})}>Suspend Account</Button>
 					}
 				</Flex>
-				
+				<Button bg='red' color='#fff' onClick={(()=>{set_is_delete_Modal_visible(true)})}>Delete account</Button>				
 			</Flex>
 		</Flex>
 	)

@@ -19,16 +19,14 @@ import {
   } from '@chakra-ui/react';
 import { useEffect,useState } from 'react';
 import {useRouter} from 'next/router';
-import Suspend_Client from '../../pages/api/clients/suspend_client_account';
-import Suspend_Distributor from '../../pages/api/distributors/suspend_distributor_account';
-import Suspend_Manufacturer from '../../pages/api/manufacturers/suspend_manufacturer_account';
-import Suspend_Salesperson from '../../pages/api/salespeople/suspend_salesperson_account';
+import Delete_Distributor from '../../pages/api/distributors/delete_Distributor_account';
+import Delete_Manufacturer from '../../pages/api/manufacturers/delete_manufacturer_account';
+import Delete_Salesperson from '../../pages/api/salespeople/delete_salesperson_account';
 import Cookies from 'universal-cookie';
-import jwt_decode from "jwt-decode";
 
-function SuspendAccountModal({
-    issuspendModalvisible,
-    setissuspendModalvisible,
+export default function Delete_Account_Modal({
+    is_delete_Modalvisible,
+    set_is_delete_Modal_visible,
     distributor_data,
     manufacturer_data,
     client_data,
@@ -38,23 +36,22 @@ function SuspendAccountModal({
   }){
     const { isOpen, onOpen, onClose } = useDisclosure();
     const toast = useToast();
-    const cookies = new Cookies();    
+    const cookies = new Cookies();  
+    const router = useRouter()  
     //console.log(isaddingreviewgModalvisible);
 
     const HandleModalOpen=()=>{
-      if(issuspendModalvisible !== true){
+      if(is_delete_Modalvisible !== true){
         //console.log('damn')
       }else{
 
         onOpen();
-        setissuspendModalvisible(false)
+        set_is_delete_Modal_visible(false)
       }
     }
 
     const [confirm_name,set_confirm_name]=useState('')
     const [name,set_name]=useState('');
-
-    const [auth_role,set_auth_role]=useState("")
 
     useEffect(()=>{
       HandleModalOpen();
@@ -69,39 +66,42 @@ function SuspendAccountModal({
       }
       if (acc_type === 'salespersons'){
         set_name(salesperson_data?.first_name)
+        
       }
-    },[issuspendModalvisible])
+    },[is_delete_Modalvisible])
 
     
 
-    const handle_suspension=async()=>{
+    const handle_deletion=async()=>{
       if (confirm_name === name){  
         if (acc_type === 'client'){
-          await Suspend_Client(payload).then(()=>{
-            toast({
-              title: '',
-              description: `${name} account has been suspended`,
-              status: 'info',
-              isClosable: true,
-            });
-          }).catch((err)=>{
-            console.log(err)
-            toast({
-                      title: 'Error while suspending account',
-                      description: err?.response?.data,
-                      status: 'error',
-                      isClosable: true,
-                  })
-          })
+        //   await Suspend_Client(payload).then(()=>{
+        //     toast({
+        //       title: '',
+        //       description: `${name} account has been deleted`,
+        //       status: 'info',
+        //       isClosable: true,
+        //     });
+        //   }).catch((err)=>{
+        //     console.log(err)
+        //     toast({
+        //               title: 'Error while deleting account',
+        //               description: '',
+        //               status: 'error',
+        //               isClosable: true,
+        //           })
+        //   })
           
         }else if (acc_type === 'distributors'){
-          await Suspend_Distributor(payload).then(()=>{
+          await Delete_Distributor(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,
             });
+          }).then(()=>{
+            router.back()
           }).catch((err)=>{
             toast({
                       title: '',
@@ -112,14 +112,17 @@ function SuspendAccountModal({
           })
           
         }else if (acc_type === 'manufacturers'){
-          await Suspend_Manufacturer(payload).then(()=>{
+          await Delete_Manufacturer(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,
             });
+          }).then(()=>{
+            router.back()
           }).catch((err)=>{
+            console.log(err)
             toast({
                       title: '',
                       description: err.response.data,
@@ -128,10 +131,10 @@ function SuspendAccountModal({
                   })
           })
         }else if (acc_type === 'salespersons')
-          await Suspend_Salesperson(payload).then(()=>{
+          await Delete_Salesperson(payload).then(()=>{
             toast({
               title: '',
-              description: `${name} account has been suspended`,
+              description: `${name} account has been deleted`,
               status: 'info',
               isClosable: true,
             });
@@ -144,14 +147,13 @@ function SuspendAccountModal({
                   })
           })
       }else{
-        toast({
-            title: '',
-            description: 'the name of the accounts do not match,try again',
-            status: 'info',
-            isClosable: true,
-        })
-      }
-      onClose()
+          toast({
+              title: '',
+              description: 'the name of the accounts do not match,try again',
+              status: 'info',
+              isClosable: true,
+          })
+        }
     }
     return (
 		<>
@@ -159,23 +161,21 @@ function SuspendAccountModal({
 				<ModalOverlay />
 				<ModalContent>
 					<ModalHeader>
-						<Text fontSize='24px' color='red'>Suspend Account</Text>
+						<Text fontSize='24px' color='red'>Delete Account</Text>
 					</ModalHeader>
 					<ModalCloseButton />
 					<ModalBody>
 						<Stack spacing={4}>
-							<Text>By suspending this account, the user will not have access to use the service and the platform.</Text>
-							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>{name}</span> below, to complete suspension.</Text>
+							<Text>By deleting this account, the user will not have access to use the service and the platform.</Text>
+							<Text>Enter the name of Account Holder: <span style={{color:'red'}}>{name}</span> below, to complete deletion.</Text>
 							<InputGroup>
 								<Input type='text' placeholder='name of account Holder' variant='filled' onChange={((e)=>{set_confirm_name(e.target.value)})}/>
 							</InputGroup>
-							<Button bg='red' borderRadius='0' color='#fff' onClick={handle_suspension}>Suspend</Button>
+							<Button bg='red' borderRadius='0' color='#fff' onClick={handle_deletion}>Delete</Button>
 						</Stack>
 					</ModalBody>
 				</ModalContent>
 			</Modal>
 		</>
       )
-}   
-
-export default SuspendAccountModal;
+}

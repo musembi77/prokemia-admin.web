@@ -11,8 +11,7 @@ import Get_Manufacturers from '../api/manufacturers/get_manufacturers.js';
 //components imports
 import Loading from '../../components/Loading.js'
 import Header from '../../components/Header';
-import UploadFile from './upload_files.js'
-import Upload_File_Test from './upload_files_test.js'
+import Upload_File from './upload_files_test.js'
 //styles
 import styles from '../../styles/Home.module.css';
 //utils
@@ -271,7 +270,7 @@ export default function Add_Product(){
 			<Header />
 			{isfileupload?
 				<Flex h='90vh' justify='center' align='center'>
-					<Upload_File_Test 
+					<Upload_File 
 						handle_add_new_product={handle_add_new_product}
 						set_isfileupload={set_isfileupload}
 					/>

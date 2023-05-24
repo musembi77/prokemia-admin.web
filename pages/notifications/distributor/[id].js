@@ -37,17 +37,17 @@ function Distributor(){
 	}
 	const get_data=async(payload)=>{
 		await Get_Distributor(payload).then((response)=>{
-			console.log(response)
+			//console.log(response)
 			return set_distributor_data(response?.data)
 		})
 	}
 	const get_Data=async()=>{
 		await Get_Products().then((response)=>{
 			const data = response?.data
-			console.log(data)
+			//console.log(data)
 			const result = data?.filter(item => item?.email_of_lister.includes(distributor_data?.email_of_company))
 			set_products(result)
-			console.log(result)
+			//console.log(result)
 		})
 	}
 		
@@ -197,7 +197,7 @@ function Distributor(){
 					</Flex>
 					<Flex p='2' gap='2' direction='column'>
 						<Button color='#fff' borderRadius='0' bg='#009393' onClick={handle_approve_distributor}>Approve Distributor</Button>
-						<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendproductModalvisible(true)})}>Decline Distributor</Button>
+						<Button bg='#fff' color='red' borderRadius='0' border='1px solid red' p='1' onClick={(()=>{setissuspendModalvisible(true)})}>Decline Distributor</Button>
 					</Flex>
 				</Flex>
 			</Flex>

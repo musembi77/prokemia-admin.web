@@ -37,7 +37,7 @@ function Customer(){
 
 	const get_data=async(payload)=>{
 		await Get_Client(payload).then((response)=>{
-			console.log(response?.data)
+			//console.log(response?.data)
 			return set_client_data(response?.data)
 		})
 	}
@@ -97,25 +97,6 @@ function Customer(){
 				<Text>Company: {client_data?.company_name}</Text>
 				<Text>Address: {client_data?.address}</Text>
 				<Text>Joined in : {client_data?.joined_in}</Text>
-			</Flex>
-			<Flex direction='column' m='2'>
-				<Text fontSize='20px' fontWeight='bold'>Recent Searches</Text>
-				{recents?.length === 0 ? 
-					<Flex>
-						{recents?.map((recent)=>{
-							return(
-								<Flex key={recent?.id} bg='#eee' p='2' borderRadius='5' direction='column'>
-									<Text>{recent?.Name}</Text>
-									<Text>{recent?.Item}</Text>
-								</Flex>
-							)
-						})}
-					</Flex>
-					:
-					<Flex h='20vh' bg='#eee' p='2' borderRadius='5' direction='column' justify='center' align='center'>
-						<Text>User has no search history</Text>
-					</Flex>
-				}
 			</Flex>
 			<Flex p='2' gap='2'>
 				<Button flex='1' bg='#009393' color='#fff'>
