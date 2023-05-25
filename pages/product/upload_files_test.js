@@ -10,7 +10,6 @@ import {Done,Description,ArrowRightAlt,Close} from '@mui/icons-material';
 import Cookies from 'universal-cookie';
 import {storage} from '../../components/firebase';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
-//import { v4 } from "uuid";
 //components
 import Loading from '../../components/Loading.js';
 
