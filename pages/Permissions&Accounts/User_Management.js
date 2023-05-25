@@ -72,7 +72,7 @@ export default function User_Management(){
 						</Flex>
 					</Flex>
 					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
-						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'} flex={'1'}>
+						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'}>
 							<Input
 							type='text'
 							placeholder='Search User'

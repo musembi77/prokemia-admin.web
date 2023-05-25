@@ -81,7 +81,7 @@ export default function Role_Management(){
 						</Flex>
 					</Flex>
 					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
-						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'} flex={'1'}>
+						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'} >
 							<Input
 							type='text'
 							placeholder='Search Roles'
@@ -94,7 +94,7 @@ export default function Role_Management(){
 							</InputRightElement>
 						</InputGroup>
 						<Button bg='#009393' onClick={(()=>{router.push('/Permissions&Accounts/add_role')})}>
-							<Text color='#fff' >Add New Role</Text>
+							<Text color='#fff' >Add Role</Text>
 						</Button>
 					</Flex>
 				</Flex>
