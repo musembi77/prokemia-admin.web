@@ -1,0 +1,24 @@
+.item_card_container{
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 80vh;
+    width: 100%;
+}
+.item_card_container::-webkit-scrollbar{
+    width: 2px;
+}
+.item_card_container::-webkit-scrollbar-thumb{
+    background: #009393;
+    border-radius: 20px;
+}
+.item_card{
+    background-color: #eee;
+    border-radius: 5px;
+    padding: 5px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+.item_card_info{
+    flex-direction: column;
+}

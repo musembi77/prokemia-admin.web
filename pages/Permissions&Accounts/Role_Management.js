@@ -80,7 +80,7 @@ export default function Role_Management(){
 							<Text>Roles Management</Text>		
 						</Flex>
 					</Flex>
-					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
+					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search}>
 						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'} >
 							<Input
 							type='text'

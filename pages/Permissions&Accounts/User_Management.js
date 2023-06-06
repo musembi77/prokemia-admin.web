@@ -61,7 +61,7 @@ export default function User_Management(){
 			<AddNewAdmin isaddnewadminModalvisible={isaddnewadminModalvisible} setisaddnewadminModalvisible={setisaddnewadminModalvisible}/>
 			<Flex direction='column' p='2' gap='2' bg='#eee' h='100vh'>
 				<Flex className={styles.page_infomation_details_Body} gap='3'>
-					<Flex className={styles.page_infomation_details_Description}>
+					<Flex className={styles.page_infomation_details_Description} >
 						<Text fontSize='28px' fontWeight='bold' className={styles.page_infomation_details_Title}>User Management</Text>
 						<Flex fontSize={'12px'} color='grey' gap='1' fontWeight={'bold'} className={styles.page_infomation_details_Link}>
 							<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/dashboard')})}>Dashboard</Text>
@@ -71,7 +71,7 @@ export default function User_Management(){
 							<Text>User Management</Text>		
 						</Flex>
 					</Flex>
-					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search} w='100%'>
+					<Flex gap='2' mr='2' className={styles.page_infomation_details_Search}>
 						<InputGroup size='md' bg='#fff' borderRadius={'5px'} fontWeight={'bold'}>
 							<Input
 							type='text'

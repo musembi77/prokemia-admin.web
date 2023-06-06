@@ -23,7 +23,7 @@ export default function Page_Handler(){
 	if (currentvalue == 'products')
 	{   
 		return(
-				<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 					<Header/>
 					<Flex className={styles.consolebody} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -34,7 +34,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'distributors')
 	{
 		return(
-				<Flex direction='column' gap='2'>
+				<Flex direction='column' h='100vh'>
 					<Header/>
 					<Flex className={styles.consolebody}>
 						<Navbar  currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -45,7 +45,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'manufacturers')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -56,7 +56,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'salespeople')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -67,7 +67,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'sales')
 	{
 		return(
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar  currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -78,7 +78,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'requests')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -89,7 +89,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'industries')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -100,7 +100,7 @@ export default function Page_Handler(){
 	}else if (currentvalue == 'technologies')
 	{
 		return (
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 				<Header/>
 				<Flex className={styles.consolebody}>
 					<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -110,7 +110,7 @@ export default function Page_Handler(){
 		)
 	}else{
 		return(
-			<Flex direction='column' gap='2'>
+			<Flex direction='column' h='100vh'>
 					<Header/>
 					<Flex className={styles.consolebody} >
 						<Navbar currentvalue={currentvalue} setCurrentValue={setCurrentValue}/>
@@ -163,16 +163,14 @@ const navItems = [
  }
  ]
 
-const Navbar=({
-		setCurrentValue,currentvalue,})=>{
-
+const Navbar=({setCurrentValue,currentvalue,})=>{
 	return(
-		<Flex p='2' gap='3' className={styles.consoleNavigation} cursor='pointer'>
+		<Flex p='4' gap='3' className={styles.consoleNavigation} cursor='pointer'>
 			{navItems.map((content)=>{
 				return (
 					<Flex key={content.id} color={currentvalue === content.title.toLowerCase() ? '#009393': '#fff'} align='center' p='2' gap='3' className={styles.consoleNavItem} onClick={(()=>{setCurrentValue(content.link)})}>
 						{content.icon}
-						<Text fontSize='20px' p='1.5' mb='0'>{content.title}</Text>
+						<Text fontSize='20px' p='1.5' mb='0' fontWeight={'bold'}>{content.title}</Text>
 					</Flex>
 				)
 			})}

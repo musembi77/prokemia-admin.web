@@ -15,9 +15,10 @@ import Change_Password from '../api/auth/change_password.js';
 //utils
 import {storage} from '../../components/firebase.js';
 import {ref,uploadBytes,getDownloadURL} from 'firebase/storage';
+//style
+import styles from '../../styles/Profile.module.css';
 
 export default function Profile(){
-
 	const router = useRouter();
 	const cookies = new Cookies();
 	const toast = useToast();
@@ -230,10 +231,17 @@ export default function Profile(){
 	return(
 		<Flex direction={'column'} gap='2' h='100vh'>
             <Header/>
-			<Flex bg='#eee' h='100%' p='2'>
+			<Flex bg='#eee' h='100%' p='2' direction='column' gap='1'>
+				<Flex className={styles.page_infomation_details_Description} >
+					<Text fontSize='32px' fontWeight='bold' className={styles.page_infomation_details_Title}>Profile</Text>
+					<Flex fontSize={'12px'} color='grey' gap='1' fontWeight={'bold'} className={styles.page_infomation_details_Link}>
+						<Text cursor='pointer' color='#009393' onClick={(()=>{router.push('/dashboard')})}>Dashboard</Text>
+						<Text>&gt;</Text>
+						<Text>profile</Text>	
+					</Flex>
+				</Flex>
 				<Flex bg='#fff' borderRadius={'5'} flex={'1'} p='8' direction={'column'} gap='1'>	
 					<Flex gap='4' align='center'>
-						
 						{image_edit?
 							<Flex direction='column' gap='2'>
 								<Input type='file' placeholder='Select Image to set as Profile Image' accept='.jpg,.png,.jpeg' variant='filled' onChange={((e)=>{set_image(e.target.files[0])})}/>
