@@ -46,7 +46,7 @@ export default function Industries(){
 	      }
 	},[refresh])
 	return(
-		<Flex direction='column' gap='3' p='2' w='100%' bg='#eee'>
+		<Flex direction='column' gap='3' p='2' w='100%' bg='#fff'>
 			<Text fontSize='32px' fontWeight='bold' color ='#009393'>Industries</Text>
 			{industries_data?.length === 0?
 				<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center' bg='#eee' borderRadius='5' >
@@ -121,7 +121,7 @@ const Industry=({item,auth_role,set_refresh})=>{
 		})
 	}
 	return(
-		<Flex direction='column' bg='#fff' borderRadius='5' p='2' gap='2'>
+		<Flex direction='column' bg='#eee' borderRadius='5' p='2' gap='2'>
 			<Flex justify='space-between'>
 				<Text fontWeight='bold' fontSize='20px'>{item?.title}</Text>
 				<Flex gap='2'>

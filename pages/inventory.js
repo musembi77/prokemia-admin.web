@@ -147,9 +147,9 @@ export default function Inventory(){
 				</Flex>
 			</Flex>
 			<Flex className={styles.products_container_body} p='1'>
-				{is_fetching ?
+				{is_fetching || products?.length == 0 ?
 						<Flex justify={'center'} flex='1' align='center' direction={'column-reverse'}>
-							{products.length == 0 ?
+							{products?.length == 0 ?
 								<Flex justify='center' align='center'>
 									<Text fontSize='' color='grey'>No items match your query</Text>
 								</Flex>

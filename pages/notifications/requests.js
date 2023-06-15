@@ -47,7 +47,7 @@ export default function Requests(){
 		get_Request_Data()
 	},[refresh])
 	return(
-		<Flex direction='column' gap='3' p='2' w='100%' bg='#eee'>
+		<Flex direction='column' gap='3' p='2' w='100%' bg='#fff'>
 			<Text fontSize='32px' fontWeight='bold' color ='#009393'>Requests</Text>
 			{requests_data?.length === 0?
 				<Flex justify='center' align='center' h='40vh' direction='column' gap='2' textAlign='center' bg='#eee' borderRadius='5'>
@@ -119,7 +119,7 @@ const Requests_Item=({item,router,auth_role,set_refresh})=>{
 		})
 	}
 	return(
-		<Flex direction='column' bg='#fff' borderRadius='5' p='2' w='100%' justify='space-between'>
+		<Flex direction='column' bg='#eee' borderRadius='5' p='2' w='100%' justify='space-between'>
 			<Flex direction='column'>
 				<Flex gap='2' fontSize='14px' color='grey' align='center'>
 					<Text cursor='pointer' >{item.industry? item.industry : '-'}</Text>

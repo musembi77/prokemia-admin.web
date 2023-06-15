@@ -1,8 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {Flex,Image,Text,Input,Button,Select,Circle} from '@chakra-ui/react'
-import {useRouter} from 'next/router'
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import AddIcon from '@mui/icons-material/Add';
+import {useRouter} from 'next/router';
+import styles from '../../styles/Notifications.module.css'
 // import Get_Products from '../../api/Products/get_products.js'
 import Get_Orders from '../api/orders/get_orders.js';
 import moment from 'moment';
@@ -32,7 +31,7 @@ export default function Sales_Inventory(){
 					<Text>You dont have any orders to view.</Text>
 				</Flex>
 			:
-				<Flex direction='column' overflowY='scroll' h='80vh'>
+				<Flex className={styles.item_card_container} gap='2'>
 					{orders_data?.map((item)=>{
 						return(
 							<OrderItem order={item} key={item._id}/>

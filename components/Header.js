@@ -63,7 +63,7 @@ export default function Header(){
               status: 'error',
               isClosable: true,
             });
-			console.log(err);
+			//console.log(err);
 		})
 	}
 
@@ -83,7 +83,8 @@ export default function Header(){
 				toast({
 					title: 'You have been signed out.',
 					description: `For any issues contact support or the administrator.`,
-					status: 'success',
+					position: 'top-left',
+					variant: 'subtle',
 					isClosable: true,
 				});
 				return ;
@@ -91,15 +92,17 @@ export default function Header(){
 		}).catch((err)=>{
 			if (err.response?.status == 500){
 				toast({
-					title: 'You have been signed out.',
-					description: `You do not have access to this platform.`,
-					status: 'success',
+					title: 'Error while logging in.',
+					description: `${err.response?.data}`,
+					status: 'error',
+					position: 'top-left',
+					variant: 'subtle',
 					isClosable: true,
 				});
 				router.push('/')
 				return ;
 			}
-			console.log(err)
+			//console.log(err)
 		})
 	}
 	return(
@@ -210,7 +213,7 @@ const MenuBar=({setshowmenubar,showmenubar,user_data})=>{
 					<AccountCircleIcon/>
 					<Text  p='2' fontSize='20px'  mb='0' >Profile</Text>
 				</Flex>
-				{user_data?.role === 'Manager' || user_data?.role === 'IT'?
+				{user_data?.role === 'Manager' || user_data?.role === 'Tech Support'?
 					<>
 						<Flex justify='space-between' borderBottom='1px solid grey' p='2' _hover={{transition:'ease-out 0.9s all',backgroundColor:"#fff",color:"#000",borderRadius:'5'}} align='center' color='#fff' onClick={(()=>{set_handle_persmission_sub_menu(!handle_persmission_sub_menu)})}>
 							<Flex align='center'>

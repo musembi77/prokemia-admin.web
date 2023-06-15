@@ -367,7 +367,7 @@ const Supplier_Card_Item=({suppliers_data,supplier_details_path})=>{
 			</Flex>
 			{is_view_active? 
 				<Flex direction='column' boxShadow='lg' cursor='pointer' w='120px' bg='#fff' borderRadius='5' position='absolute' bottom='-30px' right='20px' p='2' zIndex='100'>
-					<Flex align='center' onClick={(()=>{router.push(`/${supplier_details_path}/${suppliers_data?._id}`)})}>
+					<Flex align='center' onClick={(()=>{router.push(`/supplier/${suppliers_data?._id}?supplier=${supplier_details_path}&supplier_id=${suppliers_data?._id}`)})}>
 						<Text>View</Text>
 						<ArrowRightAltIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
 					</Flex>
