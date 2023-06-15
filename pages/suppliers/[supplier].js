@@ -1,29 +1,34 @@
 //modules
 import React,{useState,useEffect}from 'react';
-import {Flex,Text,Button,Input,Image,Select, Divider} from '@chakra-ui/react'
+import {Flex,Text,Button,Input,Image,Select, Divider,useToast} from '@chakra-ui/react'
 import {useRouter} from 'next/router'
 //api
-import Get_Distributors from '../pages/api/distributors/get_distributors.js';
-import Get_Industries from '../pages/api/controls/get_industries';
-import Get_Technologies from '../pages/api/controls/get_technologies'
+import Get_Distributors from '../api/distributors/get_distributors.js';
+import Get_Manufacturers from '../api/manufacturers/get_manufacturers.js';
+import Get_Industries from '../api/controls/get_industries.js';
+import Get_Technologies from '../api/controls/get_technologies.js'
 //icons
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import TuneIcon from '@mui/icons-material/Tune';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
 //components
-import Header from '../components/Header.js';
-import Fetching_Data_Loading_Animation from '../components/Fetching_Loading_animation.js'
+import Header from '../../components/Header.js';
+import Fetching_Data_Loading_Animation from '../../components/Fetching_Loading_animation.js'
 //styles
-import styles from '../styles/Notifications.module.css'
+import styles from '../../styles/Notifications.module.css'
 
-export default function Distributors(){
+export default function Suppliers(){
 	const router = useRouter();
+	const toast = useToast()
+    let query = router.query;
+   //console.log(query.supplier);
+
+	const [supplier_details, set_supplier_details]=useState({Title: '',path:''});
+	const [suppliers_data, set_suppliers_data]=useState([]);
 	
-	const [distributors_data, set_distributors_data]=useState([]);
 	const [industries_data, set_industries_data]=useState([]);
 	const [technologies_data, set_technologies_data]=useState([]);
 	
@@ -36,14 +41,16 @@ export default function Distributors(){
 	const [sort,set_sort]=useState('descending');
 	const [is_fetching,set_is_fetching]=useState(null);
 	
-	
+	const [search_value,set_search_value]=useState('');
+	const debounce_search_value = useDebounceValue(search_value);
+
 	//api
 	const get_Industries_Data=async()=>{
 		await Get_Industries().then((response)=>{
-			//console.log(response.data)
+			////console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			//console.log(data.filter(v => v.verification_status))
+			////console.log(data.filter(v => v.verification_status))
 			set_industries_data(result)
 		}).catch((err)=>{
 			set_industry([])
@@ -52,10 +59,10 @@ export default function Distributors(){
 
 	const get_Technology_Data=async()=>{
 		await Get_Technologies().then((response)=>{
-			//console.log(response.data)
+			////console.log(response.data)
 			const data = response.data
 			const result = data.filter(v => v.verification_status)
-			//console.log(data.filter(v => v.verification_status))
+			////console.log(data.filter(v => v.verification_status))
 			set_technologies_data(result)
 		}).catch((err)=>{
 			set_technology([])
@@ -72,7 +79,7 @@ export default function Distributors(){
 	const handle_get_distributors=async()=>{
 		await Get_Distributors().then((response)=>{
 			set_is_fetching(true);
-			//console.log(response.data)
+			////console.log(response.data)
 			const data = response.data;
 			const sorted_data =(result)=>{
 				switch (sort){
@@ -101,45 +108,155 @@ export default function Distributors(){
 				let result = data?.filter((item) => item.suspension_status)
 				let sorted_result = sorted_data(result);
 				let queried_result = search_queried_data(sorted_result);
-				console.log(queried_result);
-				set_distributors_data(queried_result)
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
 			}else if(suspension_status === 'not suspended'){
 				let result = data?.filter((item) => !item.suspension_status)
 				let sorted_result = sorted_data(result);
 				let queried_result = search_queried_data(sorted_result);
-				console.log(queried_result);
-				set_distributors_data(queried_result)
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
 			}else if(suspension_status === 'all'){
 				let result = data?.filter((item) => item.verification_status)
 				let sorted_result = sorted_data(result);
 				let queried_result = search_queried_data(sorted_result);
-				console.log(queried_result);
-				set_distributors_data(queried_result)
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
 			}else{
 				let result = data?.filter((item) => item.verification_status)
 				let sorted_result = sorted_data(result);
 				let queried_result = search_queried_data(sorted_result);
-				console.log(queried_result);
-				set_distributors_data(queried_result)
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
 			}
 		}).catch((err)=>{
-			//console.log(err)
-			set_distributors_data([])
+			////console.log(err)
+			set_suppliers_data([])
+		}).finally(()=>{
+			set_is_fetching(null);
+		})
+	}
+	const handle_get_manufacturers=async()=>{
+		await Get_Manufacturers().then((response)=>{
+			set_is_fetching(true);
+			////console.log(response.data)
+			const data = response.data;
+			const sorted_data =(result)=>{
+				switch (sort){
+					case 'descending':
+						return result.filter(v => v.verification_status).sort((a, b) => a.company_name.localeCompare(b.company_name))
+					case 'ascending':
+						return result.filter(v => v.verification_status).sort((a, b) => b.company_name.localeCompare(a.company_name))
+					case 'subscribed':
+						return result?.filter((item) => item.subscription)
+					case 'not subscribed':
+						return result?.filter((item) => !item.subscription)
+					default:
+						return result.filter(v => v.verification_status).sort((a, b) => a.company_name.localeCompare(b.company_name))
+				}
+			}
+			const search_queried_data =(sorted_result)=>{
+				return sorted_result.filter((item) => item?.email_of_company?.toLowerCase().includes(search_query.toLowerCase()) ||
+					item?.company_name?.toLowerCase().includes(search_query.toLowerCase()) || 
+					item?.first_name?.toLowerCase().includes(search_query.toLowerCase()) ||
+					item?.industry?.toLowerCase().includes(industry.toLowerCase()) ||
+					item?.technology?.toLowerCase().includes(technology.toLowerCase()) ||
+					item?.mobile_of_company?.includes(search_query) ||
+					item?.last_name?.toLowerCase().includes(search_query.toLowerCase()))
+			}
+			if (suspension_status === 'suspended'){
+				let result = data?.filter((item) => item.suspension_status)
+				let sorted_result = sorted_data(result);
+				let queried_result = search_queried_data(sorted_result);
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
+			}else if(suspension_status === 'not suspended'){
+				let result = data?.filter((item) => !item.suspension_status)
+				let sorted_result = sorted_data(result);
+				let queried_result = search_queried_data(sorted_result);
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
+			}else if(suspension_status === 'all'){
+				let result = data?.filter((item) => item.verification_status)
+				let sorted_result = sorted_data(result);
+				let queried_result = search_queried_data(sorted_result);
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
+			}else{
+				let result = data?.filter((item) => item.verification_status)
+				let sorted_result = sorted_data(result);
+				let queried_result = search_queried_data(sorted_result);
+				//console.log(queried_result);
+				set_suppliers_data(queried_result)
+			}
+		}).catch((err)=>{
+			////console.log(err)
+			set_suppliers_data([])
 		}).finally(()=>{
 			set_is_fetching(null);
 		})
 	}
 	//functions
 	//useEffect
-	useEffect(()=>{
-		handle_get_distributors()
-	},[suspension_status,subscription_status,search_query,sort])
+	let [supplier_pathname,set_supplier_pathname]=useState(query.supplier);
 
+	useEffect(()=>{
+		if (!supplier_pathname || supplier_pathname == undefined){
+			toast({
+				title: 'Broken link',
+				description: `we are fixing it, ...`,
+				variant: 'subtle',
+				status: 'info',
+				position:'top-left',
+				duration: 1000,
+				isClosable: true,
+			  });
+			  let getpath = window.location.pathname.split('/');
+			  set_supplier_pathname(getpath[2]);
+		}else{
+			switch (supplier_pathname){
+				case 'distributors':
+					supplier_details.Title='Distributors';
+					supplier_details.path='distributor';
+					if(search_query?.length > 0){
+						set_search_value(search_query)
+					}
+					(async ()=>{
+						//console.log(debounce_search_value);
+						if (debounce_search_value.length == 0){
+							handle_get_distributors();
+						}
+						if (debounce_search_value.length > 0){
+							handle_get_distributors();
+						}
+					})();
+					break;
+				case 'manufacturers':
+					supplier_details.Title='Manufacturers';
+					supplier_details.path='manufacturer';
+					if(search_query?.length > 0){
+						set_search_value(search_query)
+					}
+					(async ()=>{
+						console.log(debounce_search_value);
+						if (debounce_search_value.length == 0){
+							handle_get_manufacturers();
+						}
+						if (debounce_search_value.length > 0){
+							handle_get_manufacturers();
+						}
+					})();
+					break;
+				default:
+					router.back();
+			}
+		}
+	},[suspension_status,subscription_status,debounce_search_value,search_query,search_value,sort,supplier_pathname])
 	return(
 		<Flex direction='column' h='100vh'>
 			<Header />
-			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >Distributors({distributors_data?.length})</Text>
-			<Flex gap='2' p='2' align='center'>
+			<Text m='2' fontFamily='ClearSans-Bold' fontSize='24px' >{supplier_details.Title}({suppliers_data?.length})</Text>
+			<Flex gap='2' p='2' align='center' flexWrap='wrap'>
 				<Select placeholder='suspension status' w='100px' bg='#fff' color='#000' onChange={((e)=>{set_suspension_status(e.target.value)})}>
 					<option value={'suspended'} >Suspended</option>
 					<option value={'not suspended'} >not suspended</option>
@@ -185,12 +302,12 @@ export default function Distributors(){
 				}
 			</Flex>
 			<Flex gap='2' p='2'>
-				<Input placeholder='search Distributors' value={search_query} bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
+				<Input placeholder={`search ${supplier_details.Title}`} value={search_query} bg='#fff' flex='1' onChange={((e)=>{set_search_query(e.target.value)})}/>
 				<Button bg='#009393' color='#fff'><SearchIcon /></Button>
 			</Flex>
-			{is_fetching || distributors_data.length == 0?
+			{is_fetching || suppliers_data.length == 0?
 					<Flex flex='1' h='100%' m='2' justify={'center'} align='center' direction={'column-reverse'}>
-						{distributors_data.length == 0 ?
+						{suppliers_data.length == 0 ?
 							<Flex justify='center' align='center'>
 								<Text fontSize='' color='grey'>No items match your query</Text>
 							</Flex>
@@ -200,28 +317,20 @@ export default function Distributors(){
 						<Fetching_Data_Loading_Animation width={'250px'} height={'250px'} color={'#009393'}/>
 					</Flex>
 				:
-				<>
-					{distributors_data.length == 0 ?
-						<Flex h='40vh' justify='center' align='center'>
-							<Text fontSize='28px' fontWeight='bold' color='grey'>No items match your query</Text>
-						</Flex>
-					:
-						<Flex className={styles.item_card_container}>
-							{distributors_data?.map((distributor_data)=>{
-								return(
-									<div key={distributor_data?._id} >
-										<Distributor_Card_Item distributor_data={distributor_data}/>
-									</div>
-								)
-							})}
-						</Flex>
-					}
-				</>
+					<Flex className={styles.item_card_container}>
+						{suppliers_data?.map((suppliers_data)=>{
+							return(
+								<div key={suppliers_data?._id} >
+									<Supplier_Card_Item suppliers_data={suppliers_data} supplier_details_path={supplier_details.path}/>
+								</div>
+							)
+						})}
+					</Flex>
 			}
 		</Flex>
 	)
 }
-const Distributor_Card_Item=({distributor_data})=>{
+const Supplier_Card_Item=({suppliers_data,supplier_details_path})=>{
 	const router = useRouter();
 	const [is_view_active,set_is_view_active]=useState(false);
 	return(
@@ -229,23 +338,23 @@ const Distributor_Card_Item=({distributor_data})=>{
 			<Flex align='center' gap='2'>
 				<Image 
 					boxSize='50px' 
-					src={distributor_data?.profile_photo_url == '' || !distributor_data?.profile_photo_url ? './Pro.png' : distributor_data?.profile_photo_url} 
+					src={suppliers_data?.profile_photo_url == '' || !suppliers_data?.profile_photo_url ? '../Pro.png' : suppliers_data?.profile_photo_url} 
 					bg='grey' alt='photo' 
 					objectFit='cover' 
 					border='1px solid #eee' 
 					borderRadius='5'/>
 					<Flex direction='column' >
-						<Text fontWeight='bold' fontSize='16px'>{distributor_data?.company_name}</Text>
-						<Text color='grey' fontSize='12px'>{distributor_data?.email_of_company}</Text>
+						<Text fontWeight='bold' fontSize='16px'>{suppliers_data?.company_name}</Text>
+						<Text color='grey' fontSize='12px'>{suppliers_data?.email_of_company}</Text>
 					</Flex>
 			</Flex>
 			<Flex gap='' mr='2'>
-				{distributor_data?.suspension_status?
+				{suppliers_data?.suspension_status?
 					<DisabledByDefaultRoundedIcon style={{fontSize:'20px',color:'red',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
 					:
 					null
 				}
-				{distributor_data?.subscription?
+				{suppliers_data?.subscription?
 					<StarRateRoundedIcon style={{fontSize:'20px',color:'#009393',cursor:'pointer'}} onClick={(()=>{set_is_view_active(!is_view_active)})}/>
 					:
 					null
@@ -258,17 +367,33 @@ const Distributor_Card_Item=({distributor_data})=>{
 			</Flex>
 			{is_view_active? 
 				<Flex direction='column' boxShadow='lg' cursor='pointer' w='120px' bg='#fff' borderRadius='5' position='absolute' bottom='-30px' right='20px' p='2' zIndex='100'>
-					<Flex align='center' onClick={(()=>{router.push(`/distributor/${distributor_data?._id}`)})}>
+					<Flex align='center' onClick={(()=>{router.push(`/supplier/${suppliers_data?._id}?supplier=${supplier_details_path}&supplier_id=${suppliers_data?._id}`)})}>
 						<Text>View</Text>
 						<ArrowRightAltIcon style={{fontSize:'18px',color:'grey',cursor:'pointer'}}/>
 					</Flex>
 					<Divider/>
-					{distributor_data?.subscription? <Text fontSize='12px' fontWeight='bold' color='#009393'>subscribed</Text>:null}
+					{suppliers_data?.subscription? <Text fontSize='12px' fontWeight='bold' color='#009393'>subscribed</Text>:null}
 					<Divider/>
-					{distributor_data?.suspension_status? <Text fontSize='12px' fontWeight='bold' color='red'>suspended</Text>:null}
+					{suppliers_data?.suspension_status? <Text fontSize='12px' fontWeight='bold' color='red'>suspended</Text>:null}
 				</Flex>
 				:
 			null}
 		</Flex>
 	)
+}
+
+const useDebounceValue=(value, time = 500)=>{
+	const [debounceValue, setDebounceValue]=useState(value);
+
+	useEffect(()=>{
+		const timeout = setTimeout(()=>{
+			setDebounceValue(value);
+		}, time);
+
+		return () => {
+			clearTimeout(timeout);
+		}
+	},[value, time]);
+
+	return debounceValue;
 }
